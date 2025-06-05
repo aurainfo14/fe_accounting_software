@@ -7,30 +7,30 @@ import { useSnackbar } from 'src/components/snackbar';
 import Iconify from 'src/components/iconify';
 import { Stack } from '@mui/system';
 
-export default function ExpenseTypeCreteView({ setTab }) {
+export default function IncomeTypeCreateView({ setTab }) {
   const { user } = useAuthContext();
   const { configs, mutate } = useGetConfigs();
   const [inputVal, setInputVal] = useState('');
-  const [expenseType, setExpenseTypes] = useState(configs?.expenseType || []);
+  const [incomeType, setIncomeTypes] = useState(configs?.incomeType || []);
   const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
     if (!inputVal) {
-      enqueueSnackbar('Expense type cannot be empty', { variant: 'warning' });
+      enqueueSnackbar('Income type cannot be empty', { variant: 'warning' });
       return;
     }
 
-    const updatedExpenseTypes = [...expenseType, inputVal.toUpperCase()];
+    const updatedIncomeTypes = [...incomeType, inputVal.toUpperCase()];
     const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}/config/${configs?._id}`;
-    const payload = { ...configs, expenseType: updatedExpenseTypes };
+    const payload = { ...configs, incomeType: updatedIncomeTypes };
 
     axios
       .put(URL, payload)
       .then((res) => {
         if (res.status === 200) {
           setInputVal('');
-          setExpenseTypes(updatedExpenseTypes);
-          enqueueSnackbar('Expense type added successfully', { variant: 'success' });
+          setIncomeTypes(updatedIncomeTypes);
+          enqueueSnackbar('Income type added successfully', { variant: 'success' });
           setTab('Permission');
           mutate();
         }
@@ -39,17 +39,17 @@ export default function ExpenseTypeCreteView({ setTab }) {
   };
 
   const handleDelete = (type) => {
-    const updatedExpenseTypes = expenseType.filter((bt) => bt !== type);
+    const updatedIncomeTypes = incomeType.filter((bt) => bt !== type);
     const apiEndpoint = `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}/config/${
       configs?._id
     }`;
-    const payload = { ...configs, expenseType: updatedExpenseTypes };
+    const payload = { ...configs, incomeType: updatedIncomeTypes };
 
     axios
       .put(apiEndpoint, payload)
       .then(() => {
-        setExpenseTypes(updatedExpenseTypes);
-        enqueueSnackbar('Expense type deleted successfully', { variant: 'success' });
+        setIncomeTypes(updatedIncomeTypes);
+        enqueueSnackbar('Income type deleted successfully', { variant: 'success' });
         mutate();
       })
       .catch((err) => console.log(err));
@@ -60,16 +60,16 @@ export default function ExpenseTypeCreteView({ setTab }) {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Typography variant="h5" sx={{ fontWeight: 600 }}>
-            Add Expense Type
+            Add Income Type
           </Typography>
         </Grid>
         <Grid item md={4} xs={12}>
           <Box sx={{ width: '100%', maxWidth: '600px', marginBottom: '10px', padding: '10px' }}>
             <TextField
               fullWidth
-              name="expenseType"
+              name="incomeType"
               variant="outlined"
-              label="Expense Type"
+              label="Income Type"
               value={inputVal}
               inputProps={{ style: { textTransform: 'uppercase' } }}
               onChange={(e) => setInputVal(e.target.value)}
@@ -94,8 +94,8 @@ export default function ExpenseTypeCreteView({ setTab }) {
                   sm: 'repeat(2, 1fr)',
                 }}
               >
-                {expenseType.length !== 0 &&
-                  expenseType.map((type, index) => (
+                {incomeType.length !== 0 &&
+                  incomeType.map((type, index) => (
                     <Grid
                       container
                       key={index}

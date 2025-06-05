@@ -11,12 +11,28 @@ import PermissionView from './permission-view';
 import Rolescreatepage from './roles-crete-view';
 import BranchCreateView from './branch-create-view';
 import ExpenseTypeCreteView from './expense-type-crete-view.jsx';
+import IncomeTypeCreteView from './income-type-crete-view.jsx';
 
 const TABS = [
   {
     value: 'Company Profile',
     label: 'Company Profile',
     icon: <Iconify icon="mdi:company" width={24} />,
+  },
+  {
+    value: 'Branch',
+    label: 'Branch',
+    icon: <Iconify icon="carbon:branch" width={24} />,
+  },
+  {
+    value: 'Income type',
+    label: 'Income type',
+    icon: <Iconify icon="icon-park-outline:income" width={24} />,
+  },
+  {
+    value: 'Expense type',
+    label: 'Expense type',
+    icon: <Iconify icon="arcticons:expense-manager-2" width={24} />,
   },
   {
     value: 'Roles',
@@ -27,16 +43,6 @@ const TABS = [
     value: 'Permission',
     label: 'Permission',
     icon: <Iconify icon="mdi:eye-lock" width={24} />,
-  },
-  {
-    value: 'Branch',
-    label: 'Branch',
-    icon: <Iconify icon="carbon:branch" width={24} />,
-  },
-  {
-    value: 'Expense type',
-    label: 'Expense type',
-    icon: <Iconify icon="arcticons:expense-manager-2" width={24} sx={{ color: '#000' }} />,
   },
 ];
 
@@ -73,6 +79,7 @@ export default function SettingsPage() {
         {currentTab === 'Permission' && <PermissionView />}
         {currentTab === 'Branch' && <BranchCreateView />}
         {currentTab === 'Expense type' && <ExpenseTypeCreteView />}
+        {currentTab === 'Income type' && <IncomeTypeCreteView />}
       </Container>
     </>
   );
