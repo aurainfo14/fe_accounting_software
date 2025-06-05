@@ -3,13 +3,13 @@ import { useState, useCallback } from 'react';
 // ----------------------------------------------------------------------
 
 export default function useTable(props) {
-  const [dense, setDense] = useState(!!props?.defaultDense);
+  const [dense, setDense] = useState(true);
 
   const [page, setPage] = useState(props?.defaultCurrentPage || 0);
 
   const [orderBy, setOrderBy] = useState(props?.defaultOrderBy || 'name');
 
-  const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 5);
+  const [rowsPerPage, setRowsPerPage] = useState(props?.defaultRowsPerPage || 10);
 
   const [order, setOrder] = useState(props?.defaultOrder || 'asc');
 
