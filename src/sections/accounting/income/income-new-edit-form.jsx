@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Box from '@mui/material/Box';
@@ -15,9 +15,13 @@ import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook
 import axios from 'axios';
 import { useAuthContext } from '../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../api/config.js';
-import { Button } from '@mui/material';
+import { Button, Dialog, IconButton } from '@mui/material';
 import { useGetBranch } from '../../../api/branch.js';
 import RhfDatePicker from '../../../components/hook-form/rhf-date-picker.jsx';
+import { UploadBox } from '../../../components/upload/index.js';
+import Stack from '@mui/material/Stack';
+import Iconify from '../../../components/iconify/index.js';
+import ReactCrop from 'react-image-crop';
 
 // ----------------------------------------------------------------------
 
@@ -29,7 +33,13 @@ export default function IncomeNewEditForm({ currentIncome }) {
   const [paymentMode, setPaymentMode] = useState('');
   const { branch } = useGetBranch();
   const storedBranch = sessionStorage.getItem('selectedBranch');
-  // const [file, setFile] = useState(currentIncome ? currentIncome?.invoice : null);
+  const [file, setFile] = useState(currentIncome ? currentIncome?.invoice : null);
+  const [croppedImage, setCroppedImage] = useState(currentIncome?.invoice || null);
+  const [imageSrc, setImageSrc] = useState(null);
+  const [crop, setCrop] = useState({ unit: '%', width: 50 });
+  const [completedCrop, setCompletedCrop] = useState(null);
+  const [rotation, setRotation] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const paymentSchema =
     paymentMode === 'Bank'
@@ -67,17 +77,16 @@ export default function IncomeNewEditForm({ currentIncome }) {
           };
 
   const NewSchema = Yup.object().shape({
-    otherIncomeType: Yup.string().required('Expense Type is required'),
+    incomeType: Yup.string().required('Income Type is required'),
     category: Yup.string().required('category  is required'),
     paymentMode: Yup.string().required('paymentMode  is required'),
     date: Yup.date().typeError('Please enter a valid date').required('Date is required'),
-    description: Yup.string().required('description Date is required'),
     ...paymentSchema,
   });
 
   const defaultValues = useMemo(
     () => ({
-      otherIncomeType: currentIncome?.otherIncomeType || '',
+      incomeType: currentIncome?.incomeType || '',
       category: currentIncome?.category || '',
       date: currentIncome?.date ? new Date(currentIncome?.date) : new Date(),
       description: currentIncome?.description || '',
@@ -137,9 +146,9 @@ export default function IncomeNewEditForm({ currentIncome }) {
   }, [watch('valuation'), configs.goldRate, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log(data,"00");
     let paymentDetail = {
       paymentMode: data.paymentMode,
-      expectPaymentMode: data.expectPaymentMode,
     };
 
     if (data.paymentMode === 'Cash') {
@@ -161,45 +170,46 @@ export default function IncomeNewEditForm({ currentIncome }) {
         bankAmount: data.bankAmount,
       };
     }
-    const payload = {
-      company: user.company,
-      branch: data.branch.value,
-      incomeType: data?.otherIncomeType || '',
-      category: data?.category || '',
-      date: data?.date,
-      description: data?.description,
-      paymentDetail: paymentDetail,
-    };
 
-    // const formData = new FormData();
-    //
-    // formData.append('otherIncomeType', data?.otherIncomeType);
-    // formData.append('description', data?.description);
-    // formData.append('category', data?.category);
-    // formData.append('date', data?.date);
 
-    // Append paymentDetail fields
+    const formData = new FormData();
 
-    // for (const [key, value] of Object.entries(paymentDetail)) {
-    //   formData.append(`paymentDetail[${key}]`, value);
-    // }
-    // if (file) {
-    //   formData.append('invoice', file);
-    // }
+    formData.append('incomeType', data?.incomeType);
+    formData.append('branch', data?.branch?.value);
+    formData.append('description', data?.description);
+    formData.append('category', data?.category);
+    formData.append('date', data?.date);
+
+
+
+    for (const [key, value] of Object.entries(paymentDetail)) {
+      if (key === 'account' && value) {
+        formData.append('paymentDetail[account][_id]', value._id);
+        formData.append('paymentDetail[account][bankName]', value.bankName);
+        formData.append('paymentDetail[account][accountNumber]', value.accountNumber);
+        formData.append('paymentDetail[account][branchName]', value.branchName);
+        formData.append('paymentDetail[account][accountHolderName]', value.accountHolderName);
+      } else {
+        formData.append(`paymentDetail[${key}]`, value);
+      }
+    }
+    if (file) {
+      formData.append('invoice', file);
+    }
 
     try {
       if (currentIncome) {
         const res = await axios.put(
-          `${import.meta.env.VITE_BASE_URL}/${user?.company}/income/${currentIncome._id}`,
-          payload
+          `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/income/${currentIncome._id}`,
+          formData
         );
         router.push(paths.dashboard.accounting.income.list);
         enqueueSnackbar(res?.data.message);
         reset();
       } else {
         const res = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/${user?.company}/income`,
-          payload
+          `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/income`,
+          formData
         );
         router.push(paths.dashboard.accounting.income.list);
         enqueueSnackbar(res?.data.message);
@@ -207,7 +217,7 @@ export default function IncomeNewEditForm({ currentIncome }) {
       }
     } catch (error) {
       enqueueSnackbar(
-        currentIncome ? 'Failed To update other income' : error.response.data.message,
+        currentIncome ? 'Failed To update other income' : error?.response?.data?.message,
         {
           variant: 'error',
         }
@@ -216,14 +226,126 @@ export default function IncomeNewEditForm({ currentIncome }) {
     }
   });
 
-  // const handleDrop = useCallback((acceptedFiles) => {
-  //   const uploadedFile = acceptedFiles[0];
-  //
-  //   if (uploadedFile) {
-  //     uploadedFile.preview = URL.createObjectURL(uploadedFile);
-  //     setFile(uploadedFile);
-  //   }
-  // }, []);
+  const handleDrop = useCallback((acceptedFiles) => {
+    const uploadedFile = acceptedFiles[0];
+
+    if (uploadedFile) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageSrc(reader.result);
+        setOpen(true);
+      };
+      reader.readAsDataURL(uploadedFile);
+    }
+  }, []);
+
+  const resetCrop = () => {
+    setCrop({ unit: '%', width: 50, aspect: 1 });
+    setCompletedCrop(null);
+  };
+
+  const rotateImage = (angle) => {
+    setRotation((prevRotation) => prevRotation + angle);
+  };
+
+  const showCroppedImage = async () => {
+    try {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const image = document.getElementById('cropped-image');
+
+      if (!image) {
+        console.error('Image element not found!');
+        return;
+      }
+
+      const scaleX = image.naturalWidth / image.width;
+      const scaleY = image.naturalHeight / image.height;
+      const angleRadians = (rotation * Math.PI) / 180;
+
+      if (!completedCrop || !completedCrop.width || !completedCrop.height) {
+        const rotatedCanvasWidth =
+          Math.abs(image.naturalWidth * Math.cos(angleRadians)) +
+          Math.abs(image.naturalHeight * Math.sin(angleRadians));
+        const rotatedCanvasHeight =
+          Math.abs(image.naturalWidth * Math.sin(angleRadians)) +
+          Math.abs(image.naturalHeight * Math.cos(angleRadians));
+
+        canvas.width = rotatedCanvasWidth;
+        canvas.height = rotatedCanvasHeight;
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(angleRadians);
+        ctx.drawImage(
+          image,
+          -image.naturalWidth / 2,
+          -image.naturalHeight / 2,
+          image.naturalWidth,
+          image.naturalHeight
+        );
+        ctx.restore();
+      } else {
+        const cropX = completedCrop.x * scaleX;
+        const cropY = completedCrop.y * scaleY;
+        const cropWidth = completedCrop.width * scaleX;
+        const cropHeight = completedCrop.height * scaleY;
+
+        const rotatedCanvasWidth =
+          Math.abs(cropWidth * Math.cos(angleRadians)) +
+          Math.abs(cropHeight * Math.sin(angleRadians));
+        const rotatedCanvasHeight =
+          Math.abs(cropWidth * Math.sin(angleRadians)) +
+          Math.abs(cropHeight * Math.cos(angleRadians));
+
+        canvas.width = rotatedCanvasWidth;
+        canvas.height = rotatedCanvasHeight;
+
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+        ctx.rotate(angleRadians);
+        ctx.drawImage(
+          image,
+          cropX,
+          cropY,
+          cropWidth,
+          cropHeight,
+          -cropWidth / 2,
+          -cropHeight / 2,
+          cropWidth,
+          cropHeight
+        );
+        ctx.restore();
+      }
+
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          console.error('Failed to create blob');
+          return;
+        }
+        const fileName = !completedCrop ? 'rotated-image.jpg' : 'cropped-rotated-image.jpg';
+        const file = new File([blob], fileName, { type: 'image/jpeg' });
+        const fileURL = URL.createObjectURL(file);
+
+        setCroppedImage(fileURL);
+        setFile(file);
+        setImageSrc(null);
+        setOpen(false);
+      }, 'image/jpeg');
+    } catch (error) {
+      console.error('Error handling image upload:', error);
+    }
+  };
+
+  const handleCancel = () => {
+    setImageSrc(null);
+    setOpen(false);
+  };
+
+  const handleDeleteImage = () => {
+    setCroppedImage(null);
+    setFile(null);
+    setImageSrc(null);
+  };
 
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
@@ -260,11 +382,11 @@ export default function IncomeNewEditForm({ currentIncome }) {
                 />
               )}
               <RHFAutocomplete
-                name="otherIncomeType"
-                label="Other Income Type"
+                name="incomeType"
+                label="Income Type"
                 req="red"
                 fullWidth
-                options={configs?.otherIncomeType || []}
+                options={configs?.incomeType || []}
                 getOptionLabel={(option) => option || ''}
                 renderOption={(props, option, { index }) => (
                   <li {...props} key={index}>
@@ -279,54 +401,61 @@ export default function IncomeNewEditForm({ currentIncome }) {
                 inputProps={{ style: { textTransform: 'uppercase' } }}
               />
               <RhfDatePicker name="date" control={control} label="Date" req={'red'} />
-              <RHFTextField name="description" label="Description" req={'red'} multiline />
+              <RHFTextField name="description" label="Description"  multiline />
             </Box>
-            {/*<UploadBox*/}
-            {/*  onDrop={handleDrop}*/}
-            {/*  placeholder={*/}
-            {/*    !file ? (*/}
-            {/*      <Stack spacing={0.5} alignItems="center" sx={{ color: 'text.disabled' }}>*/}
-            {/*        <Iconify icon="eva:cloud-upload-fill" width={40} />*/}
-            {/*        <Typography variant="body2">Upload file</Typography>*/}
-            {/*      </Stack>*/}
-            {/*    ) : (*/}
-            {/*      <Box*/}
-            {/*        sx={{*/}
-            {/*          width: 200,*/}
-            {/*          height: 200,*/}
-            {/*          border: '1px solid #ccc',*/}
-            {/*          borderRadius: 1,*/}
-            {/*          overflow: 'hidden',*/}
-            {/*        }}*/}
-            {/*      >*/}
-            {/*        {file.type === 'application/pdf' ? (*/}
-            {/*          <iframe*/}
-            {/*            src={currentIncome ? file : file.preview}*/}
-            {/*            width="100%"*/}
-            {/*            height="100%"*/}
-            {/*            title="pdf-preview"*/}
-            {/*          />*/}
-            {/*        ) : file.type?.startsWith('image/') ? (*/}
-            {/*          <img*/}
-            {/*            src={currentIncome ? file : file.preview}*/}
-            {/*            alt={file.path}*/}
-            {/*            style={{ width: '100%', height: '100%', objectFit: 'contain' }}*/}
-            {/*          />*/}
-            {/*        ) : (*/}
-            {/*          <Typography variant="body2">{file.path}</Typography>*/}
-            {/*        )}*/}
-            {/*      </Box>*/}
-            {/*    )*/}
-            {/*  }*/}
-            {/*  sx={{*/}
-            {/*    mb: 3,*/}
-            {/*    py: 2.5,*/}
-            {/*    width: 'auto',*/}
-            {/*    height: '250px',*/}
-            {/*    borderRadius: 1.5,*/}
-            {/*    mt: 3,*/}
-            {/*  }}*/}
-            {/*/>*/}
+            <UploadBox
+              onDrop={handleDrop}
+              onDelete={handleDeleteImage}
+              placeholder={
+                !file && !croppedImage ? (
+                  <Stack spacing={0.5} alignItems="center" sx={{ color: 'text.disabled' }}>
+                    <Iconify icon="eva:cloud-upload-fill" width={40} />
+                    <Typography variant="body2">Upload file</Typography>
+                  </Stack>
+                ) : (
+                  <Box
+                    sx={{
+                      width: 200,
+                      height: 200,
+                      border: '1px solid #ccc',
+                      borderRadius: 1,
+                      overflow: 'hidden',
+                    }}
+                  >
+                    {file?.type === 'application/pdf' ? (
+                      <iframe
+                        src={file.preview || currentIncome?.invoice}
+                        width="100%"
+                        height="100%"
+                        title="pdf-preview"
+                      />
+                    ) : file?.type?.startsWith('image/') ? (
+                      <img
+                        src={croppedImage || file.preview}
+                        alt={file.path}
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                      />
+                    ) : croppedImage ? (
+                      <img
+                        src={croppedImage}
+                        alt="uploaded"
+                        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                      />
+                    ) : (
+                      <Typography variant="body2">{file?.path}</Typography>
+                    )}
+                  </Box>
+                )
+              }
+              sx={{
+                mb: 3,
+                py: 2.5,
+                width: 'auto',
+                height: '250px',
+                borderRadius: 1.5,
+                mt: 3,
+              }}
+            />
             <Typography variant="subtitle1" sx={{ my: 2, fontWeight: 600 }}>
               Payment Details
             </Typography>
@@ -431,6 +560,40 @@ export default function IncomeNewEditForm({ currentIncome }) {
           </Box>
         </Grid>
       </Grid>
+      <Dialog open={open} onClose={handleCancel}>
+        {imageSrc && (
+          <ReactCrop
+            crop={crop}
+            onChange={(newCrop) => setCrop(newCrop)}
+            onComplete={(newCrop) => setCompletedCrop(newCrop)}
+            aspect={1}
+          >
+            <img
+              id="cropped-image"
+              src={imageSrc}
+              alt="Crop preview"
+              onLoad={resetCrop}
+              style={{ transform: `rotate(${rotation}deg)` }}
+            />
+          </ReactCrop>
+        )}
+        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem' }}>
+          <Button variant="outlined" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Box sx={{ display: 'flex' }}>
+            <IconButton onClick={() => rotateImage(-90)} style={{ marginRight: '10px' }}>
+              <Iconify icon="material-symbols:rotate-90-degrees-cw-rounded" />
+            </IconButton>
+            <IconButton onClick={() => rotateImage(90)}>
+              <Iconify icon="material-symbols:rotate-90-degrees-ccw-rounded" />
+            </IconButton>
+          </Box>
+          <Button variant="contained" color="primary" onClick={showCroppedImage}>
+            Save Image
+          </Button>
+        </div>
+      </Dialog>
     </FormProvider>
   );
 }

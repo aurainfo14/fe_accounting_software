@@ -63,7 +63,7 @@ export default function PaymentInOutTableRow({
           </TableCell>{' '}
         </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.party?.name}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.receiptNo.split('/')[2]}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.receiptNo}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(row.date)}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.paymentDetail?.paymentMode}</TableCell>
         <TableCell

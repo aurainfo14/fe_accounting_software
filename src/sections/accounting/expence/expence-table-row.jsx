@@ -25,7 +25,6 @@ export default function ExpenseTableRow({ row, selected, onEditRow, onSelectRow,
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
   const lightbox = useLightBox(row.invoice);
-
   return (
     <>
       <TableRow hover selected={selected}>
