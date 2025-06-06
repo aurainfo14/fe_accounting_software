@@ -12,12 +12,18 @@ import Rolescreatepage from './roles-crete-view';
 import BranchCreateView from './branch-create-view';
 import ExpenseTypeCreteView from './expense-type-crete-view.jsx';
 import IncomeTypeCreteView from './income-type-crete-view.jsx';
+import BankAccountCreateView from './bank-account-create-view.jsx';
 
 const TABS = [
   {
     value: 'Company Profile',
     label: 'Company Profile',
     icon: <Iconify icon="mdi:company" width={24} />,
+  },
+  {
+    value: 'Bank-Account',
+    label: 'Bank-Account',
+    icon: <Iconify icon="carbon:branch" width={24} />,
   },
   {
     value: 'Branch',
@@ -80,6 +86,7 @@ export default function SettingsPage() {
         {currentTab === 'Branch' && <BranchCreateView />}
         {currentTab === 'Expense type' && <ExpenseTypeCreteView />}
         {currentTab === 'Income type' && <IncomeTypeCreteView />}
+        {currentTab === 'Bank-Account' && <BankAccountCreateView />}
       </Container>
     </>
   );
