@@ -5,7 +5,7 @@ import { useAuthContext } from 'src/auth/hooks';
 
 export function useGetCompanyDetails() {
   const { user } = useAuthContext();
-  const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}`;
+  const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}`;
   const { data, error, isValidating, mutate } = useSWR(URL, fetcher);
   if (error) {
     console.error('Error fetching data:', error);

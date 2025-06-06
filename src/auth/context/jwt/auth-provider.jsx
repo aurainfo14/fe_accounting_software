@@ -96,14 +96,12 @@ export function AuthProvider({ children }) {
     initialize();
   }, [initialize]);
 
-
   useEffect(() => {
     initialize();
   }, [initialize]);
 
   // LOGIN
   const login = useCallback(async (userName, password) => {
-    console.log('hello');
     const data = {
       userName,
       password,
@@ -126,6 +124,7 @@ export function AuthProvider({ children }) {
             },
           },
         });
+        initialize();
       })
       .catch((err) => {
         enqueueSnackbar(`${err.message}`, { variant: 'error' });

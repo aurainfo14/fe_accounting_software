@@ -256,7 +256,7 @@ export default function PermissionView() {
     if (configs?.roles && selectedRole === null) {
       const rolesWithoutPermissions = configs.roles.filter(
         (role) =>
-          role !== 'Admin' &&
+          role !== 'ADMIN' &&
           (!configs.permissions?.[role] || !configs.permissions[role]?.sections?.length)
       );
 
@@ -419,7 +419,7 @@ export default function PermissionView() {
                 name="course"
                 label="Roles"
                 placeholder="Choose a Role"
-                options={configs?.roles?.filter((role) => role !== 'Admin') || []}
+                options={configs?.roles?.filter((role) => role !== 'ADMIN') || []}
                 isOptionEqualToValue={(option, value) => option === value}
                 onChange={handleRoleChange}
               />
@@ -517,7 +517,7 @@ export default function PermissionView() {
           {configs?.roles
             .filter(
               (role) =>
-                role !== 'Admin' &&
+                role !== 'ADMIN' &&
                 (!configs.permissions?.[role] || !configs.permissions[role]?.sections?.length)
             )
             .map((role, index) => (

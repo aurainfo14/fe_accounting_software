@@ -19,7 +19,7 @@ export default function RolesCreatePage({ setTab }) {
       return;
     }
 
-    const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}/config/${configs?._id}`;
+    const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/config/${configs?._id}`;
     const payload = { ...configs, roles: [...configs.roles, inputVal] };
 
     axios
@@ -37,7 +37,7 @@ export default function RolesCreatePage({ setTab }) {
 
   const handleDelete = (role) => {
     const updatedRoles = configs.roles.filter((r) => r !== role);
-    const apiEndpoint = `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}/config/${
+    const apiEndpoint = `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/config/${
       configs?._id
     }`;
     const payload = { ...configs, roles: updatedRoles };

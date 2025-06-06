@@ -181,7 +181,7 @@ export default function MyProfile() {
                   <RHFTextField label='Last Name' name='lastName' onClick={handleDisable} />
                   <RHFTextField label='Email' name='email' onClick={handleDisable} />
                   {
-                    user?.role === 'Admin' &&
+                    user?.role === 'ADMIN' &&
                     <RHFTextField label='Contact' name='contact' onClick={handleDisable} />
                   }
                 </Box>
@@ -199,7 +199,7 @@ export default function MyProfile() {
             </Card>
           </FormProvider>
         </Grid>
-        {user?.role === 'Admin' && <Grid item xs={12} md={4}>
+        {user?.role === 'ADMIN' && <Grid item xs={12} md={4}>
           <FormProvider methods={passwordMethods} onSubmit={handlePasswordSubmit(onSubmitPassword)}>
             <Typography variant='h6' sx={{ mb: 0.5 }}>
               Update Password

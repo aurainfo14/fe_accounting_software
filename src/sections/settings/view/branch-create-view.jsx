@@ -67,7 +67,7 @@ export default function BranchCreateView() {
   const onSubmitBranchDetails = async (data) => {
     setLoading(true);
     const payload = {
-      company: user?.company_id?._id,
+      company: user?.company?._id,
       name: data.name,
       email: data.email || null,
       contact: data.contact || null,
@@ -83,7 +83,7 @@ export default function BranchCreateView() {
       date: new Date(data.date),
     };
 
-    const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}/branch`;
+    const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/branch`;
 
     try {
       if (editingBranch) {
@@ -130,7 +130,7 @@ export default function BranchCreateView() {
     setLoading(true);
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}/branch`,
+        `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/branch`,
         { data: { ids } }
       );
       enqueueSnackbar(response.data.message);

@@ -21,7 +21,7 @@ export default function IncomeTypeCreateView({ setTab }) {
     }
 
     const updatedIncomeTypes = [...incomeType, inputVal.toUpperCase()];
-    const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}/config/${configs?._id}`;
+    const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/config/${configs?._id}`;
     const payload = { ...configs, incomeType: updatedIncomeTypes };
 
     axios
@@ -40,7 +40,7 @@ export default function IncomeTypeCreateView({ setTab }) {
 
   const handleDelete = (type) => {
     const updatedIncomeTypes = incomeType.filter((bt) => bt !== type);
-    const apiEndpoint = `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}/config/${
+    const apiEndpoint = `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/config/${
       configs?._id
     }`;
     const payload = { ...configs, incomeType: updatedIncomeTypes };

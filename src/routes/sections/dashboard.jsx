@@ -4,6 +4,19 @@ import { AuthGuard } from 'src/auth/guard';
 import DashboardLayout from 'src/layouts/dashboard';
 import { LoadingScreen } from 'src/components/loading-screen';
 import { SettingsPage } from '../../sections/settings/view/index.js';
+import CashInListView from '../../sections/accounting/cash-in/view/cash-in-list-view.jsx';
+import BankAccountListView from '../../sections/accounting/bank-account/view/bank-account-list-view.jsx';
+import PaymentInOutListView from '../../sections/accounting/payment-in-out/view/payment-in-out-list-view.jsx';
+import PaymentInOutCreateView from '../../sections/accounting/payment-in-out/view/payment-in-out-create-view.jsx';
+import PaymentInOutEditView from '../../sections/accounting/payment-in-out/view/payment-in-out-edit-view.jsx';
+import ExpenceListView from '../../sections/accounting/expence/view/expence-list-view.jsx';
+import ExpenseCreateView from '../../sections/accounting/expence/view/expence-create-view.jsx';
+import ExpenceEditView from '../../sections/accounting/expence/view/expence-edit-view.jsx';
+import ExpenceCreateView from '../../sections/accounting/expence/view/expence-create-view.jsx';
+import IncomeListView from '../../sections/accounting/income/view/income-list-view.jsx';
+import IncomeCreateView from '../../sections/accounting/income/view/income-create-view.jsx';
+import IncomeEditView from '../../sections/accounting/income/view/income-edit-view.jsx';
+import DayBookListView from '../../sections/accounting/day-book/view/day-book-list-view.jsx';
 
 // ----------------------------------------------------------------------
 
@@ -149,6 +162,24 @@ export const dashboardRoutes = [
           { path: ':id', element: <TourDetailsPage /> },
           { path: 'new', element: <TourCreatePage /> },
           { path: ':id/edit', element: <TourEditPage /> },
+        ],
+      },
+      {
+        path: 'accounting',
+        children: [
+          { element: <CashInListView />, index: true },
+          { path: 'cash-in', element: <CashInListView /> },
+          { path: 'bank-account', element: <BankAccountListView /> },
+          { path: 'payment-in-out/list', element: <PaymentInOutListView /> },
+          { path: 'payment-in-out/new', element: <PaymentInOutCreateView /> },
+          { path: 'payment-in-out/:id/edit', element: <PaymentInOutEditView /> },
+          { path: 'expense/list', element: <ExpenceListView /> },
+          { path: 'expense/new', element: <ExpenceCreateView/> },
+          { path: 'expense/:id/edit', element: <ExpenceEditView /> },
+          { path: 'income/list', element: <IncomeListView /> },
+          { path: 'income/new', element: <IncomeCreateView /> },
+          { path: 'income/:id/edit', element: <IncomeEditView /> },
+          { path: 'day-book/list', element: <DayBookListView /> },
         ],
       },
       { path: 'file-manager', element: <FileManagerPage /> },

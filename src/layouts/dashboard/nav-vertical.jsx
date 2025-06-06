@@ -81,7 +81,6 @@ export default function NavVertical({ openNav, onCloseNav }) {
     <Scrollbar
       sx={{
         height: 1,
-        backgroundColor: (theme) => (theme.palette.mode === 'light' ? '#0c0c1d' : '#212b36'),
         '& .simplebar-content': {
           height: 1,
           display: 'flex',
@@ -95,26 +94,6 @@ export default function NavVertical({ openNav, onCloseNav }) {
         <FormProvider {...methods}>
           <Box sx={{ mt: 2, mx: 4 }}>
             <RHFAutocomplete
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  color: '#fff',
-                  '& fieldset': {
-                    borderColor: '#fff',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: '#fff',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: '#fff',
-                  },
-                },
-                '& .MuiInputLabel-root': {
-                  color: '#fff !important',
-                },
-                '& .MuiInputLabel-root.Mui-focused': {
-                  color: '#fff !important',
-                },
-              }}
               name="branchId"
               label="Branch"
               placeholder="Choose a Branch"

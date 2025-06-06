@@ -37,6 +37,8 @@ const ICONS = {
   analytics: icon('ic_analytics'),
   dashboard: icon('ic_dashboard'),
   setting: <Iconify icon="solar:settings-bold-duotone" width={24} />,
+  accountimng: <Iconify icon="fluent:building-bank-toolbox-20-regular" width={24} />,
+
 };
 
 // ----------------------------------------------------------------------
@@ -102,6 +104,37 @@ export function useNavData() {
               { title: t('edit'), path: paths.dashboard.user.demo.edit },
               { title: t('account'), path: paths.dashboard.user.account },
             ],
+          },
+          {
+                title: t('Accounting'),
+                path: paths.dashboard.accounting.root,
+            icon: ICONS.accountimng,
+                children: [
+                  {
+                    title: t('cash in'),
+                    path: paths.dashboard.accounting.cashIn,
+                  },
+                  {
+                    title: t('bank account'),
+                    path: paths.dashboard.accounting.bankAccount,
+                  },
+                  {
+                    title: t('Expence'),
+                    path: paths.dashboard.accounting.expense.list,
+                  },
+                  {
+                    title: t('payment in out'),
+                    path: paths.dashboard.accounting['payment-in-out'].list,
+                  },
+                  {
+                    title: t('income'),
+                    path: paths.dashboard.accounting.income.list,
+                  },
+                  {
+                    title: t('day book'),
+                    path: paths.dashboard.accounting['day-book'].list,
+                  },
+                ],
           },
 
           // PRODUCT

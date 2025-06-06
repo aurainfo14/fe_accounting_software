@@ -108,7 +108,7 @@ export default function CompanyProfile() {
         formData.append('logo_url', data.logo_url);
       }
 
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}`, {
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/${user?.company?._id}`, {
         method: 'PUT',
         body: formData,
       });

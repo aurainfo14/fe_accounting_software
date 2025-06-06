@@ -184,5 +184,33 @@ export const paths = {
         edit: `${ROOTS.DASHBOARD}/tour/${MOCK_ID}/edit`,
       },
     },
+    accounting: {
+      root: `${ROOTS.DASHBOARD}/accounting`,
+      cashIn: `${ROOTS.DASHBOARD}/accounting/cash-in`,
+      bankAccount: `${ROOTS.DASHBOARD}/accounting/bank-account`,
+      expense: {
+        list: `${ROOTS.DASHBOARD}/accounting/expense/list`,
+        new: `${ROOTS.DASHBOARD}/accounting/expense/new`,
+        edit: (id) => `${ROOTS.DASHBOARD}/accounting/expense/${id}/edit`,
+      },
+      'payment-in-out': {
+        list: `${ROOTS.DASHBOARD}/accounting/payment-in-out/list`,
+        new: `${ROOTS.DASHBOARD}/accounting/payment-in-out/new`,
+        edit: (id) => `${ROOTS.DASHBOARD}/accounting/payment-in-out/${id}/edit`,
+      },
+      'day-book': {
+        list: `${ROOTS.DASHBOARD}/accounting/day-book/list`,
+      },
+      income: {
+        list: `${ROOTS.DASHBOARD}/accounting/income/list`,
+        new: `${ROOTS.DASHBOARD}/accounting/income/new`,
+        edit: (id) => `${ROOTS.DASHBOARD}/accounting/income/${id}/edit`,
+      },
+      otherInOut: {
+        list: `${ROOTS.DASHBOARD}/accounting/other-in-out/list`,
+        new: `${ROOTS.DASHBOARD}/accounting/other-in-out/new`,
+        edit: (id) => `${ROOTS.DASHBOARD}/accounting/other-in-out/${id}/edit`,
+      },
+    },
   },
 };

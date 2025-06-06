@@ -6,7 +6,7 @@ import { useAuthContext } from 'src/auth/hooks';
 export function useGetConfigs() {
   const { user } = useAuthContext();
 
-  const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company_id?._id}/config`;
+  const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/config`;
   const { data, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   if (error) {

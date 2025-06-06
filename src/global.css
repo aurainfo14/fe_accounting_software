@@ -18,3 +18,42 @@
 @import 'yet-another-react-lightbox/styles.css';
 @import 'yet-another-react-lightbox/plugins/captions.css';
 @import 'yet-another-react-lightbox/plugins/thumbnails.css';
+
+.req input {
+  border-left: 2.8px solid red !important;
+  border-radius: 8px;
+}
+
+.yarl__navigation_next, .yarl__navigation_prev {
+  display: none !important;
+}
+
+::-webkit-scrollbar {
+  height: 10px;
+  transition: opacity 0.3s ease;
+  width: 6px;
+}
+
+:hover::-webkit-scrollbar-thumb {
+  visibility: visible;
+  display: block;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #B4BCC3;
+  border-radius: 4px;
+}
+
+
+/* textFieldStyles.css */
+.custom-textfield .MuiInputBase-input {
+  height: 7px;
+}
+
+.custom-textfield .MuiInputLabel-root {
+  margin-top: -0.45rem;
+}
+
+.custom-textfield .MuiInputLabel-root.MuiInputLabel-shrink {
+  margin-top: 0;
+}
