@@ -286,69 +286,71 @@ export default function BankAccountCreateView() {
           {!bankAccount || bankAccount.length === 0 ? (
             <Typography>No bank accounts found.</Typography>
           ) : (
-            bankAccount.map((account) => (
-              <Card key={account._id} sx={{ mb: 2 }}>
-                <CardHeader
-                  sx={{ mb: 3 }}
-                  title={`${account.bankName}(${account?.branch?.name})`}
-                  action={
-                    <>
-                      <IconButton onClick={() => handleEditAccount(account)} color="primary">
-                        <Iconify icon="eva:edit-fill" />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => handleDeleteAccount(account._id)}
-                        color="error"
-                        disabled={loading}
+            bankAccount
+              .filter((account) => account?.user !== user?._id)
+              .map((account) => (
+                <Card key={account._id} sx={{ mb: 2 }}>
+                  <CardHeader
+                    sx={{ mb: 3 }}
+                    title={`${account.bankName}(${account?.branch?.name})`}
+                    action={
+                      <>
+                        <IconButton onClick={() => handleEditAccount(account)} color="primary">
+                          <Iconify icon="eva:edit-fill" />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => handleDeleteAccount(account._id)}
+                          color="error"
+                          disabled={loading}
+                        >
+                          <Iconify icon="eva:trash-2-outline" />
+                        </IconButton>
+                      </>
+                    }
+                  />
+                  <Divider />
+                  <Box sx={{ p: 2 }}>
+                    <Stack sx={{ display: 'flex' }} spacing={1}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          flexWrap: 'wrap',
+                        }}
                       >
-                        <Iconify icon="eva:trash-2-outline" />
-                      </IconButton>
-                    </>
-                  }
-                />
-                <Divider />
-                <Box sx={{ p: 2 }}>
-                  <Stack sx={{ display: 'flex' }} spacing={1}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        flexWrap: 'wrap',
-                      }}
-                    >
-                      <Box sx={{ flex: '1 1 auto', minWidth: 200 }}>
-                        <Typography variant="body2">
-                          <strong>Account Holder Type:</strong> {account.accountHolderName}
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Account Number:</strong> {account.accountNumber}
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Account Type:</strong> {account.accountType}
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>IFSC Code:</strong> {account.IFSC}
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Branch Name:</strong> {account.branchName}
-                        </Typography>
-                      </Box>
-                      {account.bankLogo && (
-                        <Box sx={{ mt: { xs: 2, sm: 0 } }}>
-                          <Avatar
-                            src={account.bankLogo}
-                            alt="Bank Logo"
-                            variant="rounded"
-                            sx={{ width: 100, height: 70 }}
-                          />
+                        <Box sx={{ flex: '1 1 auto', minWidth: 200 }}>
+                          <Typography variant="body2">
+                            <strong>Account Holder Type:</strong> {account.accountHolderName}
+                          </Typography>
+                          <Typography variant="body2">
+                            <strong>Account Number:</strong> {account.accountNumber}
+                          </Typography>
+                          <Typography variant="body2">
+                            <strong>Account Type:</strong> {account.accountType}
+                          </Typography>
+                          <Typography variant="body2">
+                            <strong>IFSC Code:</strong> {account.IFSC}
+                          </Typography>
+                          <Typography variant="body2">
+                            <strong>Branch Name:</strong> {account.branchName}
+                          </Typography>
                         </Box>
-                      )}
-                    </Box>
-                  </Stack>
-                </Box>
-              </Card>
-            ))
+                        {account.bankLogo && (
+                          <Box sx={{ mt: { xs: 2, sm: 0 } }}>
+                            <Avatar
+                              src={account.bankLogo}
+                              alt="Bank Logo"
+                              variant="rounded"
+                              sx={{ width: 100, height: 70 }}
+                            />
+                          </Box>
+                        )}
+                      </Box>
+                    </Stack>
+                  </Box>
+                </Card>
+              ))
           )}
         </Grid>
       </Grid>
