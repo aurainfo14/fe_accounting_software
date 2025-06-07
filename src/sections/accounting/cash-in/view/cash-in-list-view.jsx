@@ -267,8 +267,8 @@ export default function CashInListView() {
       };
 
       const apiUrl = currentTransfer
-        ? `${import.meta.env.VITE_BASE_URL}/${user.company}/transfer/${currentTransfer._id}`
-        : `${import.meta.env.VITE_BASE_URL}/${user.company}/transfer`;
+        ? `${import.meta.env.VITE_BASE_URL}/${user.company?._id}/transfer/${currentTransfer._id}`
+        : `${import.meta.env.VITE_BASE_URL}/${user.company?._id}/transfer`;
 
       let res;
 

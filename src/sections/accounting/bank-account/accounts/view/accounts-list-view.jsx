@@ -189,7 +189,7 @@ export default function AccountsListView({ accounts, setAccountDetails, accountD
     [handleFilters]
   );
 
-  if (dataFiltered) {
+  if (accounts === []) {
     return <LoadingScreen />;
   }
 

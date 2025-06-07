@@ -24,11 +24,13 @@ import { useGetParty } from '../../../api/party.js';
 import PartyNewEditForm from './parties/party-new-edit-form.jsx';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import { useGetBankAccount } from '../../../api/bank-account.js';
 
 // ----------------------------------------------------------------------
 
 export default function PaymentInOutNewEditForm({ currentPayment }) {
   const router = useRouter();
+  const { bankAccount } = useGetBankAccount();
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuthContext();
   const [paymentMode, setPaymentMode] = useState('');
@@ -135,18 +137,14 @@ export default function PaymentInOutNewEditForm({ currentPayment }) {
     } else if (data.paymentMode === 'Bank') {
       paymentDetail = {
         ...paymentDetail,
-        account: {
-          ...data.account,
-        },
+        account: data.account?._id,
         bankAmount: data.bankAmount,
       };
     } else if (data.paymentMode === 'Both') {
       paymentDetail = {
         ...paymentDetail,
         cashAmount: data.cashAmount,
-        account: {
-          ...data.account,
-        },
+        account: data.account?._id,
         bankAmount: data.bankAmount,
       };
     }
@@ -162,15 +160,7 @@ export default function PaymentInOutNewEditForm({ currentPayment }) {
     formData.append('status', data.paymentType);
 
     for (const [key, value] of Object.entries(paymentDetail)) {
-      if (key === 'account' && value) {
-        formData.append('paymentDetail[account][_id]', value._id);
-        formData.append('paymentDetail[account][bankName]', value.bankName);
-        formData.append('paymentDetail[account][accountNumber]', value.accountNumber);
-        formData.append('paymentDetail[account][branchName]', value.branchName);
-        formData.append('paymentDetail[account][accountHolderName]', value.accountHolderName);
-      } else {
-        formData.append(`paymentDetail[${key}]`, value);
-      }
+      formData.append(`paymentDetail[${key}]`, value);
     }
 
     if (file) {
@@ -480,22 +470,16 @@ export default function PaymentInOutNewEditForm({ currentPayment }) {
                         label="Account"
                         req="red"
                         fullWidth
-                        options={Array.from(
-                          new Map(
-                            branch
-                              .flatMap((item) => item.company.bankAccounts)
-                              .map((item) => [item.bankName + item._id, item])
-                          ).values()
-                        )}
+                        options={bankAccount.map((item) => item)}
                         getOptionLabel={(option) =>
                           `${option.bankName} (${option.accountHolderName})` || ''
                         }
                         renderOption={(props, option) => (
-                          <li {...props} key={option._id || option.bankName}>
+                          <li {...props} key={option.id || option.bankName}>
                             {`${option.bankName} (${option.accountHolderName})`}
                           </li>
                         )}
-                        isOptionEqualToValue={(option, value) => option._id === value._id}
+                        isOptionEqualToValue={(option, value) => option.id === value.id}
                       />
                       <Controller
                         name="bankAmount"

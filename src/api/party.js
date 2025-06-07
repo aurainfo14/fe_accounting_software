@@ -21,7 +21,7 @@ export function useGetParty() {
 
   const queryString = [branchQuery].filter(Boolean).join('&');
 
-  const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/party/${queryString ? `?${queryString}` : ''}`;
+  const URL = `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/party${queryString ? `?${queryString}` : ''}`;
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher);
 
   const memoizedValue = useMemo(

@@ -16,6 +16,7 @@ import { fDate } from '../../../utils/format-time.js';
 // import { statusColorMap } from '../../../assets/data/index.js';
 import { Box } from '@mui/system';
 import React from 'react';
+import { statusColorMap } from '../../../assets/data/index.js';
 
 // ----------------------------------------------------------------------
 

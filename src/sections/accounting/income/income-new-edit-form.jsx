@@ -22,11 +22,13 @@ import { UploadBox } from '../../../components/upload/index.js';
 import Stack from '@mui/material/Stack';
 import Iconify from '../../../components/iconify/index.js';
 import ReactCrop from 'react-image-crop';
+import { useGetBankAccount } from '../../../api/bank-account.js';
 
 // ----------------------------------------------------------------------
 
 export default function IncomeNewEditForm({ currentIncome }) {
   const router = useRouter();
+  const { bankAccount, mutate } = useGetBankAccount();
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
@@ -146,7 +148,7 @@ export default function IncomeNewEditForm({ currentIncome }) {
   }, [watch('valuation'), configs.goldRate, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data,"00");
+    console.log(data, '00');
     let paymentDetail = {
       paymentMode: data.paymentMode,
     };
@@ -159,18 +161,17 @@ export default function IncomeNewEditForm({ currentIncome }) {
     } else if (data.paymentMode === 'Bank') {
       paymentDetail = {
         ...paymentDetail,
-        ...data.account,
+        account: data.account?._id,
         bankAmount: data.bankAmount,
       };
     } else if (data.paymentMode === 'Both') {
       paymentDetail = {
         ...paymentDetail,
         cashAmount: data.cashAmount,
-        ...data.account,
+        account: data.account?._id,
         bankAmount: data.bankAmount,
       };
     }
-
 
     const formData = new FormData();
 
@@ -180,19 +181,11 @@ export default function IncomeNewEditForm({ currentIncome }) {
     formData.append('category', data?.category);
     formData.append('date', data?.date);
 
-
-
     for (const [key, value] of Object.entries(paymentDetail)) {
-      if (key === 'account' && value) {
-        formData.append('paymentDetail[account][_id]', value._id);
-        formData.append('paymentDetail[account][bankName]', value.bankName);
-        formData.append('paymentDetail[account][accountNumber]', value.accountNumber);
-        formData.append('paymentDetail[account][branchName]', value.branchName);
-        formData.append('paymentDetail[account][accountHolderName]', value.accountHolderName);
-      } else {
-        formData.append(`paymentDetail[${key}]`, value);
-      }
+
+      formData.append(`paymentDetail[${key}]`, value);
     }
+
     if (file) {
       formData.append('invoice', file);
     }
@@ -401,7 +394,7 @@ export default function IncomeNewEditForm({ currentIncome }) {
                 inputProps={{ style: { textTransform: 'uppercase' } }}
               />
               <RhfDatePicker name="date" control={control} label="Date" req={'red'} />
-              <RHFTextField name="description" label="Description"  multiline />
+              <RHFTextField name="description" label="Description" multiline />
             </Box>
             <UploadBox
               onDrop={handleDrop}
@@ -516,13 +509,15 @@ export default function IncomeNewEditForm({ currentIncome }) {
                       <RHFAutocomplete
                         name="account"
                         label="Account"
-                        req={'red'}
+                        req="red"
                         fullWidth
-                        options={branch.flatMap((item) => item.company.bankAccounts)}
-                        getOptionLabel={(option) => option.bankName || ''}
+                        options={bankAccount.map((item) => item)}
+                        getOptionLabel={(option) =>
+                          `${option.bankName} (${option.accountHolderName})` || ''
+                        }
                         renderOption={(props, option) => (
                           <li {...props} key={option.id || option.bankName}>
-                            {option.bankName}
+                            {`${option.bankName} (${option.accountHolderName})`}
                           </li>
                         )}
                         isOptionEqualToValue={(option, value) => option.id === value.id}

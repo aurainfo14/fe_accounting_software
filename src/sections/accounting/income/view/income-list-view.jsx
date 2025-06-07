@@ -54,13 +54,14 @@ const STATUS_OPTIONS = [
 
 const TABLE_HEAD = [
   { id: '#', label: '#' },
-  { id: 'incomeType', label: 'Expense Type' },
+  { id: 'incomeType', label: 'Income Type' },
   { id: 'category', label: 'Category' },
   { id: 'date', label: 'Date' },
   { id: 'cashAmount', label: 'Cash amt' },
   { id: 'bankAmount', label: 'Bank amt' },
   { id: 'bank', label: 'Bank' },
   { id: 'description', label: 'Description' },
+  { id: 'invoice', label: 'Invoice' },
   { id: '', width: 88 },
 ];
 
@@ -68,6 +69,7 @@ const defaultFilters = {
   name: '',
   startDate: null,
   endDate: null,
+  transactions:null
 };
 
 // ----------------------------------------------------------------------
@@ -84,6 +86,7 @@ export default function IncomeListView() {
   const [tableData, setTableData] = useState(income);
   const [filters, setFilters] = useState(defaultFilters);
   const [srData, setSrData] = useState([]);
+  const [options, setOptions] = useState([]);
 
   const dataFiltered = applyFilter({
     inputData: srData,
@@ -107,6 +110,11 @@ export default function IncomeListView() {
     }));
     setSrData(updatedData);
   }, [income]);
+  useEffect(() => {
+    {
+      dataFiltered.length > 0 && fetchStates();
+    }
+  }, [dataFiltered]);
 
   const handleFilters = useCallback(
     (name, value) => {
@@ -169,17 +177,33 @@ export default function IncomeListView() {
     [router]
   );
 
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('isActive', newValue);
-    },
-    [handleFilters]
-  );
-
   if (incomeLoading) {
     return <LoadingScreen />;
   }
+  function fetchStates() {
+    const accountMap = new Map();
 
+    accountMap.set('cash', { transactionsType: 'Cash' });
+
+    dataFiltered?.forEach((data) => {
+      const account = data?.paymentDetail?.account;
+      if (account && account._id && !accountMap.has(account._id)) {
+        accountMap.set(account._id, account);
+      }
+    });
+
+    const newOptions = Array.from(accountMap.values());
+
+    setOptions((prevOptions) => {
+      const isSame =
+        prevOptions.length === newOptions.length &&
+        prevOptions.every((item) => newOptions.some((opt) => opt._id === item._id));
+
+      return isSame ? prevOptions : newOptions;
+    });
+
+    setOptions(newOptions);
+  }
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -205,7 +229,7 @@ export default function IncomeListView() {
           }}
         />
         <Card>
-          <IncomeToolbar filters={filters} onFilters={handleFilters} />
+          <IncomeToolbar filters={filters} onFilters={handleFilters} options={options}/>
           {canReset && (
             <IncomeTableFiltersResult
               filters={filters}
@@ -318,7 +342,7 @@ export default function IncomeListView() {
 
 // ----------------------------------------------------------------------
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { name, startDate, endDate } = filters;
+  const { name, startDate, endDate,transactions } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -336,6 +360,10 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   if (!dateError && startDate && endDate) {
     inputData = inputData.filter((item) => isBetween(new Date(item.date), startDate, endDate));
+  }
+
+  if (transactions) {
+    inputData = inputData.filter((item) => item?.paymentDetail?.account?._id === transactions?._id);
   }
   return inputData;
 }

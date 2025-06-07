@@ -14,6 +14,8 @@ import { useAuthContext } from '../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../api/config.js';
 // import { getResponsibilityValue } from '../../../permission/permission.js';
 import { fDate } from '../../../utils/format-time.js';
+import Lightbox, { useLightBox } from '../../../components/lightbox/index.js';
+import React from 'react';
 
 // ----------------------------------------------------------------------
 
@@ -28,6 +30,7 @@ export default function IncomeTableRow({
   const popover = usePopover();
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
+  const lightbox = useLightBox(row.invoice);
 
   return (
     <>
@@ -36,10 +39,20 @@ export default function IncomeTableRow({
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.incomeType}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.category}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(row.date)}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetails.cashAmount || 0}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetails.bankAmount || 0}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetails.bankName || '-'}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetail?.cashAmount || 0}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetail?.bankAmount || 0}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetail?.bankName || '-'}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.description || '-'}</TableCell>
+        {row.invoice ? (
+          <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton onClick={() => lightbox.onOpen(row.invoice)} sx={{ mr: 2 }}>
+              <Iconify icon="tabler:file-invoice" width="24" height="24" />
+            </IconButton>
+            <Lightbox image={row.invoice} open={lightbox.open} close={lightbox.onClose} />
+          </TableCell>
+        ) : (
+          <TableCell sx={{ whiteSpace: 'nowrap', textAlign: 'center' }}>-</TableCell>
+        )}
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           {/*{getResponsibilityValue('delete_scheme', configs, user) ||*/}

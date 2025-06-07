@@ -23,11 +23,13 @@ import Iconify from '../../../components/iconify/index.js';
 import { UploadBox } from '../../../components/upload/index.js';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import { useGetBankAccount } from '../../../api/bank-account.js';
 
 // ----------------------------------------------------------------------
 
 export default function ExpenceNewEditForm({ currentExpense }) {
   const router = useRouter();
+  const { bankAccount, mutate } = useGetBankAccount();
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
@@ -165,18 +167,14 @@ export default function ExpenceNewEditForm({ currentExpense }) {
     } else if (data.paymentMode === 'Bank') {
       paymentDetail = {
         ...paymentDetail,
-        account: {
-          ...data.account,
-        },
+        account: data.account?._id,
         bankAmount: data.bankAmount,
       };
     } else if (data.paymentMode === 'Both') {
       paymentDetail = {
         ...paymentDetail,
         cashAmount: data.cashAmount,
-        account: {
-          ...data.account,
-        },
+        account: data.account?._id,
         bankAmount: data.bankAmount,
       };
     }
@@ -188,17 +186,10 @@ export default function ExpenceNewEditForm({ currentExpense }) {
     formData.append('category', data?.category);
     formData.append('date', data?.date);
 
-    for (const [key, value] of Object.entries(paymentDetail)) {
-      if (key === 'account' && value) {
-        formData.append('paymentDetail[account][_id]', value._id);
-        formData.append('paymentDetail[account][bankName]', value.bankName);
-        formData.append('paymentDetail[account][accountNumber]', value.accountNumber);
-        formData.append('paymentDetail[account][branchName]', value.branchName);
-        formData.append('paymentDetail[account][accountHolderName]', value.accountHolderName);
-      } else {
-        formData.append(`paymentDetail[${key}]`, value);
+      for (const [key, value] of Object.entries(paymentDetail)) {
+
+          formData.append(`paymentDetail[${key}]`, value);
       }
-    }
 
     if (file) {
       formData.append('invoice', file);
@@ -350,7 +341,7 @@ export default function ExpenceNewEditForm({ currentExpense }) {
     setFile(null);
     setImageSrc(null);
   };
-
+console.log(watch('account'))
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
@@ -523,13 +514,7 @@ export default function ExpenceNewEditForm({ currentExpense }) {
                         label="Account"
                         req="red"
                         fullWidth
-                        options={Array.from(
-                          new Map(
-                            branch
-                              .flatMap((item) => item.company.bankAccounts)
-                              .map((item) => [item.bankName + item.id, item])
-                          ).values()
-                        )}
+                        options={bankAccount.map((item) => item)}
                         getOptionLabel={(option) =>
                           `${option.bankName} (${option.accountHolderName})` || ''
                         }

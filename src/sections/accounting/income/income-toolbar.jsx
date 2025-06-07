@@ -13,10 +13,11 @@ import { useAuthContext } from '../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../api/config.js';
 import moment from 'moment/moment.js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { Autocomplete } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-export default function IncomeToolbar({ filters, onFilters, schemes, dateError }) {
+export default function IncomeToolbar({ filters, onFilters, options, dateError }) {
   const popover = usePopover();
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
@@ -63,6 +64,13 @@ export default function IncomeToolbar({ filters, onFilters, schemes, dateError }
     [onFilters]
   );
 
+  const handleFilterTransactions = useCallback(
+    (event, newValue) => {
+      onFilters('transactions', newValue);
+    },
+    [onFilters]
+  );
+
   const customStyle = {
     maxWidth: { md: 350 },
     label: {
@@ -101,6 +109,25 @@ export default function IncomeToolbar({ filters, onFilters, schemes, dateError }
                 </InputAdornment>
               ),
             }}
+          />
+          <Autocomplete
+            fullWidth
+            options={options || []}
+            getOptionLabel={(option) =>
+              option.bankName && option.accountHolderName
+                ? `${option.bankName} (${option.accountHolderName})`
+                : option.transactionsType || 'Unnamed Account'
+            }
+            value={filters.transactions || null}
+            onChange={handleFilterTransactions}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Cash & Bank Transactions"
+                className={'custom-textfield'}
+              />
+            )}
+            isOptionEqualToValue={(option, value) => option._id === value?._id}
           />
           <DatePicker
             label="Start date"

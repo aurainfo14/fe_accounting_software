@@ -16,6 +16,7 @@ import axios from 'axios';
 import { useAuthContext } from '../../../../auth/hooks/index.js';
 import { useSnackbar } from '../../../../components/snackbar/index.js';
 import { useGetTransfer } from '../../../../api/transfer.js';
+import { useGetBankAccount } from '../../../../api/bank-account.js';
 
 export default function TransferDialog({
   open,
@@ -27,6 +28,7 @@ export default function TransferDialog({
 }) {
   const { branch } = useGetBranch();
   const { user } = useAuthContext();
+  const { bankAccount } = useGetBankAccount();
   const { enqueueSnackbar } = useSnackbar();
   const { transfer, mutate } = useGetTransfer();
   const storedBranch = sessionStorage.getItem('selectedBranch');
@@ -155,8 +157,8 @@ export default function TransferDialog({
 
     try {
       const apiUrl = currentTransfer
-        ? `${import.meta.env.VITE_BASE_URL}/${user.company}/transfer/${currentTransferId}`
-        : `${import.meta.env.VITE_BASE_URL}/${user.company}/transfer`;
+        ? `${import.meta.env.VITE_BASE_URL}/${user.company?._id}/transfer/${currentTransferId}`
+        : `${import.meta.env.VITE_BASE_URL}/${user.company?._id}/transfer`;
 
       let res;
 
@@ -207,17 +209,13 @@ export default function TransferDialog({
                 label="From"
                 req="red"
                 fullWidth
-                options={Array.from(
-                  new Map(
-                    branch
-                      .flatMap((item) => item.company.bankAccounts)
-                      .map((item) => [item.bankName + item.id, item])
-                  ).values()
-                )}
-                getOptionLabel={(option) => option.bankName || ''}
+                options={bankAccount.map((item) => item)}
+                getOptionLabel={(option) =>
+                  `${option.bankName} (${option.accountHolderName})` || ''
+                }
                 renderOption={(props, option) => (
                   <li {...props} key={option.id || option.bankName}>
-                    {option.bankName}
+                    {`${option.bankName} (${option.accountHolderName})`}
                   </li>
                 )}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -239,21 +237,16 @@ export default function TransferDialog({
                 label="To"
                 req="red"
                 fullWidth
-                options={Array.from(
-                  new Map(
-                    branch
-                      ?.flatMap((item) => item.company.bankAccounts || [])
-                      .filter((account) => account._id !== watch('from')?._id)
-                      .map((account) => [account._id, account])
-                  ).values()
-                )}
-                getOptionLabel={(option) => option?.bankName || ''}
+                options={bankAccount.filter((account) => account._id !== (watch('from')?._id))}
+                getOptionLabel={(option) =>
+                  `${option.bankName} (${option.accountHolderName})` || ''
+                }
                 renderOption={(props, option) => (
-                  <li {...props} key={option._id}>
-                    {option.bankName}
+                  <li {...props} key={option.id || option.bankName}>
+                    {`${option.bankName} (${option.accountHolderName})`}
                   </li>
                 )}
-                isOptionEqualToValue={(option, value) => option._id === value?._id}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
               />
             )}
             {watchTransferType === 'Bank To Cash' && (
