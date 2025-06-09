@@ -250,6 +250,14 @@ export default function PartiesListView({
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePaginationCustom
+        sx={{ '.css-n3104v-MuiToolbar-root-MuiTablePagination-toolbar': { p: 0 , overflow:'hidden'} }}
+        count={dataFiltered.length}
+        page={table.page}
+        rowsPerPage={table.rowsPerPage}
+        onPageChange={table.onChangePage}
+        onRowsPerPageChange={table.onChangeRowsPerPage}
+      />
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}

@@ -32,6 +32,7 @@ import { useGetConfigs } from '../../../../../api/config.js';
 import { LoadingScreen } from '../../../../../components/loading-screen/index.js';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
+import { TablePaginationCustom } from '../../../../../components/table/index.js';
 
 // ----------------------------------------------------------------------
 
@@ -173,6 +174,14 @@ export default function ExpenceTypeListView({
           </TableBody>
         </Table>
       </TableContainer>
+      <TablePaginationCustom
+        sx={{ '.css-n3104v-MuiToolbar-root-MuiTablePagination-toolbar': { p: 0 , overflow:'hidden'} }}
+        count={dataFiltered.length}
+        page={table.page}
+        rowsPerPage={table.rowsPerPage}
+        onPageChange={table.onChangePage}
+        onRowsPerPageChange={table.onChangeRowsPerPage}
+      />
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}
