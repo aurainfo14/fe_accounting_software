@@ -17,6 +17,7 @@ import IncomeListView from '../../sections/accounting/income/view/income-list-vi
 import IncomeCreateView from '../../sections/accounting/income/view/income-create-view.jsx';
 import IncomeEditView from '../../sections/accounting/income/view/income-edit-view.jsx';
 import DayBookListView from '../../sections/accounting/day-book/view/day-book-list-view.jsx';
+import MyProfile from '../../sections/settings/view/my-profile-create-view.jsx';
 
 // ----------------------------------------------------------------------
 
@@ -97,8 +98,8 @@ export const dashboardRoutes = [
       {
         path: 'user',
         children: [
-          { element: <UserProfilePage />, index: true },
-          { path: 'profile', element: <UserProfilePage /> },
+          { element: <MyProfile />, index: true },
+          { path: 'profile', element: <MyProfile /> },
           { path: 'cards', element: <UserCardsPage /> },
           { path: 'list', element: <UserListPage /> },
           { path: 'new', element: <UserCreatePage /> },

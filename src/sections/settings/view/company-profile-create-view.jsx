@@ -144,9 +144,24 @@ export default function CompanyProfile() {
                 sm: 'repeat(2, 1fr)',
               }}
             >
-              <RHFTextField name="company_name" label="Company Name" />
+              <RHFTextField
+                name="company_name"
+                label="Company Name"
+                onChange={(e) => {
+                  setValue('company_name', e.target.value.toUpperCase(), { shouldValidate: true });
+                }}
+              />
               <RHFTextField name="email" label="Email Address" />
-              <RHFTextField name="contact" label="Contact" />
+              <RHFTextField
+                name="contact"
+                label="Contact"
+                inputProps={{ maxLength: 10 }}
+                onChange={(e) => {
+                  const onlyNums = e.target.value.replace(/\D/g, '');
+                  const trimmed = onlyNums.slice(0, 10);
+                  setValue('contact', trimmed, { shouldValidate: true });
+                }}
+              />
               <RHFTextField name="address_1" label="Address" />
               <RHFAutocomplete
                 name="country"

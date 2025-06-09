@@ -1,5 +1,4 @@
 import { m } from 'framer-motion';
-
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
@@ -8,14 +7,9 @@ import { alpha } from '@mui/material/styles';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hooks';
-
-import { useMockedUser } from 'src/hooks/use-mocked-user';
-
 import { useAuthContext } from 'src/auth/hooks';
-
 import { varHover } from 'src/components/animate';
 import { useSnackbar } from 'src/components/snackbar';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
@@ -24,16 +18,8 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 const OPTIONS = [
   {
-    label: 'Home',
-    linkTo: '/',
-  },
-  {
     label: 'Profile',
     linkTo: paths.dashboard.user.profile,
-  },
-  {
-    label: 'Settings',
-    linkTo: paths.dashboard.user.account,
   },
 ];
 
@@ -41,13 +27,9 @@ const OPTIONS = [
 
 export default function AccountPopover() {
   const router = useRouter();
-
-  const { user } = useMockedUser();
-
+  const { user } = useAuthContext();
   const { logout } = useAuthContext();
-
   const { enqueueSnackbar } = useSnackbar();
-
   const popover = usePopover();
 
   const handleLogout = async () => {
@@ -85,31 +67,27 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={user?.photoURL}
-          alt={user?.displayName}
+          src={user?.userImage}
+          alt={user?.firstName}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {user?.displayName?.charAt(0).toUpperCase()}
+          {user?.userImage}
         </Avatar>
       </IconButton>
-
       <CustomPopover open={popover.open} onClose={popover.onClose} sx={{ width: 200, p: 0 }}>
         <Box sx={{ p: 2, pb: 1.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {user?.displayName}
+            {user?.firstName + ' ' + user?.lastName}
           </Typography>
-
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
             {user?.email}
           </Typography>
         </Box>
-
         <Divider sx={{ borderStyle: 'dashed' }} />
-
         <Stack sx={{ p: 1 }}>
           {OPTIONS.map((option) => (
             <MenuItem key={option.label} onClick={() => handleClickItem(option.linkTo)}>
@@ -117,9 +95,7 @@ export default function AccountPopover() {
             </MenuItem>
           ))}
         </Stack>
-
         <Divider sx={{ borderStyle: 'dashed' }} />
-
         <MenuItem
           onClick={handleLogout}
           sx={{ m: 1, fontWeight: 'fontWeightBold', color: 'error.main' }}
