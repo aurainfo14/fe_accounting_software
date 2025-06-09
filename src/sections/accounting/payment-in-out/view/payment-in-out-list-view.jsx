@@ -28,7 +28,7 @@ import {
 } from 'src/components/table/index.js';
 import PaymentInOutTableToolbar from '../payment-in-out-table-toolbar.jsx';
 import PaymentInOutTableRow from '../payment-in-out-table-row.jsx';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Stack } from '@mui/material';
 import { LoadingScreen } from '../../../../components/loading-screen/index.js';
 import Typography from '@mui/material/Typography';
 import { useGetBankTransactions } from '../../../../api/bank-transactions.js';
@@ -230,7 +230,7 @@ export default function PaymentInOutListView() {
           heading={
             <Typography variant="h4" gutterBottom>
               Payment In/Out :{' '}
-              <strong style={{ marginLeft: 200 }}>
+              <strong style={{ marginLeft: { xs: 0, sm: 200 } }}>
                 Receivable : -
                 <span
                   style={{
@@ -249,7 +249,7 @@ export default function PaymentInOutListView() {
                     : Math.abs(receivableAmt).toFixed(2)}
                 </span>
               </strong>
-              <strong style={{ marginLeft: 20 }}>
+              <strong style={{ marginLeft: { xs: 0, sm: 20 } }}>
                 Payable : -
                 <span style={{ color: 'red', marginLeft: 10 }}>
                   {Object.entries(filters).some(([key, val]) => {
@@ -271,14 +271,14 @@ export default function PaymentInOutListView() {
             { name: 'List' },
           ]}
           action={
-            <>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Button
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
                 onClick={() => setOpen(true)}
               >
                 Add Party
-              </Button>{' '}
+              </Button>
               <Button
                 component={RouterLink}
                 href={paths.dashboard.accounting['payment-in-out'].new}
@@ -287,16 +287,16 @@ export default function PaymentInOutListView() {
               >
                 Add Payment
               </Button>
-            </>
+            </Stack>
           }
           sx={{
             mb: { xs: 3, md: 1 },
           }}
         />
         <Card sx={{ p: 2 }}>
-          <Grid container>
-            <Grid md={3}>
-              <Card sx={{ height: '100%', p: 2, mr: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={3}>
+              <Card sx={{ height: '100%', p: 2, mr: { xs: 0, md: 2 } }}>
                 <PartiesListView
                   setPartyDetails={setPartyDetails}
                   partyDetails={partyDetails}
@@ -306,7 +306,7 @@ export default function PaymentInOutListView() {
                 />
               </Card>
             </Grid>
-            <Grid md={9}>
+            <Grid item xs={12} md={9}>
               <PartyNewEditForm open={open} setOpen={setOpen} mutate={mutateParty} />
               <Card>
                 <PaymentInOutTableToolbar
@@ -330,7 +330,7 @@ export default function PaymentInOutListView() {
                 )}
                 <TableContainer
                   sx={{
-                    maxHeight: 500,
+                    maxHeight: { xs: 'auto', md: 500 },
                     overflow: 'auto',
                     position: 'relative',
                   }}

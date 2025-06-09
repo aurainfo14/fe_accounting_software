@@ -22,6 +22,12 @@ import {
   OutlinedInput,
   Button,
   Menu,
+  useMediaQuery,
+  useTheme,
+  Grid,
+  Card,
+  CardContent,
+  Collapse,
 } from '@mui/material';
 import { PDFViewer } from '@react-pdf/renderer';
 import BankAccountPdf from './view/bank-account-pdf.jsx';
@@ -29,22 +35,27 @@ import { useBoolean } from '../../../hooks/use-boolean.js';
 import Autocomplete from '@mui/material/Autocomplete';
 
 export default function BankAccountTableToolbar({
-  filters,
-  onFilters,
-  schemes,
-  dateError,
-  accountDetails,
-  options,
-  onTransferTypeSelect,
-  bankData,
-}) {
+                                                  filters,
+                                                  onFilters,
+                                                  schemes,
+                                                  dateError,
+                                                  accountDetails,
+                                                  options,
+                                                  onTransferTypeSelect,
+                                                  bankData,
+                                                }) {
   const popover = usePopover();
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showBankDetails, setShowBankDetails] = useState(false);
   const view = useBoolean();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
+
   const filterData = {
     startDate: filters.startDate,
     endDate: filters.endDate,
@@ -52,6 +63,7 @@ export default function BankAccountTableToolbar({
     status: filters.status,
     bank: filters.account.bankName,
   };
+
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -110,175 +122,402 @@ export default function BankAccountTableToolbar({
     [onFilters]
   );
 
-  const customStyle = {
-    maxWidth: { md: 150 },
+  // Responsive styles
+  const getInputStyles = () => ({
+    input: { height: isMobile ? 10 : 7 },
     label: {
       mt: -0.8,
-      fontSize: '14px',
+      fontSize: isMobile ? '16px' : '14px',
     },
     '& .MuiInputLabel-shrink': {
       mt: 0,
     },
-    input: { height: 7 },
-  };
+  });
+
+  const getDatePickerStyles = () => ({
+    maxWidth: isMobile ? '100%' : { md: 150 },
+    label: {
+      mt: -0.8,
+      fontSize: isMobile ? '16px' : '14px',
+    },
+    '& .MuiInputLabel-shrink': {
+      mt: 0,
+    },
+    input: { height: isMobile ? 10 : 7 },
+  });
+
+  const bankAccountInfo = [
+    { label: 'Bank Name', value: filters.account.bankName },
+    { label: 'Account Number', value: filters.account.accountNumber },
+    { label: 'Account Holder', value: filters.account.accountHolderName },
+    { label: 'Branch', value: filters.account.branchName },
+    { label: 'IFSC Code', value: filters.account.IFSC },
+  ];
 
   return (
     <>
-      <Box
-        sx={{
-          p: 2.5,
-          pb: 0,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-',
-        }}
-      >
-        <Box>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 600 }} component="p">
-            Bank Name : {filters.account.bankName}
-          </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 600 }} component="p">
-            Account Number : {filters.account.accountNumber}
-          </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 600 }} component="p">
-            Account Holder : {filters.account.accountHolderName}
-          </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 600 }} component="p">
-            Branch : {filters.account.branchName}
-          </Typography>
-          <Typography sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 600 }} component="p">
-            IFSC Code : {filters.account.IFSC}
-          </Typography>
-        </Box>
-        <Box>
-          <Button variant="contained" onClick={handleMenuOpen} sx={{ height: 40 }}>
-            {'Transfer Type'}
-          </Button>
-          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-            <MenuItem onClick={() => handleTransferTypeSelect('Bank To Bank')}>
-              <Iconify icon="mdi:bank-transfer" width={20} sx={{ mr: 1 }} />
-              Bank To Bank Transfer
-            </MenuItem>
-            <MenuItem onClick={() => handleTransferTypeSelect('Bank To Cash')}>
-              <Iconify icon="mdi:bank-transfer-out" width={20} sx={{ mr: 1 }} />
-              Bank To Cash Transfer
-            </MenuItem>
-            <MenuItem onClick={() => handleTransferTypeSelect('Cash To Bank')}>
-              <Iconify icon="mdi:bank-transfer-in" width={20} sx={{ mr: 1 }} />
-              Cash To Bank Transfer
-            </MenuItem>
-            <MenuItem onClick={() => handleTransferTypeSelect('Adjust Bank Balance')}>
-              <Iconify icon="mdi:bank-check" width={20} sx={{ mr: 1 }} />
-              Adjust Bank Balance
-            </MenuItem>
-          </Menu>
-        </Box>
+      {/* Bank Account Information Section */}
+      <Box sx={{ p: isMobile ? 1.5 : 2.5, pb: 0 }}>
+        {isMobile ? (
+          /* Mobile: Collapsible Card Layout */
+          <Card variant="outlined" sx={{ mb: 2 }}>
+            <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  mb: showBankDetails ? 1 : 0,
+                }}
+              >
+                <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                  Bank Account Details
+                </Typography>
+                <IconButton
+                  size="small"
+                  onClick={() => setShowBankDetails(!showBankDetails)}
+                  sx={{ ml: 1 }}
+                >
+                  <Iconify
+                    icon={showBankDetails ? 'eva:chevron-up-fill' : 'eva:chevron-down-fill'}
+                  />
+                </IconButton>
+              </Box>
+
+              <Collapse in={showBankDetails}>
+                <Grid container spacing={1}>
+                  {bankAccountInfo.map((info) => (
+                    <Grid item xs={12} sm={6} key={info.label}>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: 'text.secondary', fontWeight: 600, display: 'block' }}
+                      >
+                        {info.label}
+                      </Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                        {info.value}
+                      </Typography>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Collapse>
+
+              {!showBankDetails && (
+                <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
+                  {filters.account.bankName} - {filters.account.accountNumber}
+                </Typography>
+              )}
+            </CardContent>
+          </Card>
+        ) : (
+          /* Desktop: Traditional Layout */
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              flexDirection: isTablet ? 'column' : 'row',
+              gap: isTablet ? 2 : 0,
+            }}
+          >
+            <Box sx={{ display: 'flex', flexDirection: isTablet ? 'row' : 'column', gap: isTablet ? 4 : 0 }}>
+              <Box>
+                {bankAccountInfo.slice(0, 3).map((info) => (
+                  <Typography
+                    key={info.label}
+                    sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 600, mb: 0.5 }}
+                    component="p"
+                  >
+                    {info.label}: {info.value}
+                  </Typography>
+                ))}
+              </Box>
+              {!isTablet && (
+                <Box>
+                  {bankAccountInfo.slice(3).map((info) => (
+                    <Typography
+                      key={info.label}
+                      sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 600, mb: 0.5 }}
+                      component="p"
+                    >
+                      {info.label}: {info.value}
+                    </Typography>
+                  ))}
+                </Box>
+              )}
+              {isTablet && (
+                <Box>
+                  {bankAccountInfo.slice(3).map((info) => (
+                    <Typography
+                      key={info.label}
+                      sx={{ color: 'text.secondary', fontSize: 12, fontWeight: 600, mb: 0.5 }}
+                      component="p"
+                    >
+                      {info.label}: {info.value}
+                    </Typography>
+                  ))}
+                </Box>
+              )}
+            </Box>
+
+            <Box sx={{ mt: isTablet ? 0 : 0 }}>
+              <Button
+                variant="contained"
+                onClick={handleMenuOpen}
+                sx={{
+                  height: 40,
+                  minWidth: isTablet ? 200 : 'auto',
+                  width: isTablet ? '100%' : 'auto'
+                }}
+                endIcon={<Iconify icon="eva:chevron-down-fill" />}
+              >
+                Transfer Type
+              </Button>
+            </Box>
+          </Box>
+        )}
+
+        {/* Transfer Type Button for Mobile */}
+        {isMobile && (
+          <Box sx={{ mb: 2 }}>
+            <Button
+              variant="contained"
+              onClick={handleMenuOpen}
+              fullWidth
+              sx={{ height: 48 }}
+              endIcon={<Iconify icon="eva:chevron-down-fill" />}
+            >
+              Transfer Type
+            </Button>
+          </Box>
+        )}
       </Box>
 
-      <Stack
-        spacing={2}
-        alignItems={{ xs: 'flex-end', md: 'center' }}
-        direction={{ xs: 'column', md: 'row' }}
-        sx={{ p: 2.5 }}
+      {/* Filters Section */}
+      <Box sx={{ p: isMobile ? 1.5 : 2.5 }}>
+        {isMobile ? (
+          /* Mobile Layout */
+          <Stack spacing={2}>
+            <TextField
+              sx={getInputStyles()}
+              fullWidth
+              value={filters.name}
+              onChange={handleFilterName}
+              placeholder="Search..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <Grid container spacing={1.5}>
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  fullWidth
+                  options={['Payment In', 'Payment Out']}
+                  value={filters.category || null}
+                  onChange={(event, newValue) => {
+                    onFilters('category', newValue || '');
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Category" sx={getInputStyles()} />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  fullWidth
+                  options={options}
+                  value={filters.status || null}
+                  onChange={(event, newValue) => {
+                    onFilters('status', newValue || '');
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Type" sx={getInputStyles()} />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={6} sm={6}>
+                <DatePicker
+                  label="Start date"
+                  value={filters.startDate ? moment(filters.startDate).toDate() : null}
+                  open={startDateOpen}
+                  onClose={() => setStartDateOpen(false)}
+                  onChange={handleFilterStartDate}
+                  format="dd/MM/yyyy"
+                  slotProps={{
+                    textField: {
+                      onClick: () => setStartDateOpen(true),
+                      fullWidth: true,
+                    },
+                  }}
+                  sx={getDatePickerStyles()}
+                />
+              </Grid>
+
+              <Grid item xs={6} sm={6}>
+                <DatePicker
+                  label="End date"
+                  value={filters.endDate}
+                  open={endDateOpen}
+                  onClose={() => setEndDateOpen(false)}
+                  onChange={handleFilterEndDate}
+                  format="dd/MM/yyyy"
+                  slotProps={{
+                    textField: {
+                      onClick: () => setEndDateOpen(true),
+                      fullWidth: true,
+                      error: dateError,
+                      helperText: dateError && 'End date must be later than start date',
+                    },
+                  }}
+                  sx={getDatePickerStyles()}
+                />
+              </Grid>
+            </Grid>
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <IconButton
+                onClick={popover.onOpen}
+                sx={{
+                  bgcolor: 'action.hover',
+                  '&:hover': { bgcolor: 'action.selected' },
+                }}
+              >
+                <Iconify icon="eva:more-vertical-fill" />
+              </IconButton>
+            </Box>
+          </Stack>
+        ) : (
+          /* Desktop/Tablet Layout */
+          <Stack
+            spacing={2}
+            alignItems={{ xs: 'flex-end', md: 'center' }}
+            direction={{ xs: 'column', md: 'row' }}
+          >
+            <Stack
+              direction={isTablet ? 'column' : 'row'}
+              alignItems="center"
+              spacing={2}
+              flexGrow={1}
+              sx={{ width: 1 }}
+            >
+              <TextField
+                sx={getInputStyles()}
+                fullWidth
+                value={filters.name}
+                onChange={handleFilterName}
+                placeholder="Search..."
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                    </InputAdornment>
+                  ),
+                }}
+              />
+
+              <Autocomplete
+                fullWidth
+                options={['Payment In', 'Payment Out']}
+                value={filters.category || null}
+                onChange={(event, newValue) => {
+                  onFilters('category', newValue || '');
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" sx={getInputStyles()} />
+                )}
+              />
+
+              <Autocomplete
+                fullWidth
+                options={options}
+                value={filters.status || null}
+                onChange={(event, newValue) => {
+                  onFilters('status', newValue || '');
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Type" sx={getInputStyles()} />
+                )}
+              />
+
+              <DatePicker
+                label="Start date"
+                value={filters.startDate ? moment(filters.startDate).toDate() : null}
+                open={startDateOpen}
+                onClose={() => setStartDateOpen(false)}
+                onChange={handleFilterStartDate}
+                format="dd/MM/yyyy"
+                slotProps={{
+                  textField: {
+                    onClick: () => setStartDateOpen(true),
+                    fullWidth: true,
+                  },
+                }}
+                sx={getDatePickerStyles()}
+              />
+
+              <DatePicker
+                label="End date"
+                value={filters.endDate}
+                open={endDateOpen}
+                onClose={() => setEndDateOpen(false)}
+                onChange={handleFilterEndDate}
+                format="dd/MM/yyyy"
+                slotProps={{
+                  textField: {
+                    onClick: () => setEndDateOpen(true),
+                    fullWidth: true,
+                    error: dateError,
+                    helperText: dateError && 'End date must be later than start date',
+                  },
+                }}
+                sx={getDatePickerStyles()}
+              />
+            </Stack>
+
+            <IconButton onClick={popover.onOpen}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </Stack>
+        )}
+      </Box>
+
+      {/* Transfer Type Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        PaperProps={{
+          sx: {
+            minWidth: isMobile ? 280 : 250,
+          }
+        }}
       >
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
-          <TextField
-            sx={{ input: { height: 7 } }}
-            fullWidth
-            value={filters.name}
-            onChange={handleFilterName}
-            placeholder="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Autocomplete
-            fullWidth
-            options={['Payment In', 'Payment Out']}
-            value={filters.category || null}
-            onChange={(event, newValue) => {
-              onFilters('category', newValue || '');
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Category"
-                sx={{
-                  input: { height: 7 },
-                  label: { mt: -0.8 },
-                  '& .MuiInputLabel-shrink': { mt: 0 },
-                }}
-              />
-            )}
-          />
+        <MenuItem onClick={() => handleTransferTypeSelect('Bank To Bank')}>
+          <Iconify icon="mdi:bank-transfer" width={20} sx={{ mr: 1 }} />
+          Bank To Bank Transfer
+        </MenuItem>
+        <MenuItem onClick={() => handleTransferTypeSelect('Bank To Cash')}>
+          <Iconify icon="mdi:bank-transfer-out" width={20} sx={{ mr: 1 }} />
+          Bank To Cash Transfer
+        </MenuItem>
+        <MenuItem onClick={() => handleTransferTypeSelect('Cash To Bank')}>
+          <Iconify icon="mdi:bank-transfer-in" width={20} sx={{ mr: 1 }} />
+          Cash To Bank Transfer
+        </MenuItem>
+        <MenuItem onClick={() => handleTransferTypeSelect('Adjust Bank Balance')}>
+          <Iconify icon="mdi:bank-check" width={20} sx={{ mr: 1 }} />
+          Adjust Bank Balance
+        </MenuItem>
+      </Menu>
 
-          <Autocomplete
-            fullWidth
-            options={options}
-            value={filters.status || null}
-            onChange={(event, newValue) => {
-              onFilters('status', newValue || '');
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Type"
-                sx={{
-                  input: { height: 7 },
-                  label: { mt: -0.8 },
-                  '& .MuiInputLabel-shrink': { mt: 0 },
-                }}
-              />
-            )}
-          />
-
-          <DatePicker
-            label="Start date"
-            value={filters.startDate ? moment(filters.startDate).toDate() : null}
-            open={startDateOpen}
-            onClose={() => setStartDateOpen(false)}
-            onChange={handleFilterStartDate}
-            format="dd/MM/yyyy"
-            slotProps={{
-              textField: {
-                onClick: () => setStartDateOpen(true),
-                fullWidth: true,
-              },
-            }}
-            sx={{ ...customStyle }}
-          />
-
-          <DatePicker
-            label="End date"
-            value={filters.endDate}
-            open={endDateOpen}
-            onClose={() => setEndDateOpen(false)}
-            onChange={handleFilterEndDate}
-            format="dd/MM/yyyy"
-            slotProps={{
-              textField: {
-                onClick: () => setEndDateOpen(true),
-                fullWidth: true,
-                error: dateError,
-                helperText: dateError && 'End date must be later than start date',
-              },
-            }}
-            sx={{ ...customStyle }}
-          />
-        </Stack>
-
-        {/* Transfer Type Button (Outside Popover) */}
-
-        {/* Popover with only Print option */}
-        <IconButton onClick={popover.onOpen}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
-      </Stack>
-
+      {/* Print Popover */}
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
@@ -296,15 +535,68 @@ export default function BankAccountTableToolbar({
         </MenuItem>
       </CustomPopover>
 
-      <Dialog fullScreen open={view.value} onClose={view.onFalse}>
-        <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
-          <DialogActions sx={{ p: 1.5 }}>
-            <Button color="inherit" variant="contained" onClick={view.onFalse}>
+      {/* Responsive PDF Dialog */}
+      <Dialog
+        fullScreen={isMobile}
+        maxWidth={isMobile ? false : 'xl'}
+        fullWidth={!isMobile}
+        open={view.value}
+        onClose={view.onFalse}
+        PaperProps={{
+          sx: {
+            height: isMobile ? '100vh' : '90vh',
+            maxHeight: isMobile ? '100vh' : '90vh',
+          },
+        }}
+      >
+        <Box
+          sx={{
+            height: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: isMobile ? '100vh' : 'auto',
+          }}
+        >
+          <DialogActions
+            sx={{
+              p: 1.5,
+              justifyContent: 'space-between',
+              flexDirection: isMobile ? 'row-reverse' : 'row',
+            }}
+          >
+            <Button
+              color="inherit"
+              variant="contained"
+              onClick={view.onFalse}
+              size={isMobile ? 'large' : 'medium'}
+            >
               Close
             </Button>
+            {!isMobile && (
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button variant="outlined" size="small" onClick={() => window.print()}>
+                  Print
+                </Button>
+              </Box>
+            )}
           </DialogActions>
-          <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
-            <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
+
+          <Box
+            sx={{
+              flexGrow: 1,
+              height: 1,
+              overflow: 'hidden',
+              minHeight: 0,
+            }}
+          >
+            <PDFViewer
+              width="100%"
+              height="100%"
+              style={{
+                border: 'none',
+                minHeight: isMobile ? 'calc(100vh - 80px)' : '500px',
+              }}
+            >
               <BankAccountPdf bankData={bankData} configs={configs} filterData={filterData} />
             </PDFViewer>
           </Box>
@@ -322,4 +614,5 @@ BankAccountTableToolbar.propTypes = {
   accountDetails: PropTypes.object,
   options: PropTypes.array,
   onTransferTypeSelect: PropTypes.func,
+  bankData: PropTypes.array,
 };
