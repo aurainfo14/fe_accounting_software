@@ -40,16 +40,16 @@ const TABS = [
     label: 'Expense type',
     icon: <Iconify icon="arcticons:expense-manager-2" width={24} />,
   },
-  {
-    value: 'Roles',
-    label: 'Roles',
-    icon: <Iconify icon="oui:app-users-roles" width={24} />,
-  },
-  {
-    value: 'Permission',
-    label: 'Permission',
-    icon: <Iconify icon="mdi:eye-lock" width={24} />,
-  },
+  // {
+  //   value: 'Roles',
+  //   label: 'Roles',
+  //   icon: <Iconify icon="oui:app-users-roles" width={24} />,
+  // },
+  // {
+  //   value: 'Permission',
+  //   label: 'Permission',
+  //   icon: <Iconify icon="mdi:eye-lock" width={24} />,
+  // },
 ];
 
 export default function SettingsPage() {
