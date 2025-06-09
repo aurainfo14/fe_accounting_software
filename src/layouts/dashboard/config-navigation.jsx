@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { paths } from 'src/routes/paths';
 import { useTranslate } from 'src/locales';
-import Label from 'src/components/label';
 import SvgColor from 'src/components/svg-color';
 import Iconify from '../../components/iconify/index.js';
 

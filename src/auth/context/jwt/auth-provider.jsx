@@ -92,9 +92,6 @@ export function AuthProvider({ children }) {
       });
     }
   }, []);
-  useEffect(() => {
-    initialize();
-  }, [initialize]);
 
   useEffect(() => {
     initialize();
@@ -153,11 +150,11 @@ export function AuthProvider({ children }) {
       loading: status === 'loading',
       authenticated: status === 'authenticated',
       unauthenticated: status === 'unauthenticated',
-      //
+      initialize,
       login,
       logout,
     }),
-    [login, logout, state.user, status]
+    [login, logout, state.user, status, initialize]
   );
 
   return <AuthContext.Provider value={memoizedValue}>{children}</AuthContext.Provider>;

@@ -5,15 +5,15 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useRouter } from '../../../routes/hooks';
-import { useAuthContext } from 'src/auth/hooks';
 import { useSnackbar } from 'src/components/snackbar';
 import { RHFTextField, RHFUploadAvatar } from 'src/components/hook-form';
 import FormProvider from 'src/components/hook-form/form-provider';
 import { axiosAuthInstance, axiosInstance } from 'src/utils/axios-instance';
 import { setSession } from '../../../auth/context/jwt/utils.js';
+import { useAuthContext } from '../../../auth/hooks/index.js';
 
 export default function MyProfile() {
-  const { user } = useAuthContext();
+  const { user,initialize } = useAuthContext();
   const { enqueueSnackbar } = useSnackbar();
   const [avatarFile, setAvatarFile] = useState(null);
   const router = useRouter();
@@ -116,6 +116,7 @@ export default function MyProfile() {
       if (response.status === 200) {
         enqueueSnackbar('Profile updated successfully!', { variant: 'success' });
         setAvatarFile(null);
+        initialize()
       } else {
         enqueueSnackbar('Something went wrong. Please try again.', { variant: 'error' });
       }
