@@ -216,9 +216,10 @@ export default function BankAccountListView() {
           setCurrentTransferId={setCurrentTransferId}
         />
         <Card sx={{ p: 2 }}>
-          <Grid container>
-            <Grid md={3}>
-              <Card sx={{ height: '100%', p: 2, mr: 2 }}>
+          <Grid container spacing={2}>
+            {/* Accounts List - Full width on mobile, 1/4 on desktop */}
+            <Grid xs={12} md={3}>
+              <Card sx={{ height: '100%', p: 2 }}>
                 <AccountsListView
                   accounts={bankTransactions.bankBalances}
                   setAccountDetails={setAccountDetails}
@@ -226,7 +227,9 @@ export default function BankAccountListView() {
                 />
               </Card>
             </Grid>
-            <Grid md={9}>
+
+            {/* Main Table Area - Full width on mobile, 3/4 on desktop */}
+            <Grid xs={12} md={9}>
               <Card>
                 <BankAccountTableToolbar
                   filters={filters}
@@ -236,6 +239,7 @@ export default function BankAccountListView() {
                   onTransferTypeSelect={handleTransferTypeSelect}
                   bankData={dataFiltered}
                 />
+
                 {canReset && (
                   <BankAccountTableFiltersResult
                     filters={filters}
@@ -246,9 +250,10 @@ export default function BankAccountListView() {
                     sx={{ p: 2.5, pt: 0 }}
                   />
                 )}
+
                 <TableContainer
                   sx={{
-                    maxHeight: 500,
+                    maxHeight: { xs: 400, md: 500 }, // Shorter on mobile
                     overflow: 'auto',
                     position: 'relative',
                   }}
@@ -271,7 +276,10 @@ export default function BankAccountListView() {
                       </Tooltip>
                     }
                   />
-                  <Table size={table.dense ? 'small' : 'medium'} sx={{ minWidth: 960 }}>
+
+                  <Table
+                    size={table.dense ? 'small' : 'medium'}
+                  >
                     <TableHeadCustom
                       order={table.order}
                       orderBy={table.orderBy}
@@ -284,8 +292,10 @@ export default function BankAccountListView() {
                         top: 0,
                         zIndex: 1000,
                         backgroundColor: '#2f3944',
+
                       }}
                     />
+
                     <TableBody>
                       {dataFiltered
                         ?.slice(
@@ -302,14 +312,17 @@ export default function BankAccountListView() {
                             onDeleteRow={() => handleDeleteRow(row._id)}
                           />
                         ))}
+
                       <TableEmptyRows
                         height={denseHeight}
                         emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered?.length)}
                       />
+
                       <TableNoData notFound={notFound} />
                     </TableBody>
                   </Table>
                 </TableContainer>
+
                 <TablePaginationCustom
                   count={dataFiltered?.length}
                   page={table.page}
@@ -318,6 +331,15 @@ export default function BankAccountListView() {
                   onRowsPerPageChange={table.onChangeRowsPerPage}
                   dense={table.dense}
                   onChangeDense={table.onChangeDense}
+                  sx={{
+                    '& .MuiTablePagination-toolbar': {
+                      flexDirection: { xs: 'column', sm: 'row' }, // Stack pagination controls on mobile
+                      gap: { xs: 1, sm: 0 },
+                    },
+                    '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+                      fontSize: { xs: '0.75rem', md: '0.875rem' }, // Smaller text on mobile
+                    }
+                  }}
                 />
               </Card>
             </Grid>

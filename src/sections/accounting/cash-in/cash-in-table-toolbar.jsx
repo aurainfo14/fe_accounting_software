@@ -13,7 +13,7 @@ import { useAuthContext } from '../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../api/config.js';
 import moment from 'moment/moment.js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Dialog, DialogActions, FormControl } from '@mui/material';
+import { Box, Dialog, DialogActions, FormControl, useMediaQuery, useTheme, Grid } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -26,20 +26,23 @@ import Autocomplete from '@mui/material/Autocomplete';
 // ----------------------------------------------------------------------
 
 export default function CashInTableToolbar({
-  filters,
-  onFilters,
-  schemes,
-  dateError,
-  options,
-  cashData,
-  totalAmount,
-}) {
+                                             filters,
+                                             onFilters,
+                                             schemes,
+                                             dateError,
+                                             options,
+                                             cashData,
+                                             totalAmount,
+                                           }) {
   const popover = usePopover();
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
   const view = useBoolean();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
 
   const filterData = {
     startDate: filters.startDate,
@@ -88,134 +91,267 @@ export default function CashInTableToolbar({
     },
     [onFilters]
   );
+
   const handleFilterCategory = useCallback(
     (event) => {
       onFilters('category', event.target.value);
     },
     [onFilters]
   );
+
   const handleFilterStatus = useCallback(
     (event) => {
       onFilters('status', event.target.value);
     },
     [onFilters]
   );
-  const customStyle = {
-    maxWidth: { md: 350 },
+
+  // Responsive styles
+  const getInputStyles = () => ({
+    input: { height: isMobile ? 10 : 7 },
     label: {
       mt: -0.8,
-      fontSize: '14px',
+      fontSize: isMobile ? '16px' : '14px',
     },
     '& .MuiInputLabel-shrink': {
       mt: 0,
     },
-    input: { height: 7 },
-  };
+  });
+
+  const getDatePickerStyles = () => ({
+    maxWidth: isMobile ? '100%' : { md: 150 },
+    label: {
+      mt: -0.8,
+      fontSize: isMobile ? '16px' : '14px',
+    },
+    '& .MuiInputLabel-shrink': {
+      mt: 0,
+    },
+    input: { height: isMobile ? 10 : 7 },
+  });
+
   return (
     <>
-      <Stack
-        spacing={2}
-        alignItems={{ xs: 'flex-end', md: 'center' }}
-        direction={{
-          xs: 'column',
-          md: 'row',
-        }}
+      <Box
         sx={{
-          p: 2.5,
+          p: isMobile ? 1.5 : 2.5,
         }}
       >
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
-          <TextField
-            sx={{ input: { height: 7 } }}
-            fullWidth
-            value={filters.name}
-            onChange={handleFilterName}
-            placeholder="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Autocomplete
-            fullWidth
-            options={['Payment In', 'Payment Out']}
-            value={filters.category || null}
-            onChange={(event, newValue) => {
-              onFilters('category', newValue || '');
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Category"
+        {/* Mobile Layout */}
+        {isMobile ? (
+          <Stack spacing={2}>
+            {/* Search Bar - Full width on mobile */}
+            <TextField
+              sx={getInputStyles()}
+              fullWidth
+              value={filters.name}
+              onChange={handleFilterName}
+              placeholder="Search..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            {/* Filters Grid - 2 columns on mobile */}
+            <Grid container spacing={1.5}>
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  fullWidth
+                  options={['Payment In', 'Payment Out']}
+                  value={filters.category || null}
+                  onChange={(event, newValue) => {
+                    onFilters('category', newValue || '');
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Category"
+                      sx={getInputStyles()}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  fullWidth
+                  options={options}
+                  value={filters.status || null}
+                  onChange={(event, newValue) => {
+                    onFilters('status', newValue || '');
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Type"
+                      sx={getInputStyles()}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <DatePicker
+                  label="Start date"
+                  value={filters.startDate ? moment(filters.startDate).toDate() : null}
+                  open={startDateOpen}
+                  onClose={() => setStartDateOpen(false)}
+                  onChange={handleFilterStartDate}
+                  format="dd/MM/yyyy"
+                  slotProps={{
+                    textField: {
+                      onClick: () => setStartDateOpen(true),
+                      fullWidth: true,
+                    },
+                  }}
+                  sx={getDatePickerStyles()}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <DatePicker
+                  label="End date"
+                  value={filters.endDate}
+                  open={endDateOpen}
+                  onClose={() => setEndDateOpen(false)}
+                  onChange={handleFilterEndDate}
+                  format="dd/MM/yyyy"
+                  slotProps={{
+                    textField: {
+                      onClick: () => setEndDateOpen(true),
+                      fullWidth: true,
+                      error: dateError,
+                      helperText: dateError && 'End date must be later than start date',
+                    },
+                  }}
+                  sx={getDatePickerStyles()}
+                />
+              </Grid>
+            </Grid>
+
+            {/* Action Button */}
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <IconButton
+                onClick={popover.onOpen}
                 sx={{
-                  input: { height: 7 },
-                  label: { mt: -0.8 },
-                  '& .MuiInputLabel-shrink': { mt: 0 },
+                  bgcolor: 'action.hover',
+                  '&:hover': { bgcolor: 'action.selected' }
+                }}
+              >
+                <Iconify icon="eva:more-vertical-fill" />
+              </IconButton>
+            </Box>
+          </Stack>
+        ) : (
+          /* Desktop/Tablet Layout */
+          <Stack
+            spacing={2}
+            alignItems={{ xs: 'flex-end', md: 'center' }}
+            direction={{
+              xs: 'column',
+              md: 'row',
+            }}
+          >
+            <Stack
+              direction={isTablet ? 'column' : 'row'}
+              alignItems="center"
+              spacing={2}
+              flexGrow={1}
+              sx={{ width: 1 }}
+            >
+              <TextField
+                sx={getInputStyles()}
+                fullWidth
+                value={filters.name}
+                onChange={handleFilterName}
+                placeholder="Search..."
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                    </InputAdornment>
+                  ),
                 }}
               />
-            )}
-          />
 
-          <Autocomplete
-            fullWidth
-            options={options}
-            value={filters.status || null}
-            onChange={(event, newValue) => {
-              onFilters('status', newValue || '');
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Type"
-                sx={{
-                  input: { height: 7 },
-                  label: { mt: -0.8 },
-                  '& .MuiInputLabel-shrink': { mt: 0 },
+              <Autocomplete
+                fullWidth
+                options={['Payment In', 'Payment Out']}
+                value={filters.category || null}
+                onChange={(event, newValue) => {
+                  onFilters('category', newValue || '');
                 }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Category"
+                    sx={getInputStyles()}
+                  />
+                )}
               />
-            )}
-          />
 
-          <DatePicker
-            label="Start date"
-            value={filters.startDate ? moment(filters.startDate).toDate() : null}
-            open={startDateOpen}
-            onClose={() => setStartDateOpen(false)}
-            onChange={handleFilterStartDate}
-            format="dd/MM/yyyy"
-            slotProps={{
-              textField: {
-                onClick: () => setStartDateOpen(true),
-                fullWidth: true,
-              },
-            }}
-            sx={{ ...customStyle }}
-          />
-          <DatePicker
-            label="End date"
-            value={filters.endDate}
-            open={endDateOpen}
-            onClose={() => setEndDateOpen(false)}
-            onChange={handleFilterEndDate}
-            format="dd/MM/yyyy"
-            slotProps={{
-              textField: {
-                onClick: () => setEndDateOpen(true),
-                fullWidth: true,
-                error: dateError,
-                helperText: dateError && 'End date must be later than start date',
-              },
-            }}
-            sx={{ ...customStyle }}
-          />
-        </Stack>
-        <IconButton onClick={popover.onOpen}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
-      </Stack>
+              <Autocomplete
+                fullWidth
+                options={options}
+                value={filters.status || null}
+                onChange={(event, newValue) => {
+                  onFilters('status', newValue || '');
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Type"
+                    sx={getInputStyles()}
+                  />
+                )}
+              />
+
+              <DatePicker
+                label="Start date"
+                value={filters.startDate ? moment(filters.startDate).toDate() : null}
+                open={startDateOpen}
+                onClose={() => setStartDateOpen(false)}
+                onChange={handleFilterStartDate}
+                format="dd/MM/yyyy"
+                slotProps={{
+                  textField: {
+                    onClick: () => setStartDateOpen(true),
+                    fullWidth: true,
+                  },
+                }}
+                sx={getDatePickerStyles()}
+              />
+
+              <DatePicker
+                label="End date"
+                value={filters.endDate}
+                open={endDateOpen}
+                onClose={() => setEndDateOpen(false)}
+                onChange={handleFilterEndDate}
+                format="dd/MM/yyyy"
+                slotProps={{
+                  textField: {
+                    onClick: () => setEndDateOpen(true),
+                    fullWidth: true,
+                    error: dateError,
+                    helperText: dateError && 'End date must be later than start date',
+                  },
+                }}
+                sx={getDatePickerStyles()}
+              />
+            </Stack>
+
+            <IconButton onClick={popover.onOpen}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </Stack>
+        )}
+      </Box>
+
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
@@ -223,28 +359,28 @@ export default function CashInTableToolbar({
         sx={{ width: 'auto' }}
       >
         {/*{getResponsibilityValue('print_scheme_detail', configs, user) && (*/}
-          <>
-            <MenuItem
-              onClick={() => {
-                view.onTrue();
-                popover.onClose();
-              }}
-            >
-              <Iconify icon="solar:printer-minimalistic-bold" />
-              Print
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                popover.onClose();
-              }}
-            >
-              <Iconify icon="ant-design:file-pdf-filled" />
-              PDF
-            </MenuItem>
-            {/*<MenuItem>*/}
-            {/*  <RHFExportExcel data={schemes} fileName="SchemeData" sheetName="SchemeDetails" />*/}
-            {/*</MenuItem>*/}
-          </>
+        <>
+          <MenuItem
+            onClick={() => {
+              view.onTrue();
+              popover.onClose();
+            }}
+          >
+            <Iconify icon="solar:printer-minimalistic-bold" />
+            Print
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              popover.onClose();
+            }}
+          >
+            <Iconify icon="ant-design:file-pdf-filled" />
+            PDF
+          </MenuItem>
+          {/*<MenuItem>*/}
+          {/*  <RHFExportExcel data={schemes} fileName="SchemeData" sheetName="SchemeDetails" />*/}
+          {/*</MenuItem>*/}
+        </>
         {/*// )}*/}
         <MenuItem
           onClick={() => {
@@ -252,19 +388,75 @@ export default function CashInTableToolbar({
           }}
         >
           <Iconify icon="ic:round-whatsapp" />
-          whatsapp share
+          WhatsApp Share
         </MenuItem>
       </CustomPopover>
-      <Dialog fullScreen open={view.value} onClose={view.onFalse}>
-        <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
-          <DialogActions sx={{ p: 1.5 }}>
-            <Button color="inherit" variant="contained" onClick={view.onFalse}>
+
+      {/* Responsive PDF Dialog */}
+      <Dialog
+        fullScreen={isMobile}
+        maxWidth={isMobile ? false : 'xl'}
+        fullWidth={!isMobile}
+        open={view.value}
+        onClose={view.onFalse}
+        PaperProps={{
+          sx: {
+            height: isMobile ? '100vh' : '90vh',
+            maxHeight: isMobile ? '100vh' : '90vh',
+          }
+        }}
+      >
+        <Box sx={{
+          height: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: isMobile ? '100vh' : 'auto'
+        }}>
+          <DialogActions sx={{
+            p: 1.5,
+            justifyContent: 'space-between',
+            flexDirection: isMobile ? 'row-reverse' : 'row'
+          }}>
+            <Button
+              color="inherit"
+              variant="contained"
+              onClick={view.onFalse}
+              size={isMobile ? 'large' : 'medium'}
+            >
               Close
             </Button>
+            {!isMobile && (
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => window.print()}
+                >
+                  Print
+                </Button>
+              </Box>
+            )}
           </DialogActions>
-          <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
-            <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
-              <CashInPdf cashData={cashData} configs={configs} filterData={filterData} />
+
+          <Box sx={{
+            flexGrow: 1,
+            height: 1,
+            overflow: 'hidden',
+            minHeight: 0
+          }}>
+            <PDFViewer
+              width="100%"
+              height="100%"
+              style={{
+                border: 'none',
+                minHeight: isMobile ? 'calc(100vh - 80px)' : '500px'
+              }}
+            >
+              <CashInPdf
+                cashData={cashData}
+                configs={configs}
+                filterData={filterData}
+              />
             </PDFViewer>
           </Box>
         </Box>
@@ -277,4 +469,9 @@ CashInTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   roleOptions: PropTypes.array,
+  schemes: PropTypes.array,
+  dateError: PropTypes.bool,
+  options: PropTypes.array,
+  cashData: PropTypes.array,
+  totalAmount: PropTypes.number,
 };

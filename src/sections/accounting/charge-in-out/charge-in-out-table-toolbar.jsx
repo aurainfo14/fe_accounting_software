@@ -10,7 +10,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover/index.j
 // import RHFExportExcel from '../../../components/hook-form/rhf-export-excel.jsx';
 import moment from 'moment/moment.js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Dialog, FormControl, Typography } from '@mui/material';
+import { Box, Dialog, FormControl, Typography, useTheme, useMediaQuery } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -39,6 +39,9 @@ export default function ChargeInOutTableToolbar({
   const [endDateOpen, setEndDateOpen] = useState(false);
   const view = useBoolean();
   const { configs } = useGetConfigs();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
 
   const filterData = {
     startDate: filters?.startDate,
@@ -106,134 +109,173 @@ export default function ChargeInOutTableToolbar({
     [onFilters]
   );
 
-  const customStyle = {
-    maxWidth: { md: 150 },
+  // Responsive styles
+  const getInputStyles = () => ({
+    input: { height: isMobile ? 10 : 7 },
     label: {
       mt: -0.8,
-      fontSize: '14px',
+      fontSize: isMobile ? '16px' : '14px',
     },
     '& .MuiInputLabel-shrink': {
       mt: 0,
     },
-    input: { height: 7 },
-  };
+  });
+
+  const getDatePickerStyles = () => ({
+    maxWidth: isMobile ? '100%' : { md: 150 },
+    label: {
+      mt: -0.8,
+      fontSize: isMobile ? '16px' : '14px',
+    },
+    '& .MuiInputLabel-shrink': {
+      mt: 0,
+    },
+    input: { height: isMobile ? 10 : 7 },
+  });
 
   return (
     <>
-      <Box sx={{ p: 2.5 }}>
-        <Typography sx={{ color: 'text.secondary' }} variant="subtitle1" component="p">
+      <Box sx={{ p: isMobile ? 1.5 : 2.5 }}>
+        <Typography 
+          sx={{ 
+            color: 'text.secondary',
+            fontSize: isMobile ? '1rem' : '1.25rem',
+            fontWeight: 600
+          }} 
+          variant="subtitle1" 
+          component="p"
+        >
           Charge Name : {chargeDetails.chargeType}
         </Typography>
       </Box>
 
       <Stack
-        spacing={2}
-        alignItems={{ xs: 'flex-end', md: 'center' }}
-        direction={{
-          xs: 'column',
-          md: 'row',
-        }}
+        spacing={2.5}
+        alignItems={{ xs: 'stretch', md: 'center' }}
+        direction={{ xs: 'column', md: 'row' }}
         sx={{
-          p: 2.5,
+          p: isMobile ? 1.5 : 2.5,
+          flexWrap: 'wrap',
+          gap: 2,
         }}
       >
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
-          <TextField
-            sx={{ input: { height: 7 } }}
-            fullWidth
-            value={filters.name}
-            onChange={handleFilterName}
-            placeholder="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            }}
+        <TextField
+          sx={{
+            ...getInputStyles(),
+            minWidth: 180,
+            width: { xs: '100%', sm: 'auto' },
+          }}
+          fullWidth
+          value={filters.name}
+          onChange={handleFilterName}
+          placeholder="Search..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+              </InputAdornment>
+            ),
+          }}
+          InputLabelProps={{ style: { color: theme.palette.text.primary } }}
+        />
+        <FormControl
+          sx={{
+            flexShrink: 0,
+            minWidth: 220,
+            width: { xs: '100%', sm: 220 },
+          }}
+        >
+          <Autocomplete
+            value={filters.transactions || null}
+            onChange={handleFilterTransactions}
+            options={options || []}
+            getOptionLabel={(option) =>
+              option.bankName && option.accountHolderName
+                ? `${option.bankName} (${option.accountHolderName})`
+                : option.transactionsType || 'Unnamed Account'
+            }
+            isOptionEqualToValue={(option, value) => option._id === value?._id}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Cash & Bank Transactions"
+                sx={{ ...getInputStyles() }}
+                className={'custom-textfield'}
+                InputLabelProps={{ style: { color: theme.palette.text.primary } }}
+              />
+            )}
           />
-
-          <FormControl
-            sx={{
-              flexShrink: 0,
-              width: { xs: 1, sm: 220 },
-            }}
-          >
-            <Autocomplete
-              value={filters.transactions || null}
-              onChange={handleFilterTransactions}
-              options={options || []}
-              getOptionLabel={(option) =>
-                option.bankName && option.accountHolderName
-                  ? `${option.bankName} (${option.accountHolderName})`
-                  : option.transactionsType || 'Unnamed Account'
-              }
-              isOptionEqualToValue={(option, value) => option._id === value?._id}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Cash & Bank Transactions"
-                  className={'custom-textfield'}
-                />
-              )}
-            />
-          </FormControl>
-
-          <FormControl
-            sx={{
-              flexShrink: 0,
-              width: { xs: 1, sm: 150 },
-            }}
-          >
-            <Autocomplete
-              value={filters.category || null}
-              onChange={handleFilterCategory}
-              options={['Payment In', 'Payment Out']}
-              getOptionLabel={(option) => option || ''}
-              renderInput={(params) => (
-                <TextField {...params} label="Status" className={'custom-textfield'} />
-              )}
-            />
-          </FormControl>
-
-          <DatePicker
-            label="Start date"
-            value={filters.startDate ? moment(filters.startDate).toDate() : null}
-            open={startDateOpen}
-            onClose={() => setStartDateOpen(false)}
-            onChange={handleFilterStartDate}
-            format="dd/MM/yyyy"
-            slotProps={{
-              textField: {
-                onClick: () => setStartDateOpen(true),
-                fullWidth: true,
+        </FormControl>
+        <FormControl
+          sx={{
+            flexShrink: 0,
+            minWidth: 180,
+            width: { xs: '100%', sm: 180 },
+          }}
+        >
+          <Autocomplete
+            value={filters.category || null}
+            onChange={handleFilterCategory}
+            options={['Payment In', 'Payment Out']}
+            getOptionLabel={(option) => option || ''}
+            renderInput={(params) => (
+              <TextField 
+                {...params} 
+                label="Status" 
+                sx={{ ...getInputStyles() }}
+                className={'custom-textfield'} 
+                InputLabelProps={{ style: { color: theme.palette.text.primary } }}
+              />
+            )}
+          />
+        </FormControl>
+        <DatePicker
+          label="Start date"
+          value={filters.startDate ? moment(filters.startDate).toDate() : null}
+          open={startDateOpen}
+          onClose={() => setStartDateOpen(false)}
+          onChange={handleFilterStartDate}
+          format="dd/MM/yyyy"
+          slotProps={{
+            textField: {
+              onClick: () => setStartDateOpen(true),
+              fullWidth: true,
+              sx: {
+                ...getDatePickerStyles(),
+                minWidth: 140,
+                width: { xs: '100%', sm: 'auto' },
               },
-            }}
-            sx={{ ...customStyle }}
-          />
-          <DatePicker
-            label="End date"
-            value={filters.endDate}
-            open={endDateOpen}
-            onClose={() => setEndDateOpen(false)}
-            onChange={handleFilterEndDate}
-            format="dd/MM/yyyy"
-            slotProps={{
-              textField: {
-                onClick: () => setEndDateOpen(true),
-                fullWidth: true,
-                error: dateError,
-                helperText: dateError && 'End date must be later than start date',
+              InputLabelProps: { style: { color: theme.palette.text.primary } },
+            },
+          }}
+        />
+        <DatePicker
+          label="End date"
+          value={filters.endDate}
+          open={endDateOpen}
+          onClose={() => setEndDateOpen(false)}
+          onChange={handleFilterEndDate}
+          format="dd/MM/yyyy"
+          slotProps={{
+            textField: {
+              onClick: () => setEndDateOpen(true),
+              fullWidth: true,
+              error: dateError,
+              helperText: dateError && 'End date must be later than start date',
+              sx: {
+                ...getDatePickerStyles(),
+                minWidth: 140,
+                width: { xs: '100%', sm: 'auto' },
               },
-            }}
-            sx={{ ...customStyle }}
-          />
-        </Stack>
-
-        <IconButton onClick={popover.onOpen}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
+              InputLabelProps: { style: { color: theme.palette.text.primary } },
+            },
+          }}
+        />
       </Stack>
+
+      <IconButton onClick={popover.onOpen}>
+        <Iconify icon="eva:more-vertical-fill" />
+      </IconButton>
 
       <CustomPopover
         open={popover.open}

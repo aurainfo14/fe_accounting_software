@@ -233,13 +233,13 @@ export default function ChargeInOutListView() {
           heading={
             <Typography variant="h4" gutterBottom>
               Charge In/Out :{' '}
-              <strong style={{ marginLeft: 200 }}>
+              <strong style={{ marginLeft: { xs: 0, sm: 200 } }}>
                 Receivable : -
                 <span style={{ color: 'green', marginLeft: 10 }}>
                   {Number(receivable).toFixed(2)}
                 </span>
               </strong>
-              <strong style={{ marginLeft: 20 }}>
+              <strong style={{ marginLeft: { xs: 0, sm: 20 } }}>
                 Payable : -
                 <span style={{ color: 'red', marginLeft: 10 }}>
                   {Object.entries(filters).some(([key, val]) => {
@@ -271,9 +271,9 @@ export default function ChargeInOutListView() {
           }}
         />
         <Card sx={{ p: 2 }}>
-          <Grid container>
-            <Grid md={3}>
-              <Card sx={{ height: '100%', p: 2, mr: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={3}>
+              <Card sx={{ height: '100%', p: 2, mr: { xs: 0, md: 2 } }}>
                 <ChargeListView
                   setChargeDetails={setChargeDetails}
                   chargeDetails={chargeDetails}
@@ -281,7 +281,7 @@ export default function ChargeInOutListView() {
                 />
               </Card>
             </Grid>
-            <Grid md={9}>
+            <Grid item xs={12} md={9}>
               <Card>
                 <ChargeInOutTableToolbar
                   filters={filters}
@@ -302,7 +302,7 @@ export default function ChargeInOutListView() {
                 )}
                 <TableContainer
                   sx={{
-                    maxHeight: 500,
+                    maxHeight: { xs: 'auto', md: 500 },
                     overflow: 'auto',
                     position: 'relative',
                   }}

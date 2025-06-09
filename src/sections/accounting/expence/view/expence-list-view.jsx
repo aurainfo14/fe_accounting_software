@@ -238,7 +238,7 @@ export default function ExpenceListView() {
           heading={
             <Typography variant="h4" gutterBottom>
               Expence :{' '}
-              <strong style={{ marginLeft: 400 }}>
+              <strong style={{ marginLeft: { xs: 0, sm: 400 } }}>
                 Total Expence : -
                 <span style={{ color: 'red', marginLeft: 10 }}>
                   {(Number(cash) + Number(bank)).toFixed(2)}
@@ -262,9 +262,9 @@ export default function ExpenceListView() {
           }}
         />
         <Card sx={{ p: 2 }}>
-          <Grid container>
-            <Grid md={3}>
-              <Card sx={{ height: '100%', p: 2, mr: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={3}>
+              <Card sx={{ height: '100%', p: 2, mr: { xs: 0, md: 2 } }}>
                 <ExpenceTypeListView
                   setExpenceDetails={setExpenceDetails}
                   expenceDetails={expenceDetails}
@@ -272,7 +272,7 @@ export default function ExpenceListView() {
                 />
               </Card>
             </Grid>
-            <Grid md={9}>
+            <Grid item xs={12} md={9}>
               <Card>
                 <ExpenceTableToolbar
                   filters={filters}
@@ -294,7 +294,7 @@ export default function ExpenceListView() {
                 )}
                 <TableContainer
                   sx={{
-                    maxHeight: 500,
+                    maxHeight: { xs: 'auto', md: 500 },
                     overflow: 'auto',
                     position: 'relative',
                   }}

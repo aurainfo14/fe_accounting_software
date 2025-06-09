@@ -13,10 +13,9 @@ import { useAuthContext } from '../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../api/config.js';
 import moment from 'moment/moment.js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Dialog, FormControl } from '@mui/material';
+import { Box, Dialog, FormControl, Typography, Autocomplete, Grid, useMediaQuery, useTheme } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import Autocomplete from '@mui/material/Autocomplete'; // <-- Import Autocomplete
 import { useBoolean } from '../../../hooks/use-boolean.js';
 import { PDFViewer } from '@react-pdf/renderer';
 import DialogActions from '@mui/material/DialogActions';
@@ -37,8 +36,10 @@ export default function DayBookToolbar({
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
   const [startDateOpen, setStartDateOpen] = useState(false);
-
   const view = useBoolean();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
 
   const filterData = {
     startDate: filters.startDate,
@@ -94,116 +95,235 @@ export default function DayBookToolbar({
     [onFilters]
   );
 
-  const customStyle = {
-    maxWidth: { md: 150 },
+  // Responsive styles
+  const getInputStyles = () => ({
+    input: { height: isMobile ? 10 : 7 },
     label: {
       mt: -0.8,
-      fontSize: '14px',
+      fontSize: isMobile ? '16px' : '14px',
     },
     '& .MuiInputLabel-shrink': {
       mt: 0,
     },
-    input: { height: 7 },
-  };
+  });
+
+  const getDatePickerStyles = () => ({
+    maxWidth: isMobile ? '100%' : { md: 150 },
+    label: {
+      mt: -0.8,
+      fontSize: isMobile ? '16px' : '14px',
+    },
+    '& .MuiInputLabel-shrink': {
+      mt: 0,
+    },
+    input: { height: isMobile ? 10 : 7 },
+  });
 
   return (
     <>
-      <Stack
-        spacing={2}
-        alignItems={{ xs: 'flex-end', md: 'center' }}
-        direction={{
-          xs: 'column',
-          md: 'row',
-        }}
-        sx={{
-          p: 2.5,
-        }}
-      >
-        <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
-          <TextField
-            sx={{ input: { height: 7 } }}
-            fullWidth
-            value={filters.name}
-            onChange={handleFilterName}
-            placeholder="Search..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
-                </InputAdornment>
-              ),
-            }}
-          />
+      <Box sx={{ p: isMobile ? 1.5 : 2.5 }}>
+        {isMobile ? (
+          /* Mobile Layout */
+          <Stack spacing={2}>
+            <TextField
+              sx={getInputStyles()}
+              fullWidth
+              value={filters.name}
+              onChange={handleFilterName}
+              placeholder="Search..."
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                  </InputAdornment>
+                ),
+              }}
+            />
 
-          {/* Autocomplete for Cash & Bank Transactions */}
-          <Autocomplete
-            sx={{ width: { xs: 1, sm: 500 } }}
-            options={options || []}
-            getOptionLabel={(option) =>
-              option.bankName && option.accountHolderName
-                ? `${option.bankName} (${option.accountHolderName})`
-                : option.transactionsType || 'Unnamed Account'
-            }
-            value={filters.transactions || null}
-            onChange={handleFilterTransactions}
-            isOptionEqualToValue={(option, value) => option._id === value?._id}
-            renderInput={(params) => (
+            <Grid container spacing={1.5}>
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  fullWidth
+                  options={options || []}
+                  getOptionLabel={(option) =>
+                    option.bankName && option.accountHolderName
+                      ? `${option.bankName} (${option.accountHolderName})`
+                      : option.transactionsType || 'Unnamed Account'
+                  }
+                  value={filters.transactions || null}
+                  onChange={handleFilterTransactions}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Cash & Bank Transactions"
+                      sx={getInputStyles()}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  fullWidth
+                  options={['Payment In', 'Payment Out']}
+                  value={filters.category || ''}
+                  onChange={handleFilterCategory}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Category"
+                      sx={getInputStyles()}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Autocomplete
+                  fullWidth
+                  options={typeOptions || []}
+                  value={filters.status || ''}
+                  onChange={handleFilterStatus}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Type"
+                      sx={getInputStyles()}
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <DatePicker
+                  label="Start date"
+                  value={filters.startDate ? moment(filters.startDate).toDate() : null}
+                  open={startDateOpen}
+                  onClose={() => setStartDateOpen(false)}
+                  onChange={handleFilterStartDate}
+                  format="dd/MM/yyyy"
+                  slotProps={{
+                    textField: {
+                      onClick: () => setStartDateOpen(true),
+                      fullWidth: true,
+                    },
+                  }}
+                  sx={getDatePickerStyles()}
+                />
+              </Grid>
+            </Grid>
+
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <IconButton
+                onClick={popover.onOpen}
+                sx={{
+                  bgcolor: 'action.hover',
+                  '&:hover': { bgcolor: 'action.selected' },
+                }}
+              >
+                <Iconify icon="eva:more-vertical-fill" />
+              </IconButton>
+            </Box>
+          </Stack>
+        ) : (
+          /* Desktop/Tablet Layout */
+          <Stack
+            spacing={2}
+            alignItems={{ xs: 'flex-end', md: 'center' }}
+            direction={{ xs: 'column', md: 'row' }}
+          >
+            <Stack
+              direction={isTablet ? 'column' : 'row'}
+              alignItems="center"
+              spacing={2}
+              flexGrow={1}
+              sx={{ width: 1 }}
+            >
               <TextField
-                {...params}
-                label="Cash & Bank Transactions"
-                className={'custom-textfield'}
+                sx={getInputStyles()}
+                fullWidth
+                value={filters.name}
+                onChange={handleFilterName}
+                placeholder="Search..."
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Iconify icon="eva:search-fill" sx={{ color: 'text.disabled' }} />
+                    </InputAdornment>
+                  ),
+                }}
               />
-            )}
-          />
 
-          {/* Autocomplete for Category */}
-          <Autocomplete
-            sx={{ width: { xs: 1, sm: 500 } }}
-            options={['Payment In', 'Payment Out']}
-            value={filters.category || ''}
-            onChange={handleFilterCategory}
-            renderInput={(params) => (
-              <TextField {...params} label="Category" className={'custom-textfield'} />
-            )}
-          />
-
-          {/* Autocomplete for Type */}
-          <Autocomplete
-            sx={{ width: { xs: 1, sm: 500 } }}
-            options={typeOptions || []}
-            value={filters.status || ''}
-            onChange={handleFilterStatus}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Type"
-                variant="outlined"
-                className={'custom-textfield'}
+              <Autocomplete
+                fullWidth
+                options={options || []}
+                getOptionLabel={(option) =>
+                  option.bankName && option.accountHolderName
+                    ? `${option.bankName} (${option.accountHolderName})`
+                    : option.transactionsType || 'Unnamed Account'
+                }
+                value={filters.transactions || null}
+                onChange={handleFilterTransactions}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Cash & Bank Transactions"
+                    sx={getInputStyles()}
+                  />
+                )}
               />
-            )}
-          />
 
-          <DatePicker
-            label="Start date"
-            value={filters.startDate ? moment(filters.startDate).toDate() : null}
-            open={startDateOpen}
-            onClose={() => setStartDateOpen(false)}
-            onChange={handleFilterStartDate}
-            format="dd/MM/yyyy"
-            slotProps={{
-              textField: {
-                onClick: () => setStartDateOpen(true),
-                fullWidth: true,
-              },
-            }}
-            sx={{ ...customStyle }}
-          />
-        </Stack>
+              <Autocomplete
+                fullWidth
+                options={['Payment In', 'Payment Out']}
+                value={filters.category || ''}
+                onChange={handleFilterCategory}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Category"
+                    sx={getInputStyles()}
+                  />
+                )}
+              />
 
-        <IconButton onClick={popover.onOpen}>
-          <Iconify icon="eva:more-vertical-fill" />
-        </IconButton>
-      </Stack>
+              <Autocomplete
+                fullWidth
+                options={typeOptions || []}
+                value={filters.status || ''}
+                onChange={handleFilterStatus}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Type"
+                    sx={getInputStyles()}
+                  />
+                )}
+              />
+
+              <DatePicker
+                label="Start date"
+                value={filters.startDate ? moment(filters.startDate).toDate() : null}
+                open={startDateOpen}
+                onClose={() => setStartDateOpen(false)}
+                onChange={handleFilterStartDate}
+                format="dd/MM/yyyy"
+                slotProps={{
+                  textField: {
+                    onClick: () => setStartDateOpen(true),
+                    fullWidth: true,
+                  },
+                }}
+                sx={getDatePickerStyles()}
+              />
+            </Stack>
+
+            <IconButton onClick={popover.onOpen}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
+          </Stack>
+        )}
+      </Box>
 
       <CustomPopover
         open={popover.open}
@@ -211,30 +331,23 @@ export default function DayBookToolbar({
         arrow="right-top"
         sx={{ width: 'auto' }}
       >
-        {/*{getResponsibilityValue('print_scheme_detail', configs, user) && (*/}
-          <>
-            <MenuItem
-              onClick={() => {
-                view.onTrue();
-                popover.onClose();
-              }}
-            >
-              <Iconify icon="solar:printer-minimalistic-bold" />
-              Print
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                popover.onClose();
-              }}
-            >
-              <Iconify icon="ant-design:file-pdf-filled" />
-              PDF
-            </MenuItem>
-            {/*<MenuItem>*/}
-            {/*  <RHFExportExcel data={schemes} fileName="SchemeData" sheetName="SchemeDetails" />*/}
-            {/*</MenuItem>*/}
-          </>
-        {/*)}*/}
+        <MenuItem
+          onClick={() => {
+            view.onTrue();
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:printer-minimalistic-bold" />
+          Print
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="ant-design:file-pdf-filled" />
+          PDF
+        </MenuItem>
         <MenuItem
           onClick={() => {
             popover.onClose();
@@ -245,15 +358,67 @@ export default function DayBookToolbar({
         </MenuItem>
       </CustomPopover>
 
-      <Dialog fullScreen open={view.value} onClose={view.onFalse}>
-        <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
-          <DialogActions sx={{ p: 1.5 }}>
-            <Button color="inherit" variant="contained" onClick={view.onFalse}>
+      <Dialog
+        fullScreen={isMobile}
+        maxWidth={isMobile ? false : 'xl'}
+        fullWidth={!isMobile}
+        open={view.value}
+        onClose={view.onFalse}
+        PaperProps={{
+          sx: {
+            height: isMobile ? '100vh' : '90vh',
+            maxHeight: isMobile ? '100vh' : '90vh',
+          },
+        }}
+      >
+        <Box
+          sx={{
+            height: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: isMobile ? '100vh' : 'auto',
+          }}
+        >
+          <DialogActions
+            sx={{
+              p: 1.5,
+              justifyContent: 'space-between',
+              flexDirection: isMobile ? 'row-reverse' : 'row',
+            }}
+          >
+            <Button
+              color="inherit"
+              variant="contained"
+              onClick={view.onFalse}
+              size={isMobile ? 'large' : 'medium'}
+            >
               Close
             </Button>
+            {!isMobile && (
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button variant="outlined" size="small" onClick={() => window.print()}>
+                  Print
+                </Button>
+              </Box>
+            )}
           </DialogActions>
-          <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
-            <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
+
+          <Box
+            sx={{
+              flexGrow: 1,
+              height: 1,
+              overflow: 'hidden',
+              minHeight: 0,
+            }}
+          >
+            <PDFViewer
+              width="100%"
+              height="100%"
+              style={{
+                border: 'none',
+                minHeight: isMobile ? 'calc(100vh - 80px)' : '500px',
+              }}
+            >
               <DayBookPdf dayBookData={daybookData} configs={configs} filterData={filterData} />
             </PDFViewer>
           </Box>
@@ -267,4 +432,8 @@ DayBookToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   roleOptions: PropTypes.array,
+  schemes: PropTypes.array,
+  daybookData: PropTypes.array,
+  options: PropTypes.array,
+  typeOptions: PropTypes.array,
 };
