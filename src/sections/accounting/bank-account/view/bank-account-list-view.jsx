@@ -37,6 +37,7 @@ import TransferDialog from './TransferDialog.jsx';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import { useAuthContext } from '../../../../auth/hooks/index.js';
+import { useGetTransfer } from '../../../../api/transfer.js';
 
 // ----------------------------------------------------------------------
 
@@ -64,6 +65,7 @@ const defaultFilters = {
 
 export default function BankAccountListView() {
   const { bankTransactions, mutate, bankTransactionsLoading } = useGetBankTransactions();
+
   const [accountDetails, setAccountDetails] = useState({});
   const table = useTable();
   const settings = useSettingsContext();
@@ -143,7 +145,7 @@ export default function BankAccountListView() {
     // }
     try {
       const res = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/${user?.company}/transfer/${id}`
+        `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/transfer/${id}`
       );
       enqueueSnackbar(res.data.message);
       confirm.onFalse();

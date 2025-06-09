@@ -138,7 +138,7 @@ export default function CashInListView() {
     // }
     try {
       const res = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/${user?.company}/transfer/${id}`
+        `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/transfer/${id}`
       );
       enqueueSnackbar(res.data.message);
       confirm.onFalse();

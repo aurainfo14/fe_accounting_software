@@ -107,7 +107,6 @@ export default function TransferDialog({
       reset(defaultValues);
     }
   }, [open, transferType, reset, currentTransfer]);
-
   const onFormSubmit = async (values) => {
     let parsedBranch = storedBranch;
     if (storedBranch !== 'all') {
@@ -131,8 +130,8 @@ export default function TransferDialog({
     };
     if (watchTransferType === 'Bank To Bank') {
       payload.paymentDetail = {
-        from: values.from,
-        to: values.to,
+        from: values?.from?._id,
+        to: values?.to?._id,
         amount: Number(values.amount),
       };
     } else if (watchTransferType === 'Bank To Cash') {
