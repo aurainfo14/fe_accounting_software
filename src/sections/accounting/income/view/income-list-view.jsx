@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -204,11 +204,30 @@ export default function IncomeListView() {
 
     setOptions(newOptions);
   }
+
+  const cash = dataFiltered.reduce(
+    (prev, next) => prev + (Number(next?.paymentDetail?.cashAmount) || 0),
+    0
+  );
+  const bank = dataFiltered.reduce(
+    (prev, next) => prev + (Number(next?.paymentDetail?.bankAmount) || 0),
+    0
+  );
+
   return (
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="Income"
+          heading={
+            <Typography variant="h4" gutterBottom>
+              Income :{' '}
+              <strong style={{ marginLeft: { xs: 0, sm: 400 } }}>
+                <span style={{ color: 'green', marginLeft: 10 }}>
+                  {(Number(cash) + Number(bank)).toFixed(2)}
+                </span>
+              </strong>
+            </Typography>
+          }
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
             { name: `Income`, href: paths.dashboard.accounting.income },
@@ -229,7 +248,7 @@ export default function IncomeListView() {
           }}
         />
         <Card>
-          <IncomeToolbar filters={filters} onFilters={handleFilters} options={options}/>
+          <IncomeToolbar filters={filters} onFilters={handleFilters} options={options} incomeData={dataFiltered} />
           {canReset && (
             <IncomeTableFiltersResult
               filters={filters}

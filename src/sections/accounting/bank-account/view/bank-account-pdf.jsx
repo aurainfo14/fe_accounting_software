@@ -116,8 +116,8 @@ export default function BankAccountPdf({ configs, bankData, filterData }) {
     { value: filterData.category, label: 'Category' },
     { value: fDate(filterData.startDate), label: 'Start Date' },
     { value: fDate(filterData.endDate), label: 'End Date' },
-    { value: fDate(new Date()), label: 'Date' },
     { value: filterData.bank, label: 'Bank' },
+    { value: fDate(new Date()), label: 'Date' },
   ];
 
   const rowsPerPageFirst = 16;

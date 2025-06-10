@@ -28,7 +28,7 @@ import {
 } from 'src/components/table/index.js';
 import PaymentInOutTableToolbar from '../payment-in-out-table-toolbar.jsx';
 import PaymentInOutTableRow from '../payment-in-out-table-row.jsx';
-import { Box, Grid, Stack } from '@mui/material';
+import { Box, Grid, Stack, useMediaQuery, useTheme } from '@mui/material';
 import { LoadingScreen } from '../../../../components/loading-screen/index.js';
 import Typography from '@mui/material/Typography';
 import { useGetBankTransactions } from '../../../../api/bank-transactions.js';
@@ -86,6 +86,8 @@ export default function PaymentInOutListView() {
   const [open, setOpen] = useState(false);
   const { user } = useAuthContext();
   const [options, setOptions] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     setFilters({ ...defaultFilters, party: partyDetails });
@@ -229,40 +231,53 @@ export default function PaymentInOutListView() {
         <CustomBreadcrumbs
           heading={
             <Typography variant="h4" gutterBottom>
+              <Box
+                component="span"
+                display="flex"
+                flexDirection={isMobile ? 'column' : 'row'}
+                alignItems={isMobile ? 'flex-start' : 'center'}
+                gap={ isMobile ? 1 : 5}
+              >
               Payment In/Out :{' '}
-              <strong style={{ marginLeft: { xs: 0, sm: 200 } }}>
-                Receivable : -
-                <span
-                  style={{
-                    color: 'green',
-                    marginLeft: 10,
-                  }}
-                >
-                  {Object.entries(filters).some(([key, val]) => {
-                    if (val === null || val === '') return false;
-                    if (typeof val === 'object') {
-                      return val instanceof Date || Object.keys(val).length > 0;
-                    }
-                    return true;
-                  })
-                    ? receivable.toFixed(2)
-                    : Math.abs(receivableAmt).toFixed(2)}
-                </span>
-              </strong>
-              <strong style={{ marginLeft: { xs: 0, sm: 20 } }}>
-                Payable : -
-                <span style={{ color: 'red', marginLeft: 10 }}>
-                  {Object.entries(filters).some(([key, val]) => {
-                    if (val === null || val === '') return false;
-                    if (typeof val === 'object') {
-                      return val instanceof Date || Object.keys(val).length > 0;
-                    }
-                    return true;
-                  })
-                    ? payable.toFixed(2)
-                    : Math.abs(payableAmt).toFixed(2)}
-                </span>
-              </strong>
+                <strong style={{ marginRight: isMobile ? 0 : 20, fontSize: isMobile ? 12 : 20 }}>
+                  Receivable : -
+                  <span
+                    style={{
+                      color: 'green',
+                      marginLeft: 10,
+                    }}
+                  >
+                    {Object.entries(filters).some(([key, val]) => {
+                      if (val === null || val === '') return false;
+                      if (typeof val === 'object') {
+                        return val instanceof Date || Object.keys(val).length > 0;
+                      }
+                      return true;
+                    })
+                      ? receivable.toFixed(2)
+                      : Math.abs(receivableAmt).toFixed(2)}
+                  </span>
+                </strong>
+                <strong style={{ marginRight: isMobile ? 0 : 20, fontSize: isMobile ? 12 : 20 }}>
+                  Payable : -
+                  <span
+                    style={{
+                      color: 'red',
+                      marginLeft: 10,
+                    }}
+                  >
+                    {Object.entries(filters).some(([key, val]) => {
+                      if (val === null || val === '') return false;
+                      if (typeof val === 'object') {
+                        return val instanceof Date || Object.keys(val).length > 0;
+                      }
+                      return true;
+                    })
+                      ? payable.toFixed(2)
+                      : Math.abs(payableAmt).toFixed(2)}
+                  </span>
+                </strong>
+              </Box>
             </Typography>
           }
           links={[

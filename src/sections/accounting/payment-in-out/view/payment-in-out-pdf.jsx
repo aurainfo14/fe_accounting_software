@@ -278,7 +278,7 @@ export default function PaymentInOutPdf({ configs, paymentData, filterData, part
           marginTop: 10,
         }}
       >
-        <Text style={styles.termsAndConditionsHeaders}>EXPENCE</Text>
+        <Text style={styles.termsAndConditionsHeaders}>PAYMENT IN / OUT</Text>
       </View>
 
       <View style={{ flexGrow: 1, padding: '12px' }}>

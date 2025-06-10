@@ -19,13 +19,7 @@ import React from 'react';
 
 // ----------------------------------------------------------------------
 
-export default function IncomeTableRow({
-  row,
-  selected,
-  onEditRow,
-  onSelectRow,
-  onDeleteRow,
-}) {
+export default function IncomeTableRow({ row, selected, onEditRow, onSelectRow, onDeleteRow }) {
   const confirm = useBoolean();
   const popover = usePopover();
   const { user } = useAuthContext();
@@ -41,7 +35,11 @@ export default function IncomeTableRow({
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(row.date)}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetail?.cashAmount || 0}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetail?.bankAmount || 0}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetail?.bankName || '-'}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+          {row?.paymentDetail?.account?.bankName && row?.paymentDetail?.account?.accountHolderName
+            ? `${row.paymentDetail.account.bankName} (${row.paymentDetail.account.accountHolderName})`
+            : '-'}
+        </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.description || '-'}</TableCell>
         {row.invoice ? (
           <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
@@ -57,11 +55,11 @@ export default function IncomeTableRow({
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           {/*{getResponsibilityValue('delete_scheme', configs, user) ||*/}
           {/*getResponsibilityValue('update_scheme', configs, user) ? (*/}
-            <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-              <Iconify icon="eva:more-vertical-fill" />
-            </IconButton>
+          <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
           {/*// ) : (*/}
-            ''
+          {/*  ''*/}
           {/*)}*/}
         </TableCell>
       </TableRow>
@@ -72,27 +70,27 @@ export default function IncomeTableRow({
         sx={{ width: 140 }}
       >
         {/*{getResponsibilityValue('delete_scheme', configs, user) && (*/}
-          <MenuItem
-            onClick={() => {
-              confirm.onTrue();
-              popover.onClose();
-            }}
-            sx={{ color: 'error.main' }}
-          >
-            <Iconify icon="solar:trash-bin-trash-bold" />
-            Delete
-          </MenuItem>
+        <MenuItem
+          onClick={() => {
+            confirm.onTrue();
+            popover.onClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          <Iconify icon="solar:trash-bin-trash-bold" />
+          Delete
+        </MenuItem>
         {/*)}*/}
         {/*{getResponsibilityValue('update_scheme', configs, user) && (*/}
-          <MenuItem
-            onClick={() => {
-              onEditRow();
-              popover.onClose();
-            }}
-          >
-            <Iconify icon="solar:pen-bold" />
-            Edit
-          </MenuItem>
+        <MenuItem
+          onClick={() => {
+            onEditRow();
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:pen-bold" />
+          Edit
+        </MenuItem>
         {/*)}*/}
       </CustomPopover>
       <ConfirmDialog

@@ -239,7 +239,6 @@ export default function ExpenceListView() {
             <Typography variant="h4" gutterBottom>
               Expence :{' '}
               <strong style={{ marginLeft: { xs: 0, sm: 400 } }}>
-                Total Expence : -
                 <span style={{ color: 'red', marginLeft: 10 }}>
                   {(Number(cash) + Number(bank)).toFixed(2)}
                 </span>

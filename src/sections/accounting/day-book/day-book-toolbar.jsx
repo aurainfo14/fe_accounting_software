@@ -358,67 +358,15 @@ export default function DayBookToolbar({
         </MenuItem>
       </CustomPopover>
 
-      <Dialog
-        fullScreen={isMobile}
-        maxWidth={isMobile ? false : 'xl'}
-        fullWidth={!isMobile}
-        open={view.value}
-        onClose={view.onFalse}
-        PaperProps={{
-          sx: {
-            height: isMobile ? '100vh' : '90vh',
-            maxHeight: isMobile ? '100vh' : '90vh',
-          },
-        }}
-      >
-        <Box
-          sx={{
-            height: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: isMobile ? '100vh' : 'auto',
-          }}
-        >
-          <DialogActions
-            sx={{
-              p: 1.5,
-              justifyContent: 'space-between',
-              flexDirection: isMobile ? 'row-reverse' : 'row',
-            }}
-          >
-            <Button
-              color="inherit"
-              variant="contained"
-              onClick={view.onFalse}
-              size={isMobile ? 'large' : 'medium'}
-            >
+      <Dialog fullScreen open={view.value} onClose={view.onFalse}>
+        <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
+          <DialogActions sx={{ p: 1.5 }}>
+            <Button color="inherit" variant="contained" onClick={view.onFalse}>
               Close
             </Button>
-            {!isMobile && (
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Button variant="outlined" size="small" onClick={() => window.print()}>
-                  Print
-                </Button>
-              </Box>
-            )}
           </DialogActions>
-
-          <Box
-            sx={{
-              flexGrow: 1,
-              height: 1,
-              overflow: 'hidden',
-              minHeight: 0,
-            }}
-          >
-            <PDFViewer
-              width="100%"
-              height="100%"
-              style={{
-                border: 'none',
-                minHeight: isMobile ? 'calc(100vh - 80px)' : '500px',
-              }}
-            >
+          <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
+            <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
               <DayBookPdf dayBookData={daybookData} configs={configs} filterData={filterData} />
             </PDFViewer>
           </Box>

@@ -98,7 +98,7 @@ const useStyles = () =>
     []
   );
 
-export default function ExpencePdf({ configs, expenceData, filterData }) {
+export default function IncomePdf({ configs, incomeData, filterData }) {
   const styles = useStyles();
 
   const headers = [
@@ -123,7 +123,7 @@ export default function ExpencePdf({ configs, expenceData, filterData }) {
   const rowsPerPageFirst = 16;
   const rowsPerPageOther = 22;
 
-  const remainingRows = expenceData.length - rowsPerPageFirst;
+  const remainingRows = incomeData.length - rowsPerPageFirst;
   const additionalPages = Math.ceil(Math.max(0, remainingRows) / rowsPerPageOther);
 
   const pages = [];
@@ -140,7 +140,7 @@ export default function ExpencePdf({ configs, expenceData, filterData }) {
         wrap={false}
       >
         <Text style={[styles.tableCell, { flex: 0.2 }]}>{index + 1}</Text>
-        <Text style={[styles.tableCell, { flex: 1.5 }]}>{row.expenseType || '-'}</Text>
+        <Text style={[styles.tableCell, { flex: 1.5 }]}>{row.incomeType || '-'}</Text>
         <Text style={[styles.tableCell, { flex: 0.8 }]}>{row.category || '-'}</Text>
         <Text style={[styles.tableCell, { flex: 0.8 }]}>{fDate(row.date) || '-'}</Text>
         <Text style={[styles.tableCell, { flex: 0.8 }]}>
@@ -179,20 +179,20 @@ export default function ExpencePdf({ configs, expenceData, filterData }) {
     </View>
   );
 
-  const firstPageRows = expenceData
+  const firstPageRows = incomeData
     .slice(0, rowsPerPageFirst)
     .map((row, index) =>
       renderRow(
         row,
         index,
-        index === rowsPerPageFirst - 1 && expenceData.length === rowsPerPageFirst
+        index === rowsPerPageFirst - 1 && incomeData.length === rowsPerPageFirst
       )
     );
-  const cash = expenceData.reduce(
+  const cash = incomeData.reduce(
     (prev, next) => prev + (Number(next?.paymentDetail?.cashAmount) || 0),
     0
   );
-  const bank = expenceData.reduce(
+  const bank = incomeData.reduce(
     (prev, next) => prev + (Number(next?.paymentDetail?.bankAmount) || 0),
     0
   );
@@ -210,8 +210,8 @@ export default function ExpencePdf({ configs, expenceData, filterData }) {
         ))}
 
         <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 15 }}>
-          Total Expence :{' '}
-          <Text style={{ color: 'red' }}>{(Number(cash) + Number(bank)).toFixed(2)}</Text>
+          Total Income :{' '}
+          <Text style={{ color: 'green' }}>{(Number(cash) + Number(bank)).toFixed(2)}</Text>
         </Text>
       </View>
       <View
@@ -222,7 +222,7 @@ export default function ExpencePdf({ configs, expenceData, filterData }) {
           marginTop: 10,
         }}
       >
-        <Text style={styles.termsAndConditionsHeaders}>EXPENCE</Text>
+        <Text style={styles.termsAndConditionsHeaders}>INCOME</Text>
       </View>
 
       <View style={{ flexGrow: 1, padding: '12px' }}>
@@ -234,15 +234,15 @@ export default function ExpencePdf({ configs, expenceData, filterData }) {
     </Page>
   );
 
-  if (expenceData.length > rowsPerPageFirst) {
+  if (incomeData.length > rowsPerPageFirst) {
     for (let pageIndex = 0; pageIndex < additionalPages; pageIndex++) {
       const startIndex = rowsPerPageFirst + pageIndex * rowsPerPageOther;
-      const endIndex = Math.min(startIndex + rowsPerPageOther, expenceData.length);
-      const isLastPage = endIndex === expenceData.length;
+      const endIndex = Math.min(startIndex + rowsPerPageOther, incomeData.length);
+      const isLastPage = endIndex === incomeData.length;
 
-      const pageRows = expenceData.slice(startIndex, endIndex).map((row, index) => {
+      const pageRows = incomeData.slice(startIndex, endIndex).map((row, index) => {
         const actualIndex = startIndex + index;
-        return renderRow(row, actualIndex, actualIndex === expenceData.length - 1);
+        return renderRow(row, actualIndex, actualIndex === incomeData.length - 1);
       });
 
       pages.push(
