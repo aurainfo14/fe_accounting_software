@@ -242,7 +242,6 @@ export default function AccountsListView({ accounts, setAccountDetails, accountD
               position: 'sticky',
               top: 0,
               zIndex: 1000,
-              backgroundColor: '#2f3944',
             }}
           />
           <TableBody>

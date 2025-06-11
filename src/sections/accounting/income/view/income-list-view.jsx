@@ -295,7 +295,6 @@ export default function IncomeListView() {
                   position: 'sticky',
                   top: 0,
                   zIndex: 1,
-                  backgroundColor: '#2f3944',
                 }}
               />
               <TableBody>

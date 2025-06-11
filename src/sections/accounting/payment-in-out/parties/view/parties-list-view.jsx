@@ -220,7 +220,6 @@ export default function PartiesListView({
               position: 'sticky',
               top: 0,
               zIndex: 1000,
-              backgroundColor: '#2f3944',
             }}
           />
           <TableBody>
