@@ -165,7 +165,7 @@ export default function PaymentInOutListView() {
   const handleDelete = async (id) => {
     try {
       const res = await axiosInstance.delete(
-        `${import.meta.env.VITE_BASE_URL}/${user?.company}/payment/${id}`
+        `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/payment/${id}`
       );
       enqueueSnackbar(res.data.message);
       confirm.onFalse();
