@@ -164,7 +164,7 @@ export default function ExpenceListView() {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/${user?.company}/expense/${id}`
+        `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/expense/${id}`
       );
       enqueueSnackbar(res.data.message);
       confirm.onFalse();
