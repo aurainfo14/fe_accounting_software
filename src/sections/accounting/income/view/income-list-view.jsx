@@ -139,7 +139,7 @@ export default function IncomeListView() {
     // }
     try {
       const res = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/${user?.company}/income/${id}`
+        `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/income/${id}`
       );
       enqueueSnackbar(res.data.message);
       confirm.onFalse();
