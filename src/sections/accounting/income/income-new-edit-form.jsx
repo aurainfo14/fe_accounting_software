@@ -83,6 +83,11 @@ export default function IncomeNewEditForm({ currentIncome }) {
     category: Yup.string().required('category  is required'),
     paymentMode: Yup.string().required('paymentMode  is required'),
     date: Yup.date().typeError('Please enter a valid date').required('Date is required'),
+    branch: Yup.object().when([], {
+      is: () => user?.role === 'ADMIN' && storedBranch === 'all',
+      then: (schema) => schema.required('Branch is required'),
+      otherwise: (schema) => schema.nullable(),
+    }),
     ...paymentSchema,
   });
 
@@ -148,7 +153,17 @@ export default function IncomeNewEditForm({ currentIncome }) {
   }, [watch('valuation'), configs.goldRate, setValue]);
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data, '00');
+    let parsedBranch = storedBranch;
+    if (storedBranch !== 'all') {
+      try {
+        parsedBranch = storedBranch;
+      } catch (error) {
+        console.error('Error parsing storedBranch:', error);
+      }
+    }
+
+    const selectedBranchId =
+      parsedBranch === 'all' ? data?.branch?.value || branch?.[0]?._id : parsedBranch;
     let paymentDetail = {
       paymentMode: data.paymentMode,
     };
@@ -176,7 +191,7 @@ export default function IncomeNewEditForm({ currentIncome }) {
     const formData = new FormData();
 
     formData.append('incomeType', data?.incomeType);
-    formData.append('branch', data?.branch?.value);
+    formData.append('branch',selectedBranchId);
     formData.append('description', data?.description);
     formData.append('category', data?.category);
     formData.append('date', data?.date);
