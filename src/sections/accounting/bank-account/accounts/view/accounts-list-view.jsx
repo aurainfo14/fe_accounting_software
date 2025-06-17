@@ -143,7 +143,7 @@ export default function AccountsListView({ accounts, setAccountDetails, accountD
     //   return;
     // }
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/${user?.company}/scheme`, {
+      const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/scheme`, {
         data: { ids: id },
       });
       enqueueSnackbar(res.data.message);

@@ -65,7 +65,7 @@ export default function UserNewEditForm({ currentUser }) {
       address: currentUser?.address || '',
       country: currentUser?.country || '',
       zipCode: currentUser?.zipCode || '',
-      company: currentUser?.company || '',
+      company: currentUser?.company?._id || '',
       avatarUrl: currentUser?.avatarUrl || null,
       phoneNumber: currentUser?.phoneNumber || '',
       isVerified: currentUser?.isVerified || true,

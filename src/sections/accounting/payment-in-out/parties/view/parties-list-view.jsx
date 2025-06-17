@@ -117,7 +117,7 @@ export default function PartiesListView({
     // }
     try {
       const res = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/${user?.company}/party/${id}`
+        `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/party/${id}`
       );
       enqueueSnackbar(res.data.message);
       confirm.onFalse();
