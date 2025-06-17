@@ -81,7 +81,6 @@ export default function ExpenceNewEditForm({ currentExpense }) {
 
   const NewSchema = Yup.object().shape({
     expenseType: Yup.string().required('Expense Type is required'),
-    category: Yup.string().required('category  is required'),
     paymentMode: Yup.string().required('paymentMode  is required'),
     date: Yup.date().typeError('Please enter a valid date').required('Date is required'),
     branch: Yup.object().when([], {
@@ -388,12 +387,6 @@ console.log(watch('account'))
                     {option}
                   </li>
                 )}
-              />
-              <RHFTextField
-                name="category"
-                label="Category"
-                req={'red'}
-                inputProps={{ style: { textTransform: 'uppercase' } }}
               />
               <RhfDatePicker name="date" control={control} label="Date" req={'red'} />
               <RHFTextField name="description" label="Description" multiline />

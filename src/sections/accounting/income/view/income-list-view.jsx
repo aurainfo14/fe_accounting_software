@@ -55,12 +55,11 @@ const STATUS_OPTIONS = [
 const TABLE_HEAD = [
   { id: '#', label: '#' },
   { id: 'incomeType', label: 'Income Type' },
-  { id: 'category', label: 'Category' },
+  { id: 'description', label: 'Description' },
   { id: 'date', label: 'Date' },
   { id: 'cashAmount', label: 'Cash amt' },
   { id: 'bankAmount', label: 'Bank amt' },
   { id: 'bank', label: 'Bank' },
-  { id: 'description', label: 'Description' },
   { id: 'invoice', label: 'Invoice' },
   { id: '', width: 88 },
 ];

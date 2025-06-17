@@ -48,13 +48,12 @@ import { useLightBox } from '../../../../components/lightbox/index.js';
 const TABLE_HEAD = [
   { id: '#', label: '' },
   { id: 'type', label: 'Type' },
-  { id: 'category', label: 'Category' },
+  { id: 'des', label: 'Des' },
   { id: 'date', label: 'Date' },
   { id: 'paymentMode', label: 'Payment mode' },
   { id: 'Cash amt', label: 'Cash amt' },
   { id: 'Bank amt', label: 'Bank amt' },
   { id: 'Bank', label: 'Bank' },
-  { id: 'des', label: 'Des' },
   { id: 'invoice', label: 'Invoice' },
   { id: '', width: 88 },
 ];

@@ -263,7 +263,6 @@ export default function DayBookListView() {
                   )
                   .map((row) => (
                     <DayBookTableRow
-                      key={row._id}
                       row={row}
                       selected={table.selected.includes(row._id)}
                       onSelectRow={() => table.onSelectRow(row._id)}
@@ -274,6 +273,7 @@ export default function DayBookListView() {
                   emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered.length)}
                 />
                 <TableNoData notFound={notFound} />
+
               </TableBody>
             </Table>
           </TableContainer>

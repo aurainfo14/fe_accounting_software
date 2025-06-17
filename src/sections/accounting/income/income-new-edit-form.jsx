@@ -80,7 +80,6 @@ export default function IncomeNewEditForm({ currentIncome }) {
 
   const NewSchema = Yup.object().shape({
     incomeType: Yup.string().required('Income Type is required'),
-    category: Yup.string().required('category  is required'),
     paymentMode: Yup.string().required('paymentMode  is required'),
     date: Yup.date().typeError('Please enter a valid date').required('Date is required'),
     branch: Yup.object().when([], {
@@ -94,11 +93,10 @@ export default function IncomeNewEditForm({ currentIncome }) {
   const defaultValues = useMemo(
     () => ({
       incomeType: currentIncome?.incomeType || '',
-      category: currentIncome?.category || '',
       date: currentIncome?.date ? new Date(currentIncome?.date) : new Date(),
       description: currentIncome?.description || '',
       paymentMode: currentIncome?.paymentDetail?.paymentMode || '',
-      account: currentIncome?.paymentDetail?.account?.bankName || null,
+      account: currentIncome?.paymentDetail?.account || null,
       cashAmount: currentIncome?.paymentDetail?.cashAmount || '',
       bankAmount: currentIncome?.paymentDetail?.bankAmount || '',
       branch: currentIncome
@@ -401,12 +399,6 @@ export default function IncomeNewEditForm({ currentIncome }) {
                     {option}
                   </li>
                 )}
-              />
-              <RHFTextField
-                name="category"
-                label="Category"
-                req={'red'}
-                inputProps={{ style: { textTransform: 'uppercase' } }}
               />
               <RhfDatePicker name="date" control={control} label="Date" req={'red'} />
               <RHFTextField name="description" label="Description" multiline />

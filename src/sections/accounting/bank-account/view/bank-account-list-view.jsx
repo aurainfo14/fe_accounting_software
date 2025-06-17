@@ -302,7 +302,6 @@ export default function BankAccountListView() {
                         )
                         .map((row) => (
                           <BankAccountTableRow
-                            key={row._id}
                             row={row}
                             selected={table.selected.includes(row._id)}
                             onSelectRow={() => table.onSelectRow(row._id)}
@@ -398,7 +397,7 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
   }
 
   if (Object.keys(account)?.length) {
-    inputData = inputData?.filter((acc) => account.bankName === acc.bankName);
+    inputData = inputData?.filter((acc) => account?._id === acc?._id);
   }
 
   if (!dateError && startDate && endDate) {

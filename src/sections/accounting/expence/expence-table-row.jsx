@@ -30,7 +30,7 @@ export default function ExpenseTableRow({ row, selected, onEditRow, onSelectRow,
       <TableRow hover selected={selected}>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.srNo}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.expenseType}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.category}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.description || '-'}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(row?.date)}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row?.paymentDetail?.paymentMode}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetail?.cashAmount || 0}</TableCell>
@@ -40,7 +40,6 @@ export default function ExpenseTableRow({ row, selected, onEditRow, onSelectRow,
             ? `${row.paymentDetail.account.bankName} (${row.paymentDetail.account.accountHolderName})`
             : '-'}
         </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.description || '-'}</TableCell>
         {row.invoice ? (
           <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton onClick={() => lightbox.onOpen(row.invoice)} sx={{ mr: 2 }}>
