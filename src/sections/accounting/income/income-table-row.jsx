@@ -31,7 +31,7 @@ export default function IncomeTableRow({ row, selected, onEditRow, onSelectRow, 
       <TableRow hover selected={selected}>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.srNo}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.incomeType}</TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.description || '-'}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.desc || '-'}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{fDate(row.date)}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetail?.cashAmount || 0}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.paymentDetail?.bankAmount || 0}</TableCell>

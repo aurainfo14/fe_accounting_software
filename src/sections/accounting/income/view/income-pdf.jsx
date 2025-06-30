@@ -104,13 +104,12 @@ export default function IncomePdf({ configs, incomeData, filterData }) {
   const headers = [
     { label: '#', flex: 0.2 },
     { label: 'Type', flex: 1.5 },
-    { label: 'Category', flex: 0.8 },
+    { label: 'Des', flex: 2 },
     { label: 'Date', flex: 0.8 },
     { label: 'Payment Mode', flex: 0.8 },
     { label: 'Cash Amt', flex: 0.8 },
     { label: 'Bank Amt', flex: 0.8 },
     { label: 'Bank', flex: 1.5 },
-    { label: 'Des', flex: 2 },
   ];
 
   const dataFilter = [
@@ -141,7 +140,7 @@ export default function IncomePdf({ configs, incomeData, filterData }) {
       >
         <Text style={[styles.tableCell, { flex: 0.2 }]}>{index + 1}</Text>
         <Text style={[styles.tableCell, { flex: 1.5 }]}>{row.incomeType || '-'}</Text>
-        <Text style={[styles.tableCell, { flex: 0.8 }]}>{row.category || '-'}</Text>
+        <Text style={[styles.tableCell, { flex: 0.8 }]}>{row.desc || '-'}</Text>
         <Text style={[styles.tableCell, { flex: 0.8 }]}>{fDate(row.date) || '-'}</Text>
         <Text style={[styles.tableCell, { flex: 0.8 }]}>
           {row?.paymentDetail?.paymentMode || '-'}
@@ -157,7 +156,6 @@ export default function IncomePdf({ configs, incomeData, filterData }) {
             ? `${row.paymentDetail.account.bankName} (${row.paymentDetail.account.accountHolderName})`
             : '-'}
         </Text>
-        <Text style={[styles.tableCell, { flex: 2 }]}>{row.description || '-'}</Text>
       </View>
     );
   };
