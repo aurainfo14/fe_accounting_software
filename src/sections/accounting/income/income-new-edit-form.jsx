@@ -190,7 +190,7 @@ export default function IncomeNewEditForm({ currentIncome }) {
 
     formData.append('incomeType', data?.incomeType);
     formData.append('branch',selectedBranchId);
-    formData.append('description', data?.description);
+    formData.append('desc', data?.description);
     formData.append('category', data?.category);
     formData.append('date', data?.date);
 
