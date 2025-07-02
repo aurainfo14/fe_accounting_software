@@ -1,10 +1,8 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback, useEffect } from 'react';
-import Card from '@mui/material/Card';
+import { useCallback, useState } from 'react';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
@@ -15,39 +13,25 @@ import Iconify from 'src/components/iconify/index.js';
 import { useSnackbar } from 'src/components/snackbar/index.js';
 import { ConfirmDialog } from 'src/components/custom-dialog/index.js';
 import { useSettingsContext } from 'src/components/settings/index.js';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs/index.js';
 import {
-  useTable,
   emptyRows,
-  TableNoData,
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
-  TableSelectedAction,
+  TableNoData,
   TablePaginationCustom,
+  TableSelectedAction,
+  useTable,
 } from 'src/components/table/index.js';
-
 import axios from 'axios';
-
 import PartiesToolbar from '../parties-toolbar.jsx';
 import PartiesTableFiltersResult from '../parties-table-filters-result.jsx';
 import PartiesTableRow from '../parties-table-row.jsx';
 import { useAuthContext } from '../../../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../../../api/config.js';
-// import { getResponsibilityValue } from '../../../../../permission/permission.js';
 import { LoadingScreen } from '../../../../../components/loading-screen/index.js';
-import { useTheme } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
-
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'All' },
-  { value: 'true', label: 'Active' },
-  {
-    value: 'false',
-    label: 'In Active',
-  },
-];
 
 const TABLE_HEAD = [
   { id: 'party', label: 'Party' },
@@ -78,7 +62,6 @@ export default function PartiesListView({
   const confirm = useBoolean();
   const [tableData, setTableData] = useState(party || []);
   const [filters, setFilters] = useState(defaultFilters);
-  const theme = useTheme();
 
   const dataFiltered = applyFilter({
     inputData: party || [],
@@ -111,10 +94,6 @@ export default function PartiesListView({
   }, []);
 
   const handleDelete = async (id) => {
-    // if (!getResponsibilityValue('delete_party', configs, user)) {
-    //   enqueueSnackbar('You do not have permission to delete.', { variant: 'error' });
-    //   return;
-    // }
     try {
       const res = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/party/${id}`
@@ -250,7 +229,9 @@ export default function PartiesListView({
         </Table>
       </TableContainer>
       <TablePaginationCustom
-        sx={{ '.css-n3104v-MuiToolbar-root-MuiTablePagination-toolbar': { p: 0 , overflow:'hidden'} }}
+        sx={{
+          '.css-n3104v-MuiToolbar-root-MuiTablePagination-toolbar': { p: 0, overflow: 'hidden' },
+        }}
         count={dataFiltered.length}
         page={table.page}
         rowsPerPage={table.rowsPerPage}

@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react';
-import { Page, View, Text, Document, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Font, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { fDate } from 'src/utils/format-time.js';
 import InvoiceHeader from '../../../../components/invoise/invoice-header.jsx';
-import Typography from '@mui/material/Typography';
 
-// Register fonts
 Font.register({
   family: 'Roboto',
   fonts: [
@@ -199,6 +197,7 @@ export default function PaymentInOutPdf({ configs, paymentData, filterData, part
     (prev, next) => prev + (Number(next.amount >= 0 && next?.amount) || 0),
     0
   );
+
   const receivable = paymentData.reduce((prev, next) => {
     if (next.status === 'Payment In') {
       const cash = Number(next?.paymentDetail?.cashAmount || 0);
@@ -216,6 +215,7 @@ export default function PaymentInOutPdf({ configs, paymentData, filterData, part
     }
     return prev;
   }, 0);
+
   pages.push(
     <Page key={0} size="A4" style={styles.page} orientation="landscape">
       <InvoiceHeader configs={configs} landscape={true} />
@@ -280,7 +280,6 @@ export default function PaymentInOutPdf({ configs, paymentData, filterData, part
       >
         <Text style={styles.termsAndConditionsHeaders}>PAYMENT IN / OUT</Text>
       </View>
-
       <View style={{ flexGrow: 1, padding: '12px' }}>
         <View style={styles.table}>
           {renderTableHeader()}

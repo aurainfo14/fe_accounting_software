@@ -37,7 +37,6 @@ import TransferDialog from './TransferDialog.jsx';
 import axios from 'axios';
 import { useSnackbar } from 'notistack';
 import { useAuthContext } from '../../../../auth/hooks/index.js';
-import { useGetTransfer } from '../../../../api/transfer.js';
 
 // ----------------------------------------------------------------------
 
@@ -65,7 +64,6 @@ const defaultFilters = {
 
 export default function BankAccountListView() {
   const { bankTransactions, mutate, bankTransactionsLoading } = useGetBankTransactions();
-
   const [accountDetails, setAccountDetails] = useState({});
   const table = useTable();
   const settings = useSettingsContext();
@@ -139,10 +137,6 @@ export default function BankAccountListView() {
   );
 
   const handleDelete = async (id) => {
-    // if (!getResponsibilityValue('delete_scheme', configs, user)) {
-    //   enqueueSnackbar('You do not have permission to delete.', { variant: 'error' });
-    //   return;
-    // }
     try {
       const res = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/transfer/${id}`
@@ -217,7 +211,6 @@ export default function BankAccountListView() {
         />
         <Card sx={{ p: 2 }}>
           <Grid container spacing={2}>
-            {/* Accounts List - Full width on mobile, 1/4 on desktop */}
             <Grid xs={12} md={3}>
               <Card sx={{ height: '100%', p: 2 }}>
                 <AccountsListView
@@ -227,8 +220,6 @@ export default function BankAccountListView() {
                 />
               </Card>
             </Grid>
-
-            {/* Main Table Area - Full width on mobile, 3/4 on desktop */}
             <Grid xs={12} md={9}>
               <Card>
                 <BankAccountTableToolbar
@@ -239,7 +230,6 @@ export default function BankAccountListView() {
                   onTransferTypeSelect={handleTransferTypeSelect}
                   bankData={dataFiltered}
                 />
-
                 {canReset && (
                   <BankAccountTableFiltersResult
                     filters={filters}
@@ -250,10 +240,9 @@ export default function BankAccountListView() {
                     sx={{ p: 2.5, pt: 0 }}
                   />
                 )}
-
                 <TableContainer
                   sx={{
-                    maxHeight: { xs: 400, md: 500 }, // Shorter on mobile
+                    maxHeight: { xs: 400, md: 500 },
                     overflow: 'auto',
                     position: 'relative',
                   }}
@@ -276,10 +265,7 @@ export default function BankAccountListView() {
                       </Tooltip>
                     }
                   />
-
-                  <Table
-                    size={table.dense ? 'small' : 'medium'}
-                  >
+                  <Table size={table.dense ? 'small' : 'medium'}>
                     <TableHeadCustom
                       order={table.order}
                       orderBy={table.orderBy}
@@ -293,7 +279,6 @@ export default function BankAccountListView() {
                         zIndex: 1000,
                       }}
                     />
-
                     <TableBody>
                       {dataFiltered
                         ?.slice(
@@ -309,17 +294,14 @@ export default function BankAccountListView() {
                             onDeleteRow={() => handleDeleteRow(row._id)}
                           />
                         ))}
-
                       <TableEmptyRows
                         height={denseHeight}
                         emptyRows={emptyRows(table.page, table.rowsPerPage, dataFiltered?.length)}
                       />
-
                       <TableNoData notFound={notFound} />
                     </TableBody>
                   </Table>
                 </TableContainer>
-
                 <TablePaginationCustom
                   count={dataFiltered?.length}
                   page={table.page}
@@ -330,12 +312,12 @@ export default function BankAccountListView() {
                   onChangeDense={table.onChangeDense}
                   sx={{
                     '& .MuiTablePagination-toolbar': {
-                      flexDirection: { xs: 'column', sm: 'row' }, // Stack pagination controls on mobile
+                      flexDirection: { xs: 'column', sm: 'row' },
                       gap: { xs: 1, sm: 0 },
                     },
                     '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-                      fontSize: { xs: '0.75rem', md: '0.875rem' }, // Smaller text on mobile
-                    }
+                      fontSize: { xs: '0.75rem', md: '0.875rem' },
+                    },
                   }}
                 />
               </Card>

@@ -10,19 +10,21 @@ import Iconify from 'src/components/iconify/index.js';
 // ----------------------------------------------------------------------
 
 export default function ExpenceTableFiltersResult({
-                                                    filters,
-                                                    onFilters,
-                                                    onResetFilters,
-                                                    results,
-                                                    setExpenceDetails,
-                                                    ...other
-                                                  }) {
+  filters,
+  onFilters,
+  onResetFilters,
+  results,
+  setExpenceDetails,
+  ...other
+}) {
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
+
   const handleRemoveCategory = useCallback(() => {
     onFilters('category', '');
   }, [onFilters]);
+
   const handleRemoveTransactions = useCallback(() => {
     onFilters('transactions', '');
   }, [onFilters]);

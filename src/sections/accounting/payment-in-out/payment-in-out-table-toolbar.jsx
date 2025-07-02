@@ -7,17 +7,19 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Iconify from 'src/components/iconify/index.js';
 import CustomPopover, { usePopover } from 'src/components/custom-popover/index.js';
-// import RHFExportExcel from '../../../components/hook-form/rhf-export-excel.jsx';
-// import { getResponsibilityValue } from '../../../permission/permission.js';
 import { useAuthContext } from '../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../api/config.js';
 import moment from 'moment/moment.js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Dialog, FormControl, Typography, Autocomplete, useTheme, useMediaQuery, Grid } from '@mui/material';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import PartyNewEditForm from './parties/party-new-edit-form.jsx';
+import {
+  Autocomplete,
+  Box,
+  Dialog,
+  Grid,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import { PDFViewer } from '@react-pdf/renderer';
@@ -101,7 +103,6 @@ export default function PaymentInOutTableToolbar({
     [onFilters]
   );
 
-  // Responsive styles
   const getInputStyles = () => ({
     input: { height: isMobile ? 10 : 7 },
     label: {
@@ -132,17 +133,15 @@ export default function PaymentInOutTableToolbar({
           sx={{
             color: 'text.secondary',
             fontSize: isMobile ? '1rem' : '1.25rem',
-            fontWeight: 600
+            fontWeight: 600,
           }}
           variant="subtitle1"
         >
           {partyDetails?.name}
         </Typography>
       </Box>
-
       <Box sx={{ p: isMobile ? 1.5 : 2.5 }}>
         {isMobile ? (
-          /* Mobile Layout */
           <Stack spacing={2}>
             <TextField
               sx={getInputStyles()}
@@ -158,7 +157,6 @@ export default function PaymentInOutTableToolbar({
                 ),
               }}
             />
-
             <Grid container spacing={1.5}>
               <Grid item xs={12} sm={6}>
                 <Autocomplete
@@ -172,15 +170,10 @@ export default function PaymentInOutTableToolbar({
                   value={filters.transactions || null}
                   onChange={handleFilterTransactions}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Cash & Bank Transactions"
-                      sx={getInputStyles()}
-                    />
+                    <TextField {...params} label="Cash & Bank Transactions" sx={getInputStyles()} />
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <Autocomplete
                   fullWidth
@@ -188,15 +181,10 @@ export default function PaymentInOutTableToolbar({
                   value={filters.category || null}
                   onChange={handleFilterCategory}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Category"
-                      sx={getInputStyles()}
-                    />
+                    <TextField {...params} label="Category" sx={getInputStyles()} />
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   label="Start date"
@@ -214,7 +202,6 @@ export default function PaymentInOutTableToolbar({
                   sx={getDatePickerStyles()}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   label="End date"
@@ -235,7 +222,6 @@ export default function PaymentInOutTableToolbar({
                 />
               </Grid>
             </Grid>
-
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
                 onClick={popover.onOpen}
@@ -249,7 +235,6 @@ export default function PaymentInOutTableToolbar({
             </Box>
           </Stack>
         ) : (
-          /* Desktop/Tablet Layout */
           <Stack
             spacing={2}
             alignItems={{ xs: 'flex-end', md: 'center' }}
@@ -276,7 +261,6 @@ export default function PaymentInOutTableToolbar({
                   ),
                 }}
               />
-
               <Autocomplete
                 fullWidth
                 options={options || []}
@@ -288,28 +272,18 @@ export default function PaymentInOutTableToolbar({
                 value={filters.transactions || null}
                 onChange={handleFilterTransactions}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Cash & Bank Transactions"
-                    sx={getInputStyles()}
-                  />
+                  <TextField {...params} label="Cash & Bank Transactions" sx={getInputStyles()} />
                 )}
               />
-
               <Autocomplete
                 fullWidth
                 options={['Payment In', 'Payment Out']}
                 value={filters.category || null}
                 onChange={handleFilterCategory}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Category"
-                    sx={getInputStyles()}
-                  />
+                  <TextField {...params} label="Category" sx={getInputStyles()} />
                 )}
               />
-
               <DatePicker
                 label="Start date"
                 value={filters.startDate ? moment(filters.startDate).toDate() : null}
@@ -325,7 +299,6 @@ export default function PaymentInOutTableToolbar({
                 }}
                 sx={getDatePickerStyles()}
               />
-
               <DatePicker
                 label="End date"
                 value={filters.endDate}
@@ -344,14 +317,12 @@ export default function PaymentInOutTableToolbar({
                 sx={getDatePickerStyles()}
               />
             </Stack>
-
             <IconButton onClick={popover.onOpen}>
               <Iconify icon="eva:more-vertical-fill" />
             </IconButton>
           </Stack>
         )}
       </Box>
-
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
@@ -372,7 +343,6 @@ export default function PaymentInOutTableToolbar({
           whatsapp share
         </MenuItem>
       </CustomPopover>
-
       <Dialog fullScreen open={view.value} onClose={view.onFalse}>
         <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
           <DialogActions sx={{ p: 1.5 }}>

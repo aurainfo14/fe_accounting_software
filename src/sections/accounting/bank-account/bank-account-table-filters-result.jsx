@@ -20,12 +20,15 @@ export default function BankAccountTableFiltersResult({
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
+
   const handleRemoveCetagory = useCallback(() => {
     onFilters('category', '');
   }, [onFilters]);
+
   const handleRemoveType = useCallback(() => {
     onFilters('status', '');
   }, [onFilters]);
+
   const handleRemoveAcc = useCallback(() => {
     onFilters('account', {});
     setAcc({});

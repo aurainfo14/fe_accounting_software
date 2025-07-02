@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -17,30 +17,28 @@ import { ConfirmDialog } from 'src/components/custom-dialog/index.js';
 import { useSettingsContext } from 'src/components/settings/index.js';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs/index.js';
 import {
-  useTable,
   emptyRows,
-  TableNoData,
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
-  TableSelectedAction,
+  TableNoData,
   TablePaginationCustom,
+  TableSelectedAction,
+  useTable,
 } from 'src/components/table/index.js';
 import PaymentInOutTableToolbar from '../payment-in-out-table-toolbar.jsx';
 import PaymentInOutTableRow from '../payment-in-out-table-row.jsx';
 import { Box, Grid, Stack, useMediaQuery, useTheme } from '@mui/material';
 import { LoadingScreen } from '../../../../components/loading-screen/index.js';
 import Typography from '@mui/material/Typography';
-import { useGetBankTransactions } from '../../../../api/bank-transactions.js';
 import { isBetween } from '../../../../utils/format-time.js';
 import PartiesListView from '../parties/view/parties-list-view.jsx';
-import CustomPopover, { usePopover } from '../../../../components/custom-popover/index.js';
+import { usePopover } from '../../../../components/custom-popover/index.js';
 import PartyNewEditForm from '../parties/party-new-edit-form.jsx';
 import RouterLink from '../../../../routes/components/router-link.jsx';
 import { useGetPayment } from '../../../../api/payment-in-out.js';
 import axiosInstance from 'src/utils/axios.js';
 import { useAuthContext } from 'src/auth/hooks';
-import BankAccountTableFiltersResult from '../../bank-account/bank-account-table-filters-result.jsx';
 import PaymentInOutTableFiltersResult from '../payment-in-out-table-filters-result.jsx';
 import { useGetParty } from '../../../../api/party.js';
 
@@ -98,11 +96,13 @@ export default function PaymentInOutListView() {
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
+
   useEffect(() => {
     {
       dataFiltered.length > 0 && fetchStates();
     }
   }, [payment]);
+
   const receivableAmt = party.reduce(
     (prev, next) => prev + (Number(next.amount <= 0 && next?.amount) || 0),
     0
@@ -112,6 +112,7 @@ export default function PaymentInOutListView() {
     (prev, next) => prev + (Number(next.amount >= 0 && next?.amount) || 0),
     0
   );
+
   const receivable = dataFiltered.reduce((prev, next) => {
     if (next.status === 'Payment In') {
       const cash = Number(next?.paymentDetail?.cashAmount || 0);
@@ -141,7 +142,6 @@ export default function PaymentInOutListView() {
 
   const handleFilters = useCallback(
     (name, value) => {
-      console.log('name', value);
       table.onResetPage();
       setFilters((prevState) => ({
         ...prevState,
@@ -187,7 +187,6 @@ export default function PaymentInOutListView() {
   const handleDeleteRows = useCallback(() => {
     const deleteRows = dataFiltered.filter((row) => table.selected.includes(row._id));
     const deleteIds = deleteRows.map((row) => row._id);
-
     deleteIds.forEach((id) => handleDelete(id));
 
     table.onUpdatePageDeleteRows({
@@ -202,7 +201,6 @@ export default function PaymentInOutListView() {
 
   function fetchStates() {
     const accountMap = new Map();
-
     accountMap.set('cash', { transactionsType: 'Cash' });
 
     dataFiltered?.forEach((data) => {
@@ -236,9 +234,9 @@ export default function PaymentInOutListView() {
                 display="flex"
                 flexDirection={isMobile ? 'column' : 'row'}
                 alignItems={isMobile ? 'flex-start' : 'center'}
-                gap={ isMobile ? 1 : 5}
+                gap={isMobile ? 1 : 5}
               >
-              Payment In/Out :{' '}
+                Payment In/Out :{' '}
                 <strong style={{ marginRight: isMobile ? 0 : 20, fontSize: isMobile ? 12 : 20 }}>
                   Receivable : -
                   <span
@@ -435,14 +433,6 @@ export default function PaymentInOutListView() {
           </Button>
         }
       />
-      {/*<CustomPopover*/}
-      {/*  open={partyPopover.open}*/}
-      {/*  onClose={partyPopover.onClose}*/}
-      {/*  arrow="right-top"*/}
-      {/*  sx={{ width: 400 }}*/}
-      {/*>*/}
-      {/*  /!*<PartyNewEditForm onClose={partyPopover.onClose} />*!/*/}
-      {/*</CustomPopover>*/}
     </>
   );
 }

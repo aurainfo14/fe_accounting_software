@@ -21,6 +21,7 @@ export default function PaymentInOutTableFiltersResult({
   const handleRemoveKeyword = useCallback(() => {
     onFilters('name', '');
   }, [onFilters]);
+
   const handleRemoveParty = useCallback(() => {
     onFilters('party', {});
     setPartyDetails({});

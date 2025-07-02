@@ -2,17 +2,14 @@ import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import { useBoolean } from 'src/hooks/use-boolean.js';
-import Label from 'src/components/label/index.js';
 import Iconify from 'src/components/iconify/index.js';
 import { ConfirmDialog } from 'src/components/custom-dialog/index.js';
 import CustomPopover, { usePopover } from 'src/components/custom-popover/index.js';
 import { useAuthContext } from '../../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../../api/config.js';
-// import { getResponsibilityValue } from '../../../../permission/permission.js';
 import { grey } from '../../../../theme/palette.js';
 import PartyNewEditForm from './party-new-edit-form.jsx';
 import { useState } from 'react';
@@ -58,13 +55,9 @@ export default function PartiesTableRow({
           {Math.abs(row.amount).toFixed(2)}
         </TableCell>
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          {/*{getResponsibilityValue('delete_party', configs, user) ||*/}
-          {/*getResponsibilityValue('update_party', configs, user) ? (*/}
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
           </IconButton>
-          {/*) : ( ''*/}
-          {/*)}*/}
         </TableCell>
       </TableRow>
       <CustomPopover
@@ -73,7 +66,6 @@ export default function PartiesTableRow({
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        {/*{getResponsibilityValue('delete_party', configs, user) && (*/}
         <MenuItem
           onClick={() => {
             confirm.onTrue();
@@ -84,13 +76,10 @@ export default function PartiesTableRow({
           <Iconify icon="solar:trash-bin-trash-bold" />
           Delete
         </MenuItem>
-        {/*)}*/}
-        {/*{getResponsibilityValue('update_party', configs, user) && (*/}
         <MenuItem onClick={handleEdit}>
           <Iconify icon="solar:pen-bold" />
           Edit
         </MenuItem>
-        {/*)}*/}
       </CustomPopover>
       <ConfirmDialog
         open={confirm.value}

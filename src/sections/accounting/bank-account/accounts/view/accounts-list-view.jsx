@@ -1,10 +1,8 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback } from 'react';
-import Card from '@mui/material/Card';
+import { useCallback, useState } from 'react';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
@@ -14,17 +12,15 @@ import { useBoolean } from 'src/hooks/use-boolean.js';
 import Iconify from 'src/components/iconify/index.js';
 import { useSnackbar } from 'src/components/snackbar/index.js';
 import { ConfirmDialog } from 'src/components/custom-dialog/index.js';
-import { useSettingsContext } from 'src/components/settings/index.js';
-import CustomBreadcrumbs from 'src/components/custom-breadcrumbs/index.js';
 import {
-  useTable,
   emptyRows,
-  TableNoData,
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
-  TableSelectedAction,
+  TableNoData,
   TablePaginationCustom,
+  TableSelectedAction,
+  useTable,
 } from 'src/components/table/index.js';
 
 import axios from 'axios';
@@ -33,23 +29,9 @@ import AccountsToolbar from '../accounts-toolbar.jsx';
 import AccountsTableFiltersResult from '../accounts-table-filters-result.jsx';
 import AccountsTableRow from '../accounts-table-row.jsx';
 import { useAuthContext } from '../../../../../auth/hooks/index.js';
-import { useGetConfigs } from '../../../../../api/config.js';
-// import { getResponsibilityValue } from '../../../../../permission/permission.js';
 import { LoadingScreen } from '../../../../../components/loading-screen/index.js';
-import TableRow from '@mui/material/TableRow';
-import { grey } from '../../../../../theme/palette.js';
-import { TableCell } from '@mui/material';
 
 // ----------------------------------------------------------------------
-
-const STATUS_OPTIONS = [
-  { value: 'all', label: 'All' },
-  { value: 'true', label: 'Active' },
-  {
-    value: 'false',
-    label: 'In Active',
-  },
-];
 
 const TABLE_HEAD = [
   { id: 'accountName', label: 'Bank Acc.' },
@@ -61,47 +43,12 @@ const defaultFilters = {
   isActive: 'all',
 };
 
-const data = [
-  {
-    type: 'Payment-in',
-    name: 'Heet kumar timbadiya',
-    date: '01/04/2025',
-    amount: 50000,
-  },
-  {
-    type: 'Payment-Out',
-    name: 'sujal kumar paghdal',
-    date: '01/04/2025',
-    amount: 50000,
-  },
-  {
-    type: 'Payment-Out',
-    name: 'Darshil kumar Thummar',
-    date: '01/04/2025',
-    amount: 50000,
-  },
-  {
-    type: 'Payment-in',
-    name: 'kaushal kumar Sojitra',
-    date: '01/04/2025',
-    amount: 50000,
-  },
-  {
-    type: 'Payment-Out',
-    name: 'Monil kumar kakadiya',
-    date: '01/04/2025',
-    amount: 50000,
-  },
-];
-
 // ----------------------------------------------------------------------
 
 export default function AccountsListView({ accounts, setAccountDetails, accountDetails }) {
   const { enqueueSnackbar } = useSnackbar();
   const { user } = useAuthContext();
-  const { configs } = useGetConfigs();
   const table = useTable();
-  const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
   const [tableData, setTableData] = useState(accounts);
@@ -138,14 +85,13 @@ export default function AccountsListView({ accounts, setAccountDetails, accountD
   }, []);
 
   const handleDelete = async (id) => {
-    // if (!getResponsibilityValue('delete_scheme', configs, user)) {
-    //   enqueueSnackbar('You do not have permission to delete.', { variant: 'error' });
-    //   return;
-    // }
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/scheme`, {
-        data: { ids: id },
-      });
+      const res = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/scheme`,
+        {
+          data: { ids: id },
+        }
+      );
       enqueueSnackbar(res.data.message);
       confirm.onFalse();
       mutate();
@@ -180,13 +126,6 @@ export default function AccountsListView({ accounts, setAccountDetails, accountD
       router.push(paths.dashboard.scheme.edit(id));
     },
     [router]
-  );
-
-  const handleFilterStatus = useCallback(
-    (event, newValue) => {
-      handleFilters('isActive', newValue);
-    },
-    [handleFilters]
   );
 
   if (accounts === []) {
@@ -271,7 +210,9 @@ export default function AccountsListView({ accounts, setAccountDetails, accountD
         </Table>
       </TableContainer>
       <TablePaginationCustom
-        sx={{ '.css-n3104v-MuiToolbar-root-MuiTablePagination-toolbar': { p: 0 , overflow:'hidden'} }}
+        sx={{
+          '.css-n3104v-MuiToolbar-root-MuiTablePagination-toolbar': { p: 0, overflow: 'hidden' },
+        }}
         count={dataFiltered.length}
         page={table.page}
         rowsPerPage={table.rowsPerPage}

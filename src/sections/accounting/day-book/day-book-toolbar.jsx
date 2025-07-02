@@ -7,15 +7,11 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Iconify from 'src/components/iconify/index.js';
 import CustomPopover, { usePopover } from 'src/components/custom-popover/index.js';
-// import RHFExportExcel from '../../../components/hook-form/rhf-export-excel.jsx';
-// import { getResponsibilityValue } from '../../../permission/permission.js';
 import { useAuthContext } from '../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../api/config.js';
 import moment from 'moment/moment.js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Dialog, FormControl, Typography, Autocomplete, Grid, useMediaQuery, useTheme } from '@mui/material';
-import InputLabel from '@mui/material/InputLabel';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import { Autocomplete, Box, Dialog, Grid, useMediaQuery, useTheme } from '@mui/material';
 import { useBoolean } from '../../../hooks/use-boolean.js';
 import { PDFViewer } from '@react-pdf/renderer';
 import DialogActions from '@mui/material/DialogActions';
@@ -95,7 +91,6 @@ export default function DayBookToolbar({
     [onFilters]
   );
 
-  // Responsive styles
   const getInputStyles = () => ({
     input: { height: isMobile ? 10 : 7 },
     label: {
@@ -123,7 +118,6 @@ export default function DayBookToolbar({
     <>
       <Box sx={{ p: isMobile ? 1.5 : 2.5 }}>
         {isMobile ? (
-          /* Mobile Layout */
           <Stack spacing={2}>
             <TextField
               sx={getInputStyles()}
@@ -139,7 +133,6 @@ export default function DayBookToolbar({
                 ),
               }}
             />
-
             <Grid container spacing={1.5}>
               <Grid item xs={12} sm={6}>
                 <Autocomplete
@@ -153,15 +146,10 @@ export default function DayBookToolbar({
                   value={filters.transactions || null}
                   onChange={handleFilterTransactions}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Cash & Bank Transactions"
-                      sx={getInputStyles()}
-                    />
+                    <TextField {...params} label="Cash & Bank Transactions" sx={getInputStyles()} />
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <Autocomplete
                   fullWidth
@@ -169,15 +157,10 @@ export default function DayBookToolbar({
                   value={filters.category || ''}
                   onChange={handleFilterCategory}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Category"
-                      sx={getInputStyles()}
-                    />
+                    <TextField {...params} label="Category" sx={getInputStyles()} />
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <Autocomplete
                   fullWidth
@@ -185,15 +168,10 @@ export default function DayBookToolbar({
                   value={filters.status || ''}
                   onChange={handleFilterStatus}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Type"
-                      sx={getInputStyles()}
-                    />
+                    <TextField {...params} label="Type" sx={getInputStyles()} />
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   label="Start date"
@@ -212,7 +190,6 @@ export default function DayBookToolbar({
                 />
               </Grid>
             </Grid>
-
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
                 onClick={popover.onOpen}
@@ -226,7 +203,6 @@ export default function DayBookToolbar({
             </Box>
           </Stack>
         ) : (
-          /* Desktop/Tablet Layout */
           <Stack
             spacing={2}
             alignItems={{ xs: 'flex-end', md: 'center' }}
@@ -253,7 +229,6 @@ export default function DayBookToolbar({
                   ),
                 }}
               />
-
               <Autocomplete
                 fullWidth
                 options={options || []}
@@ -265,42 +240,27 @@ export default function DayBookToolbar({
                 value={filters.transactions || null}
                 onChange={handleFilterTransactions}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Cash & Bank Transactions"
-                    sx={getInputStyles()}
-                  />
+                  <TextField {...params} label="Cash & Bank Transactions" sx={getInputStyles()} />
                 )}
               />
-
               <Autocomplete
                 fullWidth
                 options={['Payment In', 'Payment Out']}
                 value={filters.category || ''}
                 onChange={handleFilterCategory}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Category"
-                    sx={getInputStyles()}
-                  />
+                  <TextField {...params} label="Category" sx={getInputStyles()} />
                 )}
               />
-
               <Autocomplete
                 fullWidth
                 options={typeOptions || []}
                 value={filters.status || ''}
                 onChange={handleFilterStatus}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Type"
-                    sx={getInputStyles()}
-                  />
+                  <TextField {...params} label="Type" sx={getInputStyles()} />
                 )}
               />
-
               <DatePicker
                 label="Start date"
                 value={filters.startDate ? moment(filters.startDate).toDate() : null}
@@ -317,14 +277,12 @@ export default function DayBookToolbar({
                 sx={getDatePickerStyles()}
               />
             </Stack>
-
             <IconButton onClick={popover.onOpen}>
               <Iconify icon="eva:more-vertical-fill" />
             </IconButton>
           </Stack>
         )}
       </Box>
-
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
@@ -357,7 +315,6 @@ export default function DayBookToolbar({
           whatsapp share
         </MenuItem>
       </CustomPopover>
-
       <Dialog fullScreen open={view.value} onClose={view.onFalse}>
         <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
           <DialogActions sx={{ p: 1.5 }}>

@@ -28,7 +28,7 @@ import {
   useTable,
 } from 'src/components/table/index.js';
 import ExpenceTableToolbar from '../expence-table-toolbar.jsx';
-import ExpenceTableRow from '../expence-table-row.jsx';
+import ExpenseTableRow from '../expence-table-row.jsx';
 import { Grid } from '@mui/material';
 import { LoadingScreen } from '../../../../components/loading-screen/index.js';
 import Typography from '@mui/material/Typography';
@@ -38,10 +38,6 @@ import ExpenceTypeListView from '../expence-type/view/expence-type-list-view.jsx
 import axios from 'axios';
 import { useAuthContext } from '../../../../auth/hooks/index.js';
 import { useGetExpanse } from '../../../../api/expense.js';
-// import { getResponsibilityValue } from '../../../../permission/permission.js';
-import ExpenseTableRow from '../expence-table-row.jsx';
-import { useGetConfigs } from '../../../../api/config.js';
-import { useLightBox } from '../../../../components/lightbox/index.js';
 
 // ----------------------------------------------------------------------
 
@@ -103,7 +99,6 @@ export default function ExpenceListView() {
     0
   );
 
-  // Calculate total by expense type
   const calculateExpenceTypeTotals = (data) => {
     const totals = {};
     data.forEach((item) => {
@@ -127,14 +122,6 @@ export default function ExpenceListView() {
   useEffect(() => {
     setFilters({ ...defaultFilters, expenseType: expenceDetails });
   }, [expenceDetails]);
-
-  const amount =
-    dataFiltered
-      ?.filter((e) => e.category === 'Payment In')
-      ?.reduce((prev, next) => prev + (Number(next?.amount) || 0), 0) -
-    dataFiltered
-      ?.filter((e) => e.category === 'Payment Out')
-      ?.reduce((prev, next) => prev + (Number(next?.amount) || 0), 0);
 
   const dataInPage = dataFiltered?.slice(
     table.page * table?.rowsPerPage,

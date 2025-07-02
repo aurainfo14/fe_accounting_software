@@ -33,7 +33,7 @@ export default function PartyNewEditForm({ partyName, currentParty, open, setOpe
       is: (isBranchUser) => !isBranchUser && storedBranch === 'all',
       then: (schema) => schema.required('Branch is required'),
       otherwise: (schema) => schema.nullable(),
-    })
+    }),
   });
 
   const defaultValues = {
@@ -87,7 +87,6 @@ export default function PartyNewEditForm({ partyName, currentParty, open, setOpe
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-
       let parsedBranch = storedBranch;
       if (storedBranch !== 'all') {
         try {
@@ -109,7 +108,7 @@ export default function PartyNewEditForm({ partyName, currentParty, open, setOpe
       if (currentParty) {
         const res = await axios.put(
           `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/party/${currentParty._id}`,
-          payload,
+          payload
         );
         mutate();
         onClose();
@@ -117,7 +116,7 @@ export default function PartyNewEditForm({ partyName, currentParty, open, setOpe
       } else {
         const res = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/party`,
-          payload,
+          payload
         );
         mutate();
         onClose();
