@@ -22,13 +22,10 @@ export default function IncomeTableFiltersResult({
   }, [onFilters]);
 
   const shortLabel = shortDateLabel(filters.startDate, filters.endDate);
+
   const handleRemoveDate = useCallback(() => {
     onFilters('startDate', null);
     onFilters('endDate', null);
-  }, [onFilters]);
-
-  const handleRemoveStatus = useCallback(() => {
-    onFilters('isActive', 'all');
   }, [onFilters]);
 
   return (

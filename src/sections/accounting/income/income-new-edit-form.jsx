@@ -123,17 +123,6 @@ export default function IncomeNewEditForm({ currentIncome }) {
     formState: { isSubmitting },
   } = methods;
 
-  // useEffect(() => {
-  //   if (currentIncome && currentIncome.invoice) {
-  //     const blob = new Blob([currentIncome.invoice], { type: 'application/pdf' }); // Change MIME type as needed
-  //     const blobUrl = URL.createObjectURL(blob);
-  //     setFile(blobUrl);
-  //
-  //     // Clean up the URL when component unmounts or invoice changes
-  //     return () => URL.revokeObjectURL(blobUrl);
-  //   }
-  // }, [currentIncome]);
-
   useEffect(() => {
     if (watch('paymentMode')) {
       setPaymentMode(watch('paymentMode'));
@@ -189,13 +178,12 @@ export default function IncomeNewEditForm({ currentIncome }) {
     const formData = new FormData();
 
     formData.append('incomeType', data?.incomeType);
-    formData.append('branch',selectedBranchId);
+    formData.append('branch', selectedBranchId);
     formData.append('desc', data?.description);
     formData.append('category', data?.category);
     formData.append('date', data?.date);
 
     for (const [key, value] of Object.entries(paymentDetail)) {
-
       formData.append(`paymentDetail[${key}]`, value);
     }
 
@@ -503,10 +491,6 @@ export default function IncomeNewEditForm({ currentIncome }) {
                           label="Cash Amount"
                           req={'red'}
                           inputProps={{ min: 0 }}
-                          // onChange={(e) => {
-                          //   field.onChange(e);
-                          //   handleCashAmountChange(`e);
-                          // }}
                         />
                       )}
                     />

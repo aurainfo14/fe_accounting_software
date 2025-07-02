@@ -9,11 +9,7 @@ import Label from 'src/components/label/index.js';
 import Iconify from 'src/components/iconify/index.js';
 import { ConfirmDialog } from 'src/components/custom-dialog/index.js';
 import CustomPopover, { usePopover } from 'src/components/custom-popover/index.js';
-import { useAuthContext } from '../../../auth/hooks/index.js';
-import { useGetConfigs } from '../../../api/config.js';
-// import { getResponsibilityValue } from '../../../permission/permission.js';
 import { fDate } from '../../../utils/format-time.js';
-// import { statusColorMap } from '../../../assets/data/index.js';
 import { Box } from '@mui/system';
 import React from 'react';
 import { statusColorMap } from '../../../assets/data/index.js';
@@ -29,8 +25,6 @@ export default function BankAccountTableRow({
 }) {
   const confirm = useBoolean();
   const popover = usePopover();
-  const { user } = useAuthContext();
-  const { configs } = useGetConfigs();
 
   return (
     <>
@@ -76,12 +70,9 @@ export default function BankAccountTableRow({
           row.status
         ) ? (
           <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-            {/*{getResponsibilityValue('delete_scheme', configs, user) ||*/}
-            {/*getResponsibilityValue('update_scheme', configs, user) ? (*/}
-              <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
-                <Iconify icon="eva:more-vertical-fill" />
-              </IconButton>
-            {/*) : null}*/}
+            <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
+              <Iconify icon="eva:more-vertical-fill" />
+            </IconButton>
           </TableCell>
         ) : (
           <TableCell></TableCell>
@@ -93,29 +84,25 @@ export default function BankAccountTableRow({
         arrow="right-top"
         sx={{ width: 140 }}
       >
-        {/*{getResponsibilityValue('delete_scheme', configs, user) && (*/}
-          <MenuItem
-            onClick={() => {
-              confirm.onTrue();
-              popover.onClose();
-            }}
-            sx={{ color: 'error.main' }}
-          >
-            <Iconify icon="solar:trash-bin-trash-bold" />
-            Delete
-          </MenuItem>
-        {/*)}*/}
-        {/*{getResponsibilityValue('update_scheme', configs, user) && (*/}
-          <MenuItem
-            onClick={() => {
-              onEditRow();
-              popover.onClose();
-            }}
-          >
-            <Iconify icon="solar:pen-bold" />
-            Edit
-          </MenuItem>
-        {/*)}*/}
+        <MenuItem
+          onClick={() => {
+            confirm.onTrue();
+            popover.onClose();
+          }}
+          sx={{ color: 'error.main' }}
+        >
+          <Iconify icon="solar:trash-bin-trash-bold" />
+          Delete
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            onEditRow();
+            popover.onClose();
+          }}
+        >
+          <Iconify icon="solar:pen-bold" />
+          Edit
+        </MenuItem>
       </CustomPopover>
       <ConfirmDialog
         open={confirm.value}

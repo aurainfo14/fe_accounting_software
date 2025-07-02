@@ -7,16 +7,11 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Iconify from 'src/components/iconify/index.js';
 import CustomPopover, { usePopover } from 'src/components/custom-popover/index.js';
-// import RHFExportExcel from '../../../components/hook-form/rhf-export-excel.jsx';
-// import { getResponsibilityValue } from '../../../permission/permission.js';
 import { useAuthContext } from '../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../api/config.js';
 import moment from 'moment/moment.js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Dialog, DialogActions, FormControl, useMediaQuery, useTheme, Grid } from '@mui/material';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import { Box, Dialog, DialogActions, Grid, useMediaQuery, useTheme } from '@mui/material';
 import Button from '@mui/material/Button';
 import { PDFViewer } from '@react-pdf/renderer';
 import { useBoolean } from '../../../hooks/use-boolean.js';
@@ -26,14 +21,14 @@ import Autocomplete from '@mui/material/Autocomplete';
 // ----------------------------------------------------------------------
 
 export default function CashInTableToolbar({
-                                             filters,
-                                             onFilters,
-                                             schemes,
-                                             dateError,
-                                             options,
-                                             cashData,
-                                             totalAmount,
-                                           }) {
+  filters,
+  onFilters,
+  schemes,
+  dateError,
+  options,
+  cashData,
+  totalAmount,
+}) {
   const popover = usePopover();
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
@@ -92,21 +87,6 @@ export default function CashInTableToolbar({
     [onFilters]
   );
 
-  const handleFilterCategory = useCallback(
-    (event) => {
-      onFilters('category', event.target.value);
-    },
-    [onFilters]
-  );
-
-  const handleFilterStatus = useCallback(
-    (event) => {
-      onFilters('status', event.target.value);
-    },
-    [onFilters]
-  );
-
-  // Responsive styles
   const getInputStyles = () => ({
     input: { height: isMobile ? 10 : 7 },
     label: {
@@ -137,10 +117,8 @@ export default function CashInTableToolbar({
           p: isMobile ? 1.5 : 2.5,
         }}
       >
-        {/* Mobile Layout */}
         {isMobile ? (
           <Stack spacing={2}>
-            {/* Search Bar - Full width on mobile */}
             <TextField
               sx={getInputStyles()}
               fullWidth
@@ -155,8 +133,6 @@ export default function CashInTableToolbar({
                 ),
               }}
             />
-
-            {/* Filters Grid - 2 columns on mobile */}
             <Grid container spacing={1.5}>
               <Grid item xs={12} sm={6}>
                 <Autocomplete
@@ -167,15 +143,10 @@ export default function CashInTableToolbar({
                     onFilters('category', newValue || '');
                   }}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Category"
-                      sx={getInputStyles()}
-                    />
+                    <TextField {...params} label="Category" sx={getInputStyles()} />
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <Autocomplete
                   fullWidth
@@ -185,15 +156,10 @@ export default function CashInTableToolbar({
                     onFilters('status', newValue || '');
                   }}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Type"
-                      sx={getInputStyles()}
-                    />
+                    <TextField {...params} label="Type" sx={getInputStyles()} />
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   label="Start date"
@@ -211,7 +177,6 @@ export default function CashInTableToolbar({
                   sx={getDatePickerStyles()}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   label="End date"
@@ -232,14 +197,12 @@ export default function CashInTableToolbar({
                 />
               </Grid>
             </Grid>
-
-            {/* Action Button */}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
                 onClick={popover.onOpen}
                 sx={{
                   bgcolor: 'action.hover',
-                  '&:hover': { bgcolor: 'action.selected' }
+                  '&:hover': { bgcolor: 'action.selected' },
                 }}
               >
                 <Iconify icon="eva:more-vertical-fill" />
@@ -247,7 +210,6 @@ export default function CashInTableToolbar({
             </Box>
           </Stack>
         ) : (
-          /* Desktop/Tablet Layout */
           <Stack
             spacing={2}
             alignItems={{ xs: 'flex-end', md: 'center' }}
@@ -277,7 +239,6 @@ export default function CashInTableToolbar({
                   ),
                 }}
               />
-
               <Autocomplete
                 fullWidth
                 options={['Payment In', 'Payment Out']}
@@ -286,14 +247,9 @@ export default function CashInTableToolbar({
                   onFilters('category', newValue || '');
                 }}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Category"
-                    sx={getInputStyles()}
-                  />
+                  <TextField {...params} label="Category" sx={getInputStyles()} />
                 )}
               />
-
               <Autocomplete
                 fullWidth
                 options={options}
@@ -302,14 +258,9 @@ export default function CashInTableToolbar({
                   onFilters('status', newValue || '');
                 }}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Type"
-                    sx={getInputStyles()}
-                  />
+                  <TextField {...params} label="Type" sx={getInputStyles()} />
                 )}
               />
-
               <DatePicker
                 label="Start date"
                 value={filters.startDate ? moment(filters.startDate).toDate() : null}
@@ -325,7 +276,6 @@ export default function CashInTableToolbar({
                 }}
                 sx={getDatePickerStyles()}
               />
-
               <DatePicker
                 label="End date"
                 value={filters.endDate}
@@ -344,21 +294,18 @@ export default function CashInTableToolbar({
                 sx={getDatePickerStyles()}
               />
             </Stack>
-
             <IconButton onClick={popover.onOpen}>
               <Iconify icon="eva:more-vertical-fill" />
             </IconButton>
           </Stack>
         )}
       </Box>
-
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
         sx={{ width: 'auto' }}
       >
-        {/*{getResponsibilityValue('print_scheme_detail', configs, user) && (*/}
         <>
           <MenuItem
             onClick={() => {
@@ -377,11 +324,7 @@ export default function CashInTableToolbar({
             <Iconify icon="ant-design:file-pdf-filled" />
             PDF
           </MenuItem>
-          {/*<MenuItem>*/}
-          {/*  <RHFExportExcel data={schemes} fileName="SchemeData" sheetName="SchemeDetails" />*/}
-          {/*</MenuItem>*/}
         </>
-        {/*// )}*/}
         <MenuItem
           onClick={() => {
             popover.onClose();
@@ -391,8 +334,6 @@ export default function CashInTableToolbar({
           WhatsApp Share
         </MenuItem>
       </CustomPopover>
-
-      {/* Responsive PDF Dialog */}
       <Dialog fullScreen open={view.value} onClose={view.onFalse}>
         <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
           <DialogActions sx={{ p: 1.5 }}>

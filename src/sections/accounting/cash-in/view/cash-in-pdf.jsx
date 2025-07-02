@@ -1,10 +1,8 @@
 import React, { useMemo } from 'react';
-import { Page, View, Text, Document, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Font, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { fDate } from 'src/utils/format-time.js';
 import InvoiceHeader from '../../../../components/invoise/invoice-header.jsx';
-import Typography from '@mui/material/Typography';
 
-// Register fonts
 Font.register({
   family: 'Roboto',
   fonts: [
@@ -178,6 +176,7 @@ export default function CashInPdf({ configs, cashData, filterData }) {
     .map((row, index) =>
       renderRow(row, index, index === rowsPerPageFirst - 1 && cashData.length === rowsPerPageFirst)
     );
+
   const amount =
     cashData
       .filter((e) => e.category === 'Payment In')
@@ -186,7 +185,6 @@ export default function CashInPdf({ configs, cashData, filterData }) {
       .filter((e) => e.category === 'Payment Out')
       .reduce((prev, next) => prev + (Number(next?.amount) || 0), 0);
 
-  // Add the first page
   pages.push(
     <Page key={0} size="A4" style={styles.page} orientation="landscape">
       <InvoiceHeader configs={configs} landscape={true} />
@@ -198,7 +196,6 @@ export default function CashInPdf({ configs, cashData, filterData }) {
             <Text style={styles.subText}>{item.value || '-'}</Text>
           </View>
         ))}
-
         <Text style={{ fontSize: 12, fontWeight: 'bold', marginBottom: 15 }}>
           Cash In Hand :{' '}
           <Text style={{ color: amount >= 0 ? 'green' : 'red' }}>
@@ -218,7 +215,6 @@ export default function CashInPdf({ configs, cashData, filterData }) {
       >
         <Text style={styles.termsAndConditionsHeaders}>CASH IN HAND</Text>
       </View>
-
       <View style={{ flexGrow: 1, padding: '12px' }}>
         <View style={styles.table}>
           {renderTableHeader()}

@@ -32,7 +32,6 @@ import axios from 'axios';
 import { useAuthContext } from '../../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../../api/config.js';
 import { LoadingScreen } from '../../../../components/loading-screen/index.js';
-// import { getResponsibilityValue } from '../../../../permission/permission.js';
 import { useGetCashTransactions } from '../../../../api/cash-transactions.js';
 import { isBetween } from '../../../../utils/format-time.js';
 import Typography from '@mui/material/Typography';
@@ -132,10 +131,6 @@ export default function CashInListView() {
   }, []);
 
   const handleDelete = async (id) => {
-    // if (!getResponsibilityValue('delete_scheme', configs, user)) {
-    //   enqueueSnackbar('You do not have permission to delete.', { variant: 'error' });
-    //   return;
-    // }
     try {
       const res = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/transfer/${id}`

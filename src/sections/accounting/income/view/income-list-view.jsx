@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -17,14 +17,14 @@ import { ConfirmDialog } from 'src/components/custom-dialog/index.js';
 import { useSettingsContext } from 'src/components/settings/index.js';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs/index.js';
 import {
-  useTable,
   emptyRows,
-  TableNoData,
   getComparator,
   TableEmptyRows,
   TableHeadCustom,
-  TableSelectedAction,
+  TableNoData,
   TablePaginationCustom,
+  TableSelectedAction,
+  useTable,
 } from 'src/components/table/index.js';
 import IncomeToolbar from '../income-toolbar.jsx';
 import IncomeTableFiltersResult from '../income-table-filters-result.jsx';
@@ -33,11 +33,8 @@ import axios from 'axios';
 import { useAuthContext } from '../../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../../api/config.js';
 import { LoadingScreen } from '../../../../components/loading-screen/index.js';
-// import { getResponsibilityValue } from '../../../../permission/permission.js';
-import { useGetCashTransactions } from '../../../../api/cash-transactions.js';
 import { isBetween } from '../../../../utils/format-time.js';
 import Typography from '@mui/material/Typography';
-import { Box } from '@mui/material';
 import { RouterLink } from '../../../../routes/components/index.js';
 import { useGetIncome } from '../../../../api/income.js';
 
@@ -68,7 +65,7 @@ const defaultFilters = {
   name: '',
   startDate: null,
   endDate: null,
-  transactions:null
+  transactions: null,
 };
 
 // ----------------------------------------------------------------------
@@ -109,6 +106,7 @@ export default function IncomeListView() {
     }));
     setSrData(updatedData);
   }, [income]);
+
   useEffect(() => {
     {
       dataFiltered.length > 0 && fetchStates();
@@ -132,10 +130,6 @@ export default function IncomeListView() {
   }, []);
 
   const handleDelete = async (id) => {
-    // if (!getResponsibilityValue('delete_scheme', configs, user)) {
-    //   enqueueSnackbar('You do not have permission to delete.', { variant: 'error' });
-    //   return;
-    // }
     try {
       const res = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/income/${id}`
@@ -151,7 +145,6 @@ export default function IncomeListView() {
   const handleDeleteRow = useCallback(
     (id) => {
       handleDelete([id]);
-
       table.onUpdatePageDeleteRow(dataInPage.length);
     },
     [dataInPage.length, enqueueSnackbar, table, tableData]
@@ -179,9 +172,9 @@ export default function IncomeListView() {
   if (incomeLoading) {
     return <LoadingScreen />;
   }
+
   function fetchStates() {
     const accountMap = new Map();
-
     accountMap.set('cash', { transactionsType: 'Cash' });
 
     dataFiltered?.forEach((data) => {
@@ -208,6 +201,7 @@ export default function IncomeListView() {
     (prev, next) => prev + (Number(next?.paymentDetail?.cashAmount) || 0),
     0
   );
+
   const bank = dataFiltered.reduce(
     (prev, next) => prev + (Number(next?.paymentDetail?.bankAmount) || 0),
     0
@@ -247,7 +241,12 @@ export default function IncomeListView() {
           }}
         />
         <Card>
-          <IncomeToolbar filters={filters} onFilters={handleFilters} options={options} incomeData={dataFiltered} />
+          <IncomeToolbar
+            filters={filters}
+            onFilters={handleFilters}
+            options={options}
+            incomeData={dataFiltered}
+          />
           {canReset && (
             <IncomeTableFiltersResult
               filters={filters}
@@ -359,7 +358,7 @@ export default function IncomeListView() {
 
 // ----------------------------------------------------------------------
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { name, startDate, endDate,transactions } = filters;
+  const { name, startDate, endDate, transactions } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {

@@ -13,21 +13,17 @@ import moment from 'moment/moment.js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import {
   Box,
-  Dialog,
-  DialogActions,
-  FormControl,
-  Typography,
-  InputLabel,
-  Select,
-  OutlinedInput,
   Button,
-  Menu,
-  useMediaQuery,
-  useTheme,
-  Grid,
   Card,
   CardContent,
   Collapse,
+  Dialog,
+  DialogActions,
+  Grid,
+  Menu,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import { PDFViewer } from '@react-pdf/renderer';
 import BankAccountPdf from './view/bank-account-pdf.jsx';
@@ -35,15 +31,15 @@ import { useBoolean } from '../../../hooks/use-boolean.js';
 import Autocomplete from '@mui/material/Autocomplete';
 
 export default function BankAccountTableToolbar({
-                                                  filters,
-                                                  onFilters,
-                                                  schemes,
-                                                  dateError,
-                                                  accountDetails,
-                                                  options,
-                                                  onTransferTypeSelect,
-                                                  bankData,
-                                                }) {
+  filters,
+  onFilters,
+  schemes,
+  dateError,
+  accountDetails,
+  options,
+  onTransferTypeSelect,
+  bankData,
+}) {
   const popover = usePopover();
   const { user } = useAuthContext();
   const { configs } = useGetConfigs();
@@ -108,21 +104,6 @@ export default function BankAccountTableToolbar({
     [onFilters]
   );
 
-  const handleFilterCategory = useCallback(
-    (event) => {
-      onFilters('category', event.target.value);
-    },
-    [onFilters]
-  );
-
-  const handleFilterStatus = useCallback(
-    (event) => {
-      onFilters('status', event.target.value);
-    },
-    [onFilters]
-  );
-
-  // Responsive styles
   const getInputStyles = () => ({
     input: { height: isMobile ? 10 : 7 },
     label: {
@@ -156,10 +137,8 @@ export default function BankAccountTableToolbar({
 
   return (
     <>
-      {/* Bank Account Information Section */}
       <Box sx={{ p: isMobile ? 1.5 : 2.5, pb: 0 }}>
         {isMobile ? (
-          /* Mobile: Collapsible Card Layout */
           <Card variant="outlined" sx={{ mb: 2 }}>
             <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
               <Box
@@ -183,7 +162,6 @@ export default function BankAccountTableToolbar({
                   />
                 </IconButton>
               </Box>
-
               <Collapse in={showBankDetails}>
                 <Grid container spacing={1}>
                   {bankAccountInfo.map((info) => (
@@ -201,7 +179,6 @@ export default function BankAccountTableToolbar({
                   ))}
                 </Grid>
               </Collapse>
-
               {!showBankDetails && (
                 <Typography variant="body2" sx={{ color: 'text.secondary', mt: 0.5 }}>
                   {filters.account.bankName} - {filters.account.accountNumber}
@@ -210,7 +187,6 @@ export default function BankAccountTableToolbar({
             </CardContent>
           </Card>
         ) : (
-          /* Desktop: Traditional Layout */
           <Box
             sx={{
               display: 'flex',
@@ -220,7 +196,13 @@ export default function BankAccountTableToolbar({
               gap: isTablet ? 2 : 0,
             }}
           >
-            <Box sx={{ display: 'flex', flexDirection: isTablet ? 'row' : 'column', gap: isTablet ? 4 : 0 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: isTablet ? 'row' : 'column',
+                gap: isTablet ? 4 : 0,
+              }}
+            >
               <Box>
                 {bankAccountInfo.slice(0, 3).map((info) => (
                   <Typography
@@ -259,7 +241,6 @@ export default function BankAccountTableToolbar({
                 </Box>
               )}
             </Box>
-
             <Box sx={{ mt: isTablet ? 0 : 0 }}>
               <Button
                 variant="contained"
@@ -267,7 +248,7 @@ export default function BankAccountTableToolbar({
                 sx={{
                   height: 40,
                   minWidth: isTablet ? 200 : 'auto',
-                  width: isTablet ? '100%' : 'auto'
+                  width: isTablet ? '100%' : 'auto',
                 }}
                 endIcon={<Iconify icon="eva:chevron-down-fill" />}
               >
@@ -276,8 +257,6 @@ export default function BankAccountTableToolbar({
             </Box>
           </Box>
         )}
-
-        {/* Transfer Type Button for Mobile */}
         {isMobile && (
           <Box sx={{ mb: 2 }}>
             <Button
@@ -292,11 +271,8 @@ export default function BankAccountTableToolbar({
           </Box>
         )}
       </Box>
-
-      {/* Filters Section */}
       <Box sx={{ p: isMobile ? 1.5 : 2.5 }}>
         {isMobile ? (
-          /* Mobile Layout */
           <Stack spacing={2}>
             <TextField
               sx={getInputStyles()}
@@ -312,7 +288,6 @@ export default function BankAccountTableToolbar({
                 ),
               }}
             />
-
             <Grid container spacing={1.5}>
               <Grid item xs={12} sm={6}>
                 <Autocomplete
@@ -327,7 +302,6 @@ export default function BankAccountTableToolbar({
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <Autocomplete
                   fullWidth
@@ -341,7 +315,6 @@ export default function BankAccountTableToolbar({
                   )}
                 />
               </Grid>
-
               <Grid item xs={6} sm={6}>
                 <DatePicker
                   label="Start date"
@@ -359,7 +332,6 @@ export default function BankAccountTableToolbar({
                   sx={getDatePickerStyles()}
                 />
               </Grid>
-
               <Grid item xs={6} sm={6}>
                 <DatePicker
                   label="End date"
@@ -380,7 +352,6 @@ export default function BankAccountTableToolbar({
                 />
               </Grid>
             </Grid>
-
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
                 onClick={popover.onOpen}
@@ -394,7 +365,6 @@ export default function BankAccountTableToolbar({
             </Box>
           </Stack>
         ) : (
-          /* Desktop/Tablet Layout */
           <Stack
             spacing={2}
             alignItems={{ xs: 'flex-end', md: 'center' }}
@@ -421,7 +391,6 @@ export default function BankAccountTableToolbar({
                   ),
                 }}
               />
-
               <Autocomplete
                 fullWidth
                 options={['Payment In', 'Payment Out']}
@@ -433,7 +402,6 @@ export default function BankAccountTableToolbar({
                   <TextField {...params} label="Category" sx={getInputStyles()} />
                 )}
               />
-
               <Autocomplete
                 fullWidth
                 options={options}
@@ -445,7 +413,6 @@ export default function BankAccountTableToolbar({
                   <TextField {...params} label="Type" sx={getInputStyles()} />
                 )}
               />
-
               <DatePicker
                 label="Start date"
                 value={filters.startDate ? moment(filters.startDate).toDate() : null}
@@ -461,7 +428,6 @@ export default function BankAccountTableToolbar({
                 }}
                 sx={getDatePickerStyles()}
               />
-
               <DatePicker
                 label="End date"
                 value={filters.endDate}
@@ -480,15 +446,12 @@ export default function BankAccountTableToolbar({
                 sx={getDatePickerStyles()}
               />
             </Stack>
-
             <IconButton onClick={popover.onOpen}>
               <Iconify icon="eva:more-vertical-fill" />
             </IconButton>
           </Stack>
         )}
       </Box>
-
-      {/* Transfer Type Menu */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -496,7 +459,7 @@ export default function BankAccountTableToolbar({
         PaperProps={{
           sx: {
             minWidth: isMobile ? 280 : 250,
-          }
+          },
         }}
       >
         <MenuItem onClick={() => handleTransferTypeSelect('Bank To Bank')}>
@@ -516,8 +479,6 @@ export default function BankAccountTableToolbar({
           Adjust Bank Balance
         </MenuItem>
       </Menu>
-
-      {/* Print Popover */}
       <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
@@ -534,8 +495,6 @@ export default function BankAccountTableToolbar({
           Print
         </MenuItem>
       </CustomPopover>
-
-      {/* Responsive PDF Dialog */}
       <Dialog fullScreen open={view.value} onClose={view.onFalse}>
         <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
           <DialogActions sx={{ p: 1.5 }}>

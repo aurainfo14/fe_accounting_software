@@ -107,6 +107,7 @@ export default function TransferDialog({
       reset(defaultValues);
     }
   }, [open, transferType, reset, currentTransfer]);
+
   const onFormSubmit = async (values) => {
     let parsedBranch = storedBranch;
     if (storedBranch !== 'all') {
@@ -236,7 +237,7 @@ export default function TransferDialog({
                 label="To"
                 req="red"
                 fullWidth
-                options={bankAccount.filter((account) => account._id !== (watch('from')?._id))}
+                options={bankAccount.filter((account) => account._id !== watch('from')?._id)}
                 getOptionLabel={(option) =>
                   `${option.bankName} (${option.accountHolderName})` || ''
                 }

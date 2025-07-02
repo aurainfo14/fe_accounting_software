@@ -7,13 +7,17 @@ import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Iconify from 'src/components/iconify/index.js';
 import CustomPopover, { usePopover } from 'src/components/custom-popover/index.js';
-// import RHFExportExcel from '../../../components/hook-form/rhf-export-excel.jsx';
 import moment from 'moment/moment.js';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Box, Dialog, FormControl, Typography, Autocomplete, Grid, useMediaQuery, useTheme } from '@mui/material';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
-import OutlinedInput from '@mui/material/OutlinedInput';
+import {
+  Autocomplete,
+  Box,
+  Dialog,
+  Grid,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { useBoolean } from '../../../hooks/use-boolean.js';
 import { PDFViewer } from '@react-pdf/renderer';
 import ExpencePdf from './view/expence-pdf.jsx';
@@ -24,15 +28,15 @@ import Button from '@mui/material/Button';
 // ----------------------------------------------------------------------
 
 export default function ExpenceTableToolbar({
-                                              filters,
-                                              onFilters,
-                                              schemes,
-                                              dateError,
-                                              expenceDetails,
-                                              options,
-                                              categoryOptions,
-                                              expenceData,
-                                            }) {
+  filters,
+  onFilters,
+  schemes,
+  dateError,
+  expenceDetails,
+  options,
+  categoryOptions,
+  expenceData,
+}) {
   const popover = usePopover();
   const [startDateOpen, setStartDateOpen] = useState(false);
   const [endDateOpen, setEndDateOpen] = useState(false);
@@ -90,20 +94,6 @@ export default function ExpenceTableToolbar({
     [onFilters]
   );
 
-  const handleFilterTransactions = useCallback(
-    (event) => {
-      onFilters('transactions', typeof event.target.value === 'object' ? event.target.value : null);
-    },
-    [onFilters]
-  );
-  const handleFilterCategory = useCallback(
-    (event) => {
-      onFilters('category', event.target.value);
-    },
-    [onFilters]
-  );
-
-  // Responsive styles
   const getInputStyles = () => ({
     input: { height: isMobile ? 10 : 7 },
     label: {
@@ -136,7 +126,6 @@ export default function ExpenceTableToolbar({
       </Box>
       <Box sx={{ p: isMobile ? 1.5 : 2.5 }}>
         {isMobile ? (
-          /* Mobile Layout */
           <Stack spacing={2}>
             <TextField
               sx={getInputStyles()}
@@ -152,7 +141,6 @@ export default function ExpenceTableToolbar({
                 ),
               }}
             />
-
             <Grid container spacing={1.5}>
               <Grid item xs={12} sm={6}>
                 <Autocomplete
@@ -168,34 +156,26 @@ export default function ExpenceTableToolbar({
                   value={filters?.transactions || null}
                   onChange={(_, newValue) => onFilters('transactions', newValue)}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Cash & Bank Transactions"
-                      sx={getInputStyles()}
-                    />
+                    <TextField {...params} label="Cash & Bank Transactions" sx={getInputStyles()} />
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <Autocomplete
                   fullWidth
                   disableClearable
                   size="medium"
                   options={categoryOptions || []}
-                  getOptionLabel={(option) => (typeof option === 'string' ? option : option.label || '')}
+                  getOptionLabel={(option) =>
+                    typeof option === 'string' ? option : option.label || ''
+                  }
                   value={filters?.category || ''}
                   onChange={(_, newValue) => onFilters('category', newValue)}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Category"
-                      sx={getInputStyles()}
-                    />
+                    <TextField {...params} label="Category" sx={getInputStyles()} />
                   )}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   label="Start date"
@@ -213,7 +193,6 @@ export default function ExpenceTableToolbar({
                   sx={getDatePickerStyles()}
                 />
               </Grid>
-
               <Grid item xs={12} sm={6}>
                 <DatePicker
                   label="End date"
@@ -234,7 +213,6 @@ export default function ExpenceTableToolbar({
                 />
               </Grid>
             </Grid>
-
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
                 onClick={popover.onOpen}
@@ -248,7 +226,6 @@ export default function ExpenceTableToolbar({
             </Box>
           </Stack>
         ) : (
-          /* Desktop/Tablet Layout */
           <Stack
             spacing={2}
             alignItems={{ xs: 'flex-end', md: 'center' }}
@@ -275,7 +252,6 @@ export default function ExpenceTableToolbar({
                   ),
                 }}
               />
-
               <Autocomplete
                 fullWidth
                 disableClearable
@@ -289,31 +265,23 @@ export default function ExpenceTableToolbar({
                 value={filters?.transactions || null}
                 onChange={(_, newValue) => onFilters('transactions', newValue)}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Cash & Bank Transactions"
-                    sx={getInputStyles()}
-                  />
+                  <TextField {...params} label="Cash & Bank Transactions" sx={getInputStyles()} />
                 )}
               />
-
               <Autocomplete
                 fullWidth
                 disableClearable
                 size="medium"
                 options={categoryOptions || []}
-                getOptionLabel={(option) => (typeof option === 'string' ? option : option.label || '')}
+                getOptionLabel={(option) =>
+                  typeof option === 'string' ? option : option.label || ''
+                }
                 value={filters?.category || ''}
                 onChange={(_, newValue) => onFilters('category', newValue)}
                 renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Category"
-                    sx={getInputStyles()}
-                  />
+                  <TextField {...params} label="Category" sx={getInputStyles()} />
                 )}
               />
-
               <DatePicker
                 label="Start date"
                 value={filters?.startDate ? moment(filters.startDate).toDate() : null}
@@ -329,7 +297,6 @@ export default function ExpenceTableToolbar({
                 }}
                 sx={getDatePickerStyles()}
               />
-
               <DatePicker
                 label="End date"
                 value={filters?.endDate}
@@ -348,7 +315,6 @@ export default function ExpenceTableToolbar({
                 sx={getDatePickerStyles()}
               />
             </Stack>
-
             <IconButton onClick={popover.onOpen}>
               <Iconify icon="eva:more-vertical-fill" />
             </IconButton>
@@ -379,9 +345,6 @@ export default function ExpenceTableToolbar({
             <Iconify icon="ant-design:file-pdf-filled" />
             PDF
           </MenuItem>
-          {/*<MenuItem>*/}
-          {/*  <RHFExportExcel data={schemes} fileName="SchemeData" sheetName="SchemeDetails" />*/}
-          {/*</MenuItem>*/}
         </>
         <MenuItem
           onClick={() => {

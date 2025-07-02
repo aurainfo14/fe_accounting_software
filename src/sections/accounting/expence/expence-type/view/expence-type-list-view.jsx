@@ -1,16 +1,13 @@
 import isEqual from 'lodash/isEqual';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import TableBody from '@mui/material/TableBody';
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
-import { paths } from 'src/routes/paths.js';
-import { useRouter } from 'src/routes/hooks/index.js';
 import { useBoolean } from 'src/hooks/use-boolean.js';
 import Iconify from 'src/components/iconify/index.js';
-import { useSnackbar } from 'src/components/snackbar/index.js';
 import { ConfirmDialog } from 'src/components/custom-dialog/index.js';
 import {
   emptyRows,
@@ -21,17 +18,10 @@ import {
   TableSelectedAction,
   useTable,
 } from 'src/components/table/index.js';
-import axios from 'axios';
 import ExpenceTypeToolbar from '../expence-type-toolbar.jsx';
 import ExpenceTypeTableFiltersResult from '../expence-type-table-filters-result.jsx';
 import ExpenceTypeTableRow from '../expence-type-table-row.jsx';
-// import { useGetScheme } from '../../../../../api/scheme.js';
-import { useAuthContext } from '../../../../../auth/hooks/index.js';
-import { useGetConfigs } from '../../../../../api/config.js';
-// import { getResponsibilityValue } from '../../../../../permission/permission.js';
 import { LoadingScreen } from '../../../../../components/loading-screen/index.js';
-import TableRow from '@mui/material/TableRow';
-import TableCell from '@mui/material/TableCell';
 import { TablePaginationCustom } from '../../../../../components/table/index.js';
 
 // ----------------------------------------------------------------------
@@ -53,24 +43,14 @@ export default function ExpenceTypeListView({
   setExpenceDetails,
   expenceDetails,
 }) {
-  const { enqueueSnackbar } = useSnackbar();
-  const { user } = useAuthContext();
-  const { configs } = useGetConfigs();
   const table = useTable();
-  const router = useRouter();
   const confirm = useBoolean();
-  const [tableData, setTableData] = useState(expenceTypeTotals);
   const [filters, setFilters] = useState(defaultFilters);
   const dataFiltered = applyFilter({
     inputData: expenceTypeTotals,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
-
-  const dataInPage = dataFiltered?.slice(
-    table.page * table.rowsPerPage,
-    table.page * table.rowsPerPage + table.rowsPerPage
-  );
 
   const denseHeight = table.dense ? 56 : 56 + 20;
   const canReset = !isEqual(defaultFilters, filters);
@@ -90,7 +70,6 @@ export default function ExpenceTypeListView({
   const handleResetFilters = useCallback(() => {
     setFilters(defaultFilters);
   }, []);
-
 
   if (expenceTypeTotals === []) {
     return <LoadingScreen />;
@@ -174,7 +153,9 @@ export default function ExpenceTypeListView({
         </Table>
       </TableContainer>
       <TablePaginationCustom
-        sx={{ '.css-n3104v-MuiToolbar-root-MuiTablePagination-toolbar': { p: 0 , overflow:'hidden'} }}
+        sx={{
+          '.css-n3104v-MuiToolbar-root-MuiTablePagination-toolbar': { p: 0, overflow: 'hidden' },
+        }}
         count={dataFiltered.length}
         page={table.page}
         rowsPerPage={table.rowsPerPage}

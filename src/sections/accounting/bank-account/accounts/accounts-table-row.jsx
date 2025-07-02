@@ -46,7 +46,6 @@ export default function AccountsTableRow({
           {row.balance.toFixed(2)}
         </TableCell>
       </TableRow>
-
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}

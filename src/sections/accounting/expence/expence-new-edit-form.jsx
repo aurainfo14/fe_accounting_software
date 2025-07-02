@@ -47,28 +47,7 @@ export default function ExpenceNewEditForm({ currentExpense }) {
   const paymentSchema =
     paymentMode === 'Bank'
       ? {
-        account: Yup.object().required('Account is required').typeError('Account is required'),
-        bankAmount: Yup.string()
-          .required('Bank Amount is required')
-          .test(
-            'is-positive',
-            'Bank Amount must be a positive number',
-            (value) => parseFloat(value) >= 0
-          ),
-      }
-      : paymentMode === 'Cash'
-        ? {
-          cashAmount: Yup.number()
-            .typeError('Cash Amount must be a valid number')
-            .required('Cash Amount is required')
-            .min(0, 'Cash Amount must be a positive number'),
-        }
-        : {
-          cashAmount: Yup.number()
-            .typeError('Cash Amount must be a valid number')
-            .required('Cash Amount is required')
-            .min(0, 'Cash Amount must be a positive number'),
-
+          account: Yup.object().required('Account is required').typeError('Account is required'),
           bankAmount: Yup.string()
             .required('Bank Amount is required')
             .test(
@@ -76,8 +55,29 @@ export default function ExpenceNewEditForm({ currentExpense }) {
               'Bank Amount must be a positive number',
               (value) => parseFloat(value) >= 0
             ),
-          account: Yup.object().required('Account is required'),
-        };
+        }
+      : paymentMode === 'Cash'
+        ? {
+            cashAmount: Yup.number()
+              .typeError('Cash Amount must be a valid number')
+              .required('Cash Amount is required')
+              .min(0, 'Cash Amount must be a positive number'),
+          }
+        : {
+            cashAmount: Yup.number()
+              .typeError('Cash Amount must be a valid number')
+              .required('Cash Amount is required')
+              .min(0, 'Cash Amount must be a positive number'),
+
+            bankAmount: Yup.string()
+              .required('Bank Amount is required')
+              .test(
+                'is-positive',
+                'Bank Amount must be a positive number',
+                (value) => parseFloat(value) >= 0
+              ),
+            account: Yup.object().required('Account is required'),
+          };
 
   const NewSchema = Yup.object().shape({
     expenseType: Yup.string().required('Expense Type is required'),
@@ -95,9 +95,9 @@ export default function ExpenceNewEditForm({ currentExpense }) {
     () => ({
       branch: currentExpense
         ? {
-          label: currentExpense?.branch?.name,
-          value: currentExpense?.branch?._id,
-        }
+            label: currentExpense?.branch?.name,
+            value: currentExpense?.branch?._id,
+          }
         : null,
       expenseType: currentExpense?.expenseType || '',
       category: currentExpense?.category || '',
@@ -185,10 +185,9 @@ export default function ExpenceNewEditForm({ currentExpense }) {
     formData.append('category', data?.category);
     formData.append('date', data?.date);
 
-      for (const [key, value] of Object.entries(paymentDetail)) {
-
-          formData.append(`paymentDetail[${key}]`, value);
-      }
+    for (const [key, value] of Object.entries(paymentDetail)) {
+      formData.append(`paymentDetail[${key}]`, value);
+    }
 
     if (file) {
       formData.append('invoice', file);
@@ -340,7 +339,7 @@ export default function ExpenceNewEditForm({ currentExpense }) {
     setFile(null);
     setImageSrc(null);
   };
-console.log(watch('account'))
+
   return (
     <FormProvider methods={methods} onSubmit={onSubmit}>
       <Grid container spacing={3}>
@@ -492,10 +491,6 @@ console.log(watch('account'))
                           req={'red'}
                           label="Cash Amount"
                           inputProps={{ min: 0 }}
-                          // onChange={(e) => {
-                          //   field.onChange(e);
-                          //   handleCashAmountChange(`e);
-                          // }}
                         />
                       )}
                     />

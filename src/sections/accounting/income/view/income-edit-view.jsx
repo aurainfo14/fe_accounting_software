@@ -27,7 +27,7 @@ export default function IncomeEditView() {
             href: paths.dashboard.root,
           },
           {
-            name: 'Other Income List',
+            name: 'Income List',
             href: paths.dashboard.accounting.income.list,
           },
           { name: currentIncome?.otherIncomeType },
