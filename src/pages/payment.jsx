@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 
-import { PaymentView } from 'src/sections/payment/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +10,6 @@ export default function PaymentPage() {
         <title> Payment</title>
       </Helmet>
 
-      <PaymentView />
     </>
   );
 }
