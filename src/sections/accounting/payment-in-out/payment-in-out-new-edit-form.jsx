@@ -459,7 +459,7 @@ export default function PaymentInOutNewEditForm({ currentPayment }) {
                       name="cashAmount"
                       control={control}
                       render={({ field }) => (
-                        <RHFTextField {...field} label="Cash Amount" req={'red'} />
+                        <RHFTextField {...field} label="Cash Amount" type="number" req={'red'} />
                       )}
                     />
                   ) : null}
@@ -488,8 +488,8 @@ export default function PaymentInOutNewEditForm({ currentPayment }) {
                           <RHFTextField
                             {...field}
                             label="Bank Amount"
+                            type="number"
                             req={'red'}
-                            disabled={watch('paymentMode') === 'Bank' ? false : true}
                           />
                         )}
                       />

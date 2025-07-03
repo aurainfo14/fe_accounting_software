@@ -490,6 +490,7 @@ export default function IncomeNewEditForm({ currentIncome }) {
                           {...field}
                           label="Cash Amount"
                           req={'red'}
+                          type="number"
                           inputProps={{ min: 0 }}
                         />
                       )}
@@ -521,6 +522,7 @@ export default function IncomeNewEditForm({ currentIncome }) {
                             {...field}
                             label="Bank Amount"
                             req={'red'}
+                            type="number"
                             inputProps={{ min: 0 }}
                           />
                         )}

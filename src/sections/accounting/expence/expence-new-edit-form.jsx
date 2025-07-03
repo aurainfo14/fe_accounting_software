@@ -489,6 +489,7 @@ export default function ExpenceNewEditForm({ currentExpense }) {
                         <RHFTextField
                           {...field}
                           req={'red'}
+                          type="number"
                           label="Cash Amount"
                           inputProps={{ min: 0 }}
                         />
@@ -521,6 +522,7 @@ export default function ExpenceNewEditForm({ currentExpense }) {
                             {...field}
                             label="Bank Amount"
                             req={'red'}
+                            type="number"
                             inputProps={{ min: 0 }}
                           />
                         )}

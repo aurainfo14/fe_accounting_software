@@ -159,8 +159,25 @@ export default function PartyNewEditForm({ partyName, currentParty, open, setOpe
             }}
             mt={2}
           >
-            <RHFTextField name="name" label="Name" req={'red'} />
-            <RHFTextField name="contact" label="Contact" req={'red'} />
+            <RHFTextField
+              name="name"
+              label="Name"
+              req={'red'}
+              onChange={(e) => {
+                const upperName = e.target.value.toUpperCase();
+                setValue('name', upperName);
+              }}
+            />
+            <RHFTextField
+              name="contact"
+              label="Contact"
+              req={'red'}
+              inputProps={{ maxLength: 10 }}
+              onChange={(e) => {
+                const onlyNums = e.target.value.replace(/\D/g, '');
+                setValue('contact', onlyNums.slice(0, 10));
+              }}
+            />
             {user?.role === 'ADMIN' && storedBranch === 'all' && (
               <RHFAutocomplete
                 name="branch"
