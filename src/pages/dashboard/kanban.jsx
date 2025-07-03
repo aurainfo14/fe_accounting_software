@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 
-import { KanbanView } from 'src/sections/kanban/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +10,6 @@ export default function KanbanPage() {
         <title> Dashboard: Kanban</title>
       </Helmet>
 
-      <KanbanView />
     </>
   );
 }

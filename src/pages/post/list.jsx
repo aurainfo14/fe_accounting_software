@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 
-import { PostListHomeView } from 'src/sections/blog/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +10,6 @@ export default function PostListHomePage() {
         <title> Post: List</title>
       </Helmet>
 
-      <PostListHomeView />
     </>
   );
 }

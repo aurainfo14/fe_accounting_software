@@ -379,7 +379,7 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
   }
 
   if (Object.keys(account)?.length) {
-    inputData = inputData?.filter((acc) => account?._id === acc?._id);
+    inputData = inputData?.filter((acc) => account?.bankName === acc?.bankName);
   }
 
   if (!dateError && startDate && endDate) {

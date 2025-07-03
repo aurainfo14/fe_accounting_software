@@ -1,6 +1,5 @@
 import { Helmet } from 'react-helmet-async';
 
-import { ProductShopView } from 'src/sections/product/view';
 
 // ----------------------------------------------------------------------
 
@@ -11,7 +10,6 @@ export default function ShopPage() {
         <title> Product: Shop</title>
       </Helmet>
 
-      <ProductShopView />
     </>
   );
 }
