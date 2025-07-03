@@ -290,22 +290,6 @@ export default function IncomeToolbar({ filters, onFilters, options, dateError, 
           <Iconify icon="solar:printer-minimalistic-bold" />
           Print
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="ant-design:file-pdf-filled" />
-          PDF
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            popover.onClose();
-          }}
-        >
-          <Iconify icon="ic:round-whatsapp" />
-          whatsapp share
-        </MenuItem>
       </CustomPopover>
       <Dialog fullScreen open={view.value} onClose={view.onFalse}>
         <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>

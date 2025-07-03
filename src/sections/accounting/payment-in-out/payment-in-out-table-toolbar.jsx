@@ -338,10 +338,6 @@ export default function PaymentInOutTableToolbar({
           <Iconify icon="mdi:printer" />
           Print
         </MenuItem>
-        <MenuItem onClick={popover.onClose}>
-          <Iconify icon="ic:round-whatsapp" />
-          whatsapp share
-        </MenuItem>
       </CustomPopover>
       <Dialog fullScreen open={view.value} onClose={view.onFalse}>
         <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
