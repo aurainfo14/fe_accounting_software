@@ -21,6 +21,8 @@ import Iconify from '../../../components/iconify/index.js';
 import { UploadBox } from '../../../components/upload/index.js';
 import ReactCrop from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
+import axios from 'axios';
+import { paths } from 'src/routes/paths.js';
 import { useGetBankAccount } from '../../../api/bank-account.js';
 
 // ----------------------------------------------------------------------
