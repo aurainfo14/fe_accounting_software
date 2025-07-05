@@ -29,6 +29,18 @@ import { LoadingScreen } from '../../../../components/loading-screen/index.js';
 import { useGetCashTransactions } from '../../../../api/cash-transactions.js';
 import Typography from '@mui/material/Typography';
 import { useGetBankTransactions } from '../../../../api/bank-transactions.js';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import Box from '@mui/material/Box';
+import { PDFViewer } from '@react-pdf/renderer';
+import DayBookPdf from './branch-pdf.jsx';
+import { useGetCompanyReport } from '../../../../api/report.js';
+import Stack from '@mui/material/Stack';
+import { LocalizationProvider } from '../../../../locales/index.js';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { format } from 'date-fns';
 
 // ----------------------------------------------------------------------
 
@@ -57,11 +69,16 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function DayBookListView() {
-  const { cashTransactions, mutate, cashTransactionsLoading } = useGetCashTransactions();
-  const { bankTransactions, bankTransactionsLoading } = useGetBankTransactions();
+  const [monthYear, setMonthYear] = useState(new Date());
+  const { cashTransactions, cashTransactionsLoading } = useGetCashTransactions();
+  const { bankTransactions } = useGetBankTransactions();
   const table = useTable();
   const settings = useSettingsContext();
   const confirm = useBoolean();
+  const branchPdfDialog = useBoolean();
+  const { companyAllData } = useGetCompanyReport({
+    month: format(monthYear, 'yyyy-MM'),
+  });
   const [filters, setFilters] = useState(defaultFilters);
   const [options, setOptions] = useState([]);
   const [typeOptions, setTypeOptions] = useState([]);
@@ -173,6 +190,32 @@ export default function DayBookListView() {
             { name: `Day Book`, href: paths.dashboard.accounting['day-book'] },
             { name: 'List' },
           ]}
+          action={
+            <Stack direction="row" spacing={1} alignItems="center">
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  views={['year', 'month']}
+                  label="Select Month"
+                  minDate={new Date('2020-01-01')}
+                  maxDate={new Date()}
+                  value={monthYear}
+                  onChange={(newValue) => {
+                    if (newValue) setMonthYear(newValue);
+                  }}
+                  slotProps={{
+                    textField: { size: 'small', variant: 'outlined' },
+                  }}
+                />
+              </LocalizationProvider>
+              <Button
+                variant="contained"
+                startIcon={<Iconify icon="mingcute:add-line" />}
+                onClick={branchPdfDialog.onTrue}
+              >
+                Branch Print
+              </Button>
+            </Stack>
+          }
           sx={{
             mb: { xs: 3, md: 1 },
           }}
@@ -265,6 +308,20 @@ export default function DayBookListView() {
           />
         </Card>
       </Container>
+      <Dialog fullScreen open={branchPdfDialog.value} onClose={branchPdfDialog.onFalse}>
+        <Box sx={{ height: 1, display: 'flex', flexDirection: 'column' }}>
+          <DialogActions sx={{ p: 1.5 }}>
+            <Button color="inherit" variant="contained" onClick={branchPdfDialog.onFalse}>
+              Close
+            </Button>
+          </DialogActions>
+          <Box sx={{ flexGrow: 1, height: 1, overflow: 'hidden' }}>
+            <PDFViewer width="100%" height="100%" style={{ border: 'none' }}>
+              <DayBookPdf companyAllData={companyAllData} monthYear={monthYear} />
+            </PDFViewer>
+          </Box>
+        </Box>
+      </Dialog>
     </>
   );
 }
