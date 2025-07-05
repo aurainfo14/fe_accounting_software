@@ -9,11 +9,9 @@ import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { paths } from 'src/routes/paths.js';
 import { useRouter } from 'src/routes/hooks/index.js';
 import { useSnackbar } from 'src/components/snackbar/index.js';
 import FormProvider, { RHFAutocomplete, RHFTextField } from 'src/components/hook-form/index.js';
-import axios from 'axios';
 import { useAuthContext } from '../../../auth/hooks/index.js';
 import { useGetConfigs } from '../../../api/config.js';
 import { Button, Dialog, IconButton } from '@mui/material';
@@ -151,8 +149,7 @@ export default function ExpenceNewEditForm({ currentExpense }) {
       }
     }
 
-    const selectedBranchId =
-      parsedBranch === 'all' ? data?.branchId?.value || branch?.[0]?._id : parsedBranch;
+    const selectedBranchId = parsedBranch === 'all' ? data?.branch?.value : parsedBranch;
 
     let paymentDetail = {
       paymentMode: data.paymentMode,
