@@ -60,7 +60,7 @@ const defaultFilters = {
   status: '',
 };
 
-// ----------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 export default function BankAccountListView() {
   const { bankTransactions, mutate, bankTransactionsLoading } = useGetBankTransactions();
