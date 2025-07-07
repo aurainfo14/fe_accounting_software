@@ -232,7 +232,15 @@ export default function BankAccountCreateView() {
                 </Grid>
               )}
               <Grid item xs={12} sm={6}>
-                <RHFTextField name="accountNumber" label="Account Number" />
+                <RHFTextField
+                  name="accountNumber"
+                  label="Account Number"
+                  fullWidth
+                  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                  }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <RHFAutocomplete
@@ -243,16 +251,42 @@ export default function BankAccountCreateView() {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <RHFTextField name="accountHolderName" label="Account Holder Name" />
+                <RHFTextField
+                  name="accountHolderName"
+                  label="Account Holder Name"
+                  onChange={(e) => {
+                    setValue('accountHolderName', e.target.value.toUpperCase(), {
+                      shouldValidate: true,
+                    });
+                  }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <RHFTextField name="bankName" label="Bank Name" />
+                <RHFTextField
+                  name="bankName"
+                  label="Bank Name"
+                  onChange={(e) => {
+                    setValue('bankName', e.target.value.toUpperCase(), { shouldValidate: true });
+                  }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <RHFTextField name="IFSC" label="IFSC Code" />
+                <RHFTextField
+                  name="IFSC"
+                  label="IFSC Code"
+                  onChange={(e) => {
+                    setValue('IFSC', e.target.value.toUpperCase(), { shouldValidate: true });
+                  }}
+                />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <RHFTextField name="branchName" label="Branch Name" />
+                <RHFTextField
+                  name="branchName"
+                  label="Branch Name"
+                  onChange={(e) => {
+                    setValue('branchName', e.target.value.toUpperCase(), { shouldValidate: true });
+                  }}
+                />
               </Grid>
               <Grid item xs={12} display="flex" justifyContent="flex-end">
                 <LoadingButton

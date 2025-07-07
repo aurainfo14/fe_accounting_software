@@ -17,8 +17,11 @@ import RHFDatePicker from '../../../components/hook-form/rhf-date-picker.jsx';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Branch Name is required'),
-  email: yup.string().email('Invalid email address').nullable(),
-  contact: yup.string().nullable(),
+  email: yup.string().email('Invalid email address'),
+  contact: yup
+    .string()
+    .nullable()
+    .matches(/^\d{10}$/, 'Phone number must be exactly 10 digits'),
   address: yup.object().shape({
     street: yup.string().required('Street is required'),
     country: yup.string().required('Country is required'),
@@ -205,9 +208,13 @@ export default function BranchCreateView() {
                       name="contact"
                       label="Phone Number"
                       fullWidth
-                      inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                      inputProps={{
+                        inputMode: 'numeric',
+                        pattern: '[0-9]*',
+                        maxLength: 10,
+                      }}
                       onInput={(e) => {
-                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
                       }}
                     />
                   </Grid>

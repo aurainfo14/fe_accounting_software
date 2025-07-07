@@ -21,13 +21,13 @@ const TABS = [
     icon: <Iconify icon="mdi:company" width={24} />,
   },
   {
-    value: 'Bank-Account',
-    label: 'Bank-Account',
+    value: 'Branch',
+    label: 'Branch',
     icon: <Iconify icon="carbon:branch" width={24} />,
   },
   {
-    value: 'Branch',
-    label: 'Branch',
+    value: 'Bank-Account',
+    label: 'Bank-Account',
     icon: <Iconify icon="carbon:branch" width={24} />,
   },
   {

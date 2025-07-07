@@ -268,20 +268,6 @@ export default function ExpenceTableToolbar({
                   <TextField {...params} label="Cash & Bank Transactions" sx={getInputStyles()} />
                 )}
               />
-              <Autocomplete
-                fullWidth
-                disableClearable
-                size="medium"
-                options={categoryOptions || []}
-                getOptionLabel={(option) =>
-                  typeof option === 'string' ? option : option.label || ''
-                }
-                value={filters?.category || ''}
-                onChange={(_, newValue) => onFilters('category', newValue)}
-                renderInput={(params) => (
-                  <TextField {...params} label="Category" sx={getInputStyles()} />
-                )}
-              />
               <DatePicker
                 label="Start date"
                 value={filters?.startDate ? moment(filters.startDate).toDate() : null}

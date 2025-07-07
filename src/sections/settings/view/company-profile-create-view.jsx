@@ -162,7 +162,13 @@ export default function CompanyProfile() {
                   setValue('contact', trimmed, { shouldValidate: true });
                 }}
               />
-              <RHFTextField name="address_1" label="Address" />
+              <RHFTextField
+                name="address_1"
+                label="Address"
+                onChange={(e) => {
+                  setValue('address_1', e.target.value.toUpperCase(), { shouldValidate: true });
+                }}
+              />
               <RHFAutocomplete
                 name="country"
                 label="Country"
@@ -212,7 +218,18 @@ export default function CompanyProfile() {
                   </li>
                 )}
               />
-              <RHFTextField name="zipcode" label="Zip Code" />
+              <RHFTextField
+                name="zipcode"
+                label="Zip Code"
+                inputProps={{
+                  maxLength: 6,
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*',
+                }}
+                onInput={(e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+                }}
+              />
             </Box>
             <Stack alignItems="flex-end" sx={{ mt: 3 }}>
               <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
