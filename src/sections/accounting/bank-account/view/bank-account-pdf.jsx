@@ -102,6 +102,7 @@ export default function BankAccountPdf({ configs, bankData, filterData }) {
   const headers = [
     { label: '#', flex: 0.2 },
     { label: 'Type', flex: 1.5 },
+    { label: 'Branch', flex: 1.5 },
     { label: 'Bank Name', flex: 2 },
     { label: 'Detail', flex: 3.5 },
     { label: 'Category', flex: 0.8 },
@@ -139,6 +140,7 @@ export default function BankAccountPdf({ configs, bankData, filterData }) {
       >
         <Text style={[styles.tableCell, { flex: 0.2 }]}>{index + 1}</Text>
         <Text style={[styles.tableCell, { flex: 1.5 }]}>{row.status || '-'}</Text>
+        <Text style={[styles.tableCell, { flex: 1.5 }]}>{row.branch.name || '-'}</Text>
         <Text style={[styles.tableCell, { flex: 2 }]}>
           {`${row.bankName} (${row.bankHolderName})` || '-'}
         </Text>

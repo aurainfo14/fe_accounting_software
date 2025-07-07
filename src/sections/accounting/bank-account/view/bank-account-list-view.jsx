@@ -43,6 +43,7 @@ import { useAuthContext } from '../../../../auth/hooks/index.js';
 const TABLE_HEAD = [
   { id: '#', label: '' },
   { id: 'type', label: 'Type' },
+  { id: 'branch', label: 'Branch' },
   { id: 'bankName', label: 'Bank name' },
   { id: 'name', label: 'Detail' },
   { id: 'category', label: 'Category' },

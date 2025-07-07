@@ -42,6 +42,7 @@ export default function BankAccountTableRow({
           </TableCell>{' '}
         </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.status}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{row.branch.name}</TableCell>
         <TableCell
           sx={{ whiteSpace: 'nowrap' }}
         >{`${row.bankName}(${row?.bankHolderName})`}</TableCell>

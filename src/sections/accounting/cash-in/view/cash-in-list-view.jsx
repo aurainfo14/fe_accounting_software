@@ -54,6 +54,7 @@ import { useGetBranch } from '../../../../api/branch.js';
 const TABLE_HEAD = [
   { id: '', label: '' },
   { id: 'type', label: 'Type' },
+  { id: 'branch', label: 'Branch' },
   { id: 'detail', label: 'Detail' },
   { id: 'category', label: 'Category' },
   { id: 'date', label: 'Date' },

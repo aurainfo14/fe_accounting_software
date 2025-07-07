@@ -36,6 +36,7 @@ export default function CashInTableRow({ row, selected, onEditRow, onSelectRow, 
           </TableCell>{' '}
         </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${row.status}`}</TableCell>
+        <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${row?.branch?.name}`}</TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap' }}>
           {row.ref ? `${row.detail} (${row.ref})` : row.detail}
         </TableCell>{' '}

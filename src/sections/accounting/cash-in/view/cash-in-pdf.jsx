@@ -102,6 +102,7 @@ export default function CashInPdf({ configs, cashData, filterData }) {
   const headers = [
     { label: '#', flex: 0.2 },
     { label: 'Type', flex: 1 },
+    { label: 'Branch', flex: 1 },
     { label: 'Detail', flex: 4 },
     { label: 'Category', flex: 1 },
     { label: 'Date', flex: 1 },
@@ -137,6 +138,7 @@ export default function CashInPdf({ configs, cashData, filterData }) {
       >
         <Text style={[styles.tableCell, { flex: 0.2 }]}>{index + 1}</Text>
         <Text style={[styles.tableCell, { flex: 1 }]}>{row.status || '-'}</Text>
+        <Text style={[styles.tableCell, { flex: 1 }]}>{row.branch.name || '-'}</Text>
         <Text style={[styles.tableCell, { flex: 4 }]}>
           {row.ref ? `${row.detail} (${row.ref})` : row.detail || '-'}
         </Text>
