@@ -275,6 +275,25 @@ export default function PaymentInOutListView() {
                       : Math.abs(payableAmt).toFixed(2)}
                   </span>
                 </strong>
+                <strong style={{ marginRight: isMobile ? 0 : 20, fontSize: isMobile ? 12 : 20 }}>
+                  Net : -
+                  <span
+                    style={{
+                      color: 'deepskyblue',
+                      marginLeft: 10,
+                    }}
+                  >
+                    {Object.entries(filters).some(([key, val]) => {
+                      if (val === null || val === '') return false;
+                      if (typeof val === 'object') {
+                        return val instanceof Date || Object.keys(val).length > 0;
+                      }
+                      return true;
+                    })
+                      ? (receivable - payable).toFixed(2)
+                      : Math.abs(receivableAmt - payableAmt).toFixed(2)}
+                  </span>
+                </strong>
               </Box>
             </Typography>
           }
