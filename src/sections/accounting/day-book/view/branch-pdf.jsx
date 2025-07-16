@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   cell: {
     flex: 1,
     borderRight: '1px solid #000',
-    fontSize: 13,
+    fontSize: 10,
     paddingVertical: 4,
     paddingHorizontal: 6,
     justifyContent: 'center',
