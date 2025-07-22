@@ -245,15 +245,7 @@ export default function PaymentInOutListView() {
                       marginLeft: 10,
                     }}
                   >
-                    {Object.entries(filters).some(([key, val]) => {
-                      if (val === null || val === '') return false;
-                      if (typeof val === 'object') {
-                        return val instanceof Date || Object.keys(val).length > 0;
-                      }
-                      return true;
-                    })
-                      ? receivable.toFixed(2)
-                      : Math.abs(receivableAmt).toFixed(2)}
+                    {receivable.toFixed(2)}
                   </span>
                 </strong>
                 <strong style={{ marginRight: isMobile ? 0 : 20, fontSize: isMobile ? 12 : 20 }}>
@@ -264,15 +256,7 @@ export default function PaymentInOutListView() {
                       marginLeft: 10,
                     }}
                   >
-                    {Object.entries(filters).some(([key, val]) => {
-                      if (val === null || val === '') return false;
-                      if (typeof val === 'object') {
-                        return val instanceof Date || Object.keys(val).length > 0;
-                      }
-                      return true;
-                    })
-                      ? payable.toFixed(2)
-                      : Math.abs(payableAmt).toFixed(2)}
+                    {payable.toFixed(2)}
                   </span>
                 </strong>
                 <strong style={{ marginRight: isMobile ? 0 : 20, fontSize: isMobile ? 12 : 20 }}>
@@ -283,15 +267,7 @@ export default function PaymentInOutListView() {
                       marginLeft: 10,
                     }}
                   >
-                    {Object.entries(filters).some(([key, val]) => {
-                      if (val === null || val === '') return false;
-                      if (typeof val === 'object') {
-                        return val instanceof Date || Object.keys(val).length > 0;
-                      }
-                      return true;
-                    })
-                      ? (receivable - payable).toFixed(2)
-                      : Math.abs(receivableAmt - payableAmt).toFixed(2)}
+                    {Math.abs(receivableAmt - payableAmt).toFixed(2)}
                   </span>
                 </strong>
               </Box>
