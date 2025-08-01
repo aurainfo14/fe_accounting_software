@@ -97,8 +97,8 @@ export default function PaymentInOutNewEditForm({ currentPayment }) {
       date: currentPayment?.date ? new Date(currentPayment?.date) : new Date(),
       description: currentPayment?.description || '',
       paymentMode: currentPayment?.paymentDetail?.paymentMode || '',
-      cashAmount: currentPayment?.paymentDetail?.cashAmount || 0,
-      bankAmount: currentPayment?.paymentDetail?.bankAmount || 0,
+      cashAmount: currentPayment?.paymentDetail?.cashAmount || '',
+      bankAmount: currentPayment?.paymentDetail?.bankAmount || '',
       account: currentPayment?.paymentDetail?.account || null,
     }),
     [currentPayment]
@@ -439,14 +439,14 @@ export default function PaymentInOutNewEditForm({ currentPayment }) {
                     options={['Cash', 'Bank', 'Both']}
                     onChange={(event, value) => {
                       setValue('paymentMode', value);
-                      const totalAmountPaid = parseFloat(watch('amountPaid')) || 0;
+                      const totalAmountPaid = parseFloat(watch('amountPaid')) || '';
 
                       if (value === 'Cash') {
                         setValue('cashAmount', totalAmountPaid);
-                        setValue('bankAmount', 0);
+                        setValue('bankAmount', '');
                       } else if (value === 'Bank') {
                         setValue('bankAmount', totalAmountPaid);
-                        setValue('cashAmount', 0);
+                        setValue('cashAmount', '');
                       } else if (value === 'Both') {
                         const splitCash = totalAmountPaid * 0.5;
                         setValue('cashAmount', splitCash.toFixed(2));
