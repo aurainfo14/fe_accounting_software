@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -38,6 +38,7 @@ import ExpenceTypeListView from '../expence-type/view/expence-type-list-view.jsx
 import axios from 'axios';
 import { useAuthContext } from '../../../../auth/hooks/index.js';
 import { useGetExpanse } from '../../../../api/expense.js';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 // ----------------------------------------------------------------------
 
@@ -78,12 +79,20 @@ export default function ExpenceListView() {
   const [filters, setFilters] = useState(defaultFilters);
   const [options, setOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
+  const buttonRef = useRef(null);
+
 
   const dataFiltered = applyFilter({
     inputData: expense,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
+  useHotkeys('ctrl+space', () => {
+    if (buttonRef.current) {
+      buttonRef.current.click();
+    }
+  }, [buttonRef])
+
   useEffect(() => {
     {
       dataFiltered.length > 0 && fetchStates();
@@ -234,6 +243,7 @@ export default function ExpenceListView() {
           links={[{ name: 'Dashboard', href: paths.dashboard.root }, { name: 'List' }]}
           action={
             <Button
+              ref={buttonRef}
               component={RouterLink}
               href={paths.dashboard.accounting.expense.new}
               variant="contained"

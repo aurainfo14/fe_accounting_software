@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -41,6 +41,7 @@ import axiosInstance from 'src/utils/axios.js';
 import { useAuthContext } from 'src/auth/hooks';
 import PaymentInOutTableFiltersResult from '../payment-in-out-table-filters-result.jsx';
 import { useGetParty } from '../../../../api/party.js';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 // ----------------------------------------------------------------------
 
@@ -86,6 +87,8 @@ export default function PaymentInOutListView() {
   const [options, setOptions] = useState([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const buttonRef = useRef(null);
+  const buttonRef2 = useRef(null);
 
   useEffect(() => {
     setFilters({ ...defaultFilters, party: partyDetails });
@@ -96,6 +99,25 @@ export default function PaymentInOutListView() {
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
+
+  useHotkeys(
+    'ctrl+Shift',
+    () => {
+      if (buttonRef.current) {
+        buttonRef.current.click();
+      }
+    },
+    [buttonRef]
+  );
+  useHotkeys(
+    'ctrl+Space',
+    () => {
+      if (buttonRef2.current) {
+        buttonRef2.current.click();
+      }
+    },
+    [buttonRef]
+  );
 
   useEffect(() => {
     {
@@ -281,6 +303,7 @@ export default function PaymentInOutListView() {
           action={
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Button
+                ref={buttonRef}
                 variant="contained"
                 startIcon={<Iconify icon="mingcute:add-line" />}
                 onClick={() => setOpen(true)}
@@ -288,6 +311,7 @@ export default function PaymentInOutListView() {
                 Add Party
               </Button>
               <Button
+                ref={buttonRef2}
                 component={RouterLink}
                 href={paths.dashboard.accounting['payment-in-out'].new}
                 variant="contained"
