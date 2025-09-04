@@ -130,16 +130,18 @@ export default function BranchCreateView() {
   };
 
   const handleDeleteBranches = async (ids) => {
+    if (!ids || ids.length === 0) return;
+
     setLoading(true);
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/branch`,
-        { data: { ids } }
-      );
-      enqueueSnackbar(response.data.message);
+      for (const id of ids) {
+        await axios.delete(`${import.meta.env.VITE_BASE_URL}/${user?.company?._id}/branch/${id}`);
+      }
+
+      enqueueSnackbar('Branch deleted successfully', { variant: 'success' });
       mutate();
     } catch (error) {
-      enqueueSnackbar(error.message || 'An error occurred');
+      enqueueSnackbar(error.response?.data?.message || 'An error occurred', { variant: 'error' });
     } finally {
       setLoading(false);
     }
