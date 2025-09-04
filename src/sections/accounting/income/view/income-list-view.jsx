@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -37,6 +37,7 @@ import { isBetween } from '../../../../utils/format-time.js';
 import Typography from '@mui/material/Typography';
 import { RouterLink } from '../../../../routes/components/index.js';
 import { useGetIncome } from '../../../../api/income.js';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 // ----------------------------------------------------------------------
 
@@ -83,12 +84,20 @@ export default function IncomeListView() {
   const [filters, setFilters] = useState(defaultFilters);
   const [srData, setSrData] = useState([]);
   const [options, setOptions] = useState([]);
+  const buttonRef = useRef(null);
+
 
   const dataFiltered = applyFilter({
     inputData: srData,
     comparator: getComparator(table.order, table.orderBy),
     filters,
   });
+
+  useHotkeys('ctrl+space', () => {
+    if (buttonRef.current) {
+      buttonRef.current.click();
+    }
+  }, [buttonRef])
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
@@ -228,6 +237,7 @@ export default function IncomeListView() {
           ]}
           action={
             <Button
+              ref={buttonRef}
               component={RouterLink}
               href={paths.dashboard.accounting.income.new}
               variant="contained"

@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Card from '@mui/material/Card';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
@@ -48,6 +48,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import RHFAutocomplete from 'src/components/hook-form/rhf-autocomplete.jsx';
 import { useGetTransfer } from '../../../../api/transfer.js';
 import { useGetBranch } from '../../../../api/branch.js';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 // ----------------------------------------------------------------------
 
@@ -88,6 +89,8 @@ export default function CashInListView() {
   const storedBranch = sessionStorage.getItem('selectedBranch');
   const [currentTransfer, setCurrentTransfer] = useState(null);
   const { branch } = useGetBranch();
+  const buttonRef = useRef(null);
+
 
   const dataFiltered = applyFilter({
     inputData: cashTransactions,
@@ -95,6 +98,11 @@ export default function CashInListView() {
     filters,
   });
 
+  useHotkeys('ctrl+space', () => {
+    if (buttonRef.current) {
+      buttonRef.current.click();
+    }
+  }, [buttonRef])
   useEffect(() => {
     fetchStates();
   }, [dataFiltered]);
@@ -322,7 +330,8 @@ export default function CashInListView() {
             { name: 'List' },
           ]}
           action={
-            <Button variant="contained" onClick={handleOpenAdjustDialog} sx={{ mb: 2 }}>
+            <Button variant="contained"               ref={buttonRef}
+                    onClick={handleOpenAdjustDialog} sx={{ mb: 2 }}>
               Adjust Cash
             </Button>
           }
