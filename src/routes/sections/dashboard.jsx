@@ -16,6 +16,9 @@ import IncomeListView from '../../sections/accounting/income/view/income-list-vi
 import IncomeCreateView from '../../sections/accounting/income/view/income-create-view.jsx';
 import IncomeEditView from '../../sections/accounting/income/view/income-edit-view.jsx';
 import DayBookListView from '../../sections/accounting/day-book/view/day-book-list-view.jsx';
+import NotesListView from '../../sections/accounting/notes/view/notes-list-view.jsx';
+import NotesCreateView from '../../sections/accounting/notes/view/notes-create-view.jsx';
+import NotesEditView from '../../sections/accounting/notes/view/notes-edit-view.jsx';
 import MyProfile from '../../sections/settings/view/my-profile-create-view.jsx';
 
 // ----------------------------------------------------------------------
@@ -72,6 +75,9 @@ export const dashboardRoutes = [
           { path: 'income/new', element: <IncomeCreateView /> },
           { path: 'income/:id/edit', element: <IncomeEditView /> },
           { path: 'day-book/list', element: <DayBookListView /> },
+          { path: 'notes/list', element: <NotesListView /> },
+          { path: 'notes/new', element: <NotesCreateView /> },
+          { path: 'notes/:id/edit', element: <NotesEditView /> },
         ],
       },
       { path: 'setting', element: <SettingsPage /> },

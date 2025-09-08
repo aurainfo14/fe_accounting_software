@@ -145,6 +145,11 @@ export const paths = {
         new: `${ROOTS.DASHBOARD}/accounting/other-in-out/new`,
         edit: (id) => `${ROOTS.DASHBOARD}/accounting/other-in-out/${id}/edit`,
       },
+      notes: {
+        list: `${ROOTS.DASHBOARD}/accounting/notes/list`,
+        new: `${ROOTS.DASHBOARD}/accounting/notes/new`,
+        edit: (id) => `${ROOTS.DASHBOARD}/accounting/notes/${id}/edit`,
+      },
     },
   },
 };

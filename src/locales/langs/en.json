@@ -50,5 +50,14 @@
   "upgrade_to_pro": "Upgrade to Pro",
   "demo": {
     "title": "English"
-  }
+  },
+  "cash in": "Cash In",
+  "bank account": "Bank Account",
+  "Expence": "Expense",
+  "payment in out": "Payment In/Out",
+  "income": "Income",
+  "day book": "Day Book",
+  "notes": "Notes",
+  "setting": "Settings",
+  "config": "Configuration"
 }

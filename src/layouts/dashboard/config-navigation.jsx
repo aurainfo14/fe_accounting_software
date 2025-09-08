@@ -43,6 +43,7 @@ const ICONS = {
   payment: <Iconify icon="icon-park-outline:exchange-three" width={24} />,
   income: <Iconify icon="streamline-freehand:money-coin-cash" width={24} />,
   dayBook: <Iconify icon="simple-line-icons:calender" width={20} />,
+  notes: <Iconify icon="solar:notebook-bold-duotone" width={24} />,
 };
 
 // ----------------------------------------------------------------------
@@ -86,6 +87,11 @@ export function useNavData() {
             title: t('day book'),
             path: paths.dashboard.accounting['day-book'].list,
             icon: ICONS.dayBook,
+          },
+          {
+            title: t('notes'),
+            path: paths.dashboard.accounting.notes.list,
+            icon: ICONS.notes,
           },
         ],
       },
