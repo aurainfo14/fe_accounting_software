@@ -36,11 +36,20 @@ export default function NotesNewEditForm({ currentNote }) {
     title: Yup.string().required('Title is required'),
     description: Yup.string().required('Description is required'),
     date: Yup.date().typeError('Please enter a valid date').required('Date is required'),
-    branch: Yup.object().when(['isBranchUser'], {
-      is: (isBranchUser) => !isBranchUser && storedBranch === 'all',
-      then: (schema) => schema.required('Branch is required'),
-      otherwise: (schema) => schema.nullable(),
-    }),
+    branch: Yup.object()
+      .nullable()
+      .test(
+        'branch-required',
+        'Branch is required',
+        function (value) {
+          const { isBranchUser } = this.parent;
+          // condition check
+          if (user?.role === 'ADMIN' && branch && storedBranch === 'all') {
+            return !!value; // must select branch
+          }
+          return true; // otherwise not required
+        }
+      ),
   });
 
   const defaultValues = useMemo(
