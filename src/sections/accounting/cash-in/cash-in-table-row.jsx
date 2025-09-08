@@ -63,7 +63,6 @@ export default function CashInTableRow({ row, selected, onEditRow, onSelectRow, 
             <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
               <Iconify icon="eva:more-vertical-fill" />
             </IconButton>
-            ''
           </TableCell>
         ) : (
           <TableCell></TableCell>
